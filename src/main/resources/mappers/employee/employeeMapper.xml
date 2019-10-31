@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="EmployeeDao">
+  	<insert id="insertOneEmployeeDao" parameterType="EmployeeDto">  								
+		INSERT INTO EMPLOYEE	(
+									employeeNo
+		                            , employeeName
+		                            , employeePassWord
+		                            , employeePhoneNumber
+									, employeePostcode
+		                            , employeeCommonaddress
+		                            , employeeDetailaddress
+		                            , employeeCompanyPhoneNumber
+		                            , employeeEmail
+		                            , employeeJoinDate
+		                            , employeeRegisterDate
+		                            , employeeModifyDate
+		                            , salt
+		                            , departmentNo
+		                            , positionNo
+								)
+		VALUES					(
+									#{employeeNo}
+		                            , #{employeeName}
+		                            , #{employeePassWord}
+		                            , #{employeePhoneNumber}
+		                            , #{employeePostcode}
+		                            , #{employeeCommonaddress}
+		                            , #{employeeDetailaddress}
+		                            , #{employeeCompanyPhoneNumber}
+		                            , #{employeeEmail}
+		                            , #{employeeJoinDate}
+		                            , now()
+		                            , now()
+		                            , #{salt}
+		                            , #{departmentNo}
+		                            , #{positionNo}
+		                        )	  								
+  	</insert>
+  	
+  	<select id="selectOneEmployeeDao" parameterType="EmployeeDto" resultType="EmployeeDto">
+  		SELECT	employeeNo      
+				, employeeName  
+				, employeePassWord     
+				, employeePhoneNumber     
+				, employeePostcode     
+				, employeeCommonaddress    
+				, employeeDetailaddress    
+				, employeeCompanyPhoneNumber    
+				, employeeEmail 
+				, employeeJoinDate
+				, employeeRegisterDate 
+				, employeeModifyDate 
+  		FROM	EMPLOYEE
+  		WHERE	employeeNo = #{employeeNo}
+  		AND		employeePassWord = #{employeePassWord}
+  	</select>
+  	
+  	<select id="getSaltByEmployeeNumber" parameterType="EmployeeDto" resultType="string">
+  		SELECT	salt
+  		FROM	EMPLOYEE
+  		WHERE	employeeNo = #{employeeNo}
+  	</select>
+  	
+    <select id="duplicateCheckOfEmployeeNoDao"
+  			parameterType="string"
+  			resultType="Integer">
+  		
+  		SELECT	COUNT(*)
+  		FROM	EMPLOYEE
+  		WHERE	employeeNo = #{employeeNo}  	
+  	</select>
+  </mapper>
