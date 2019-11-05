@@ -111,19 +111,19 @@
   	<insert id="InsertOverTimeApprovalForOverTimeRequestDao" parameterType="OverTimeApprovalDto">
   		INSERT INTO OVERTIMEAPPROVAL(
   										acceptNo,
-  										Drafter,
-  										DraftDate,
-  										ApprovalRequestDate,
-  										ApprovalLine,
-  										ApprovalDescription
+  										drafter,
+  										draftDate,
+  										approvalRequestDate,
+  										approvalLine,
+  										approvalDescription
   		                            )
   		                      VALUES(
   		                      			#{acceptNo},
-  		                      			#{Drafter},
+  		                      			#{drafter},
   		                      			now(),
   		                      			now(),
-  		                      			#{ApprovalLine},
-  		                      			#{ApprovalDescription}
+  		                      			#{approvalLine},
+  		                      			#{approvalDescription}
   		                            )  
   	</insert>
   </mapper>

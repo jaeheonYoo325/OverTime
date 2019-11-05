@@ -2,6 +2,12 @@ package com.springproject.dtos;
 
 public class OverTimeApprovalDto {
 	private Long acceptNo;
+	private String drafter;
+	private String draftDate;
+	private String approvalRequestDate;
+	private String approvalLine;
+	private String approvalDescription;
+	private String approvalDate;
 	public Long getAcceptNo() {
 		return acceptNo;
 	}
@@ -9,52 +15,46 @@ public class OverTimeApprovalDto {
 		this.acceptNo = acceptNo;
 	}
 	public String getDrafter() {
-		return Drafter;
+		return drafter;
 	}
 	public void setDrafter(String drafter) {
-		Drafter = drafter;
+		this.drafter = drafter;
 	}
 	public String getDraftDate() {
-		return DraftDate;
+		return draftDate;
 	}
 	public void setDraftDate(String draftDate) {
-		DraftDate = draftDate;
+		this.draftDate = draftDate;
 	}
 	public String getApprovalRequestDate() {
-		return ApprovalRequestDate;
+		return approvalRequestDate;
 	}
 	public void setApprovalRequestDate(String approvalRequestDate) {
-		ApprovalRequestDate = approvalRequestDate;
+		this.approvalRequestDate = approvalRequestDate;
 	}
 	public String getApprovalLine() {
-		return ApprovalLine;
+		return approvalLine;
 	}
 	public void setApprovalLine(String approvalLine) {
-		ApprovalLine = approvalLine;
+		this.approvalLine = approvalLine;
 	}
 	public String getApprovalDescription() {
-		return ApprovalDescription;
+		return approvalDescription;
 	}
 	public void setApprovalDescription(String approvalDescription) {
-		ApprovalDescription = approvalDescription;
+		this.approvalDescription = approvalDescription;
 	}
 	public String getApprovalDate() {
-		return ApprovalDate;
+		return approvalDate;
 	}
 	public void setApprovalDate(String approvalDate) {
-		ApprovalDate = approvalDate;
+		this.approvalDate = approvalDate;
 	}
 	public String getApprovalLineConfirm() {
-		return ApprovalLineConfirm;
+		return approvalLineConfirm;
 	}
 	public void setApprovalLineConfirm(String approvalLineConfirm) {
-		ApprovalLineConfirm = approvalLineConfirm;
+		this.approvalLineConfirm = approvalLineConfirm;
 	}
-	private String Drafter;
-	private String DraftDate;
-	private String ApprovalRequestDate;
-	private String ApprovalLine;
-	private String ApprovalDescription;
-	private String ApprovalDate;
-	private String ApprovalLineConfirm;
+	private String approvalLineConfirm;
 }
