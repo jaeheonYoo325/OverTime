@@ -1,12 +1,12 @@
 package com.springproject.dtos;
 
 public class MeasurerDto {
-	private int acceptNo;
+	private Long acceptNo;
 	private String measurer;
-	public int getAcceptNo() {
+	public Long getAcceptNo() {
 		return acceptNo;
 	}
-	public void setAcceptNo(int acceptNo) {
+	public void setAcceptNo(Long acceptNo) {
 		this.acceptNo = acceptNo;
 	}
 	public String getMeasurer() {

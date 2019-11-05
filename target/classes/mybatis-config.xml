@@ -6,5 +6,12 @@
  		<typeAliases>
  			<typeAlias type="com.springproject.employee.dto.EmployeeDto" alias="EmployeeDto"/>
  			<typeAlias type="com.springproject.department.dto.DepartmentDto" alias="DepartmentDto"/>
+ 			
+ 			<typeAlias type="com.springproject.dtos.InterPhoneDto" alias="InterPhoneDto"/>
+ 			<typeAlias type="com.springproject.dtos.ChainTableDto" alias="ChainTableDto"/>
+ 			<typeAlias type="com.springproject.dtos.OverTimeDto" alias="OverTimeDto"/>
+ 			<typeAlias type="com.springproject.dtos.MeasurerDto" alias="MeasurerDto"/>
+ 			<typeAlias type="com.springproject.dtos.MeasureDescriptionDto" alias="MeasureDescriptionDto"/>
+ 			<typeAlias type="com.springproject.dtos.OverTimeApprovalDto" alias="OverTimeApprovalDto"/>
  		</typeAliases>        
     </configuration>

@@ -22,11 +22,11 @@ public class InterPhoneDto {
 		this.partName = partName;
 	}
 	public String getPhoneNumber() {
-		return PhoneNumber;
+		return phoneNumber;
 	}
 	public void setPhoneNumber(String phoneNumber) {
-		PhoneNumber = phoneNumber;
+		this.phoneNumber = phoneNumber;
 	}
 	private String partName;
-	private String PhoneNumber;
+	private String phoneNumber;
 }

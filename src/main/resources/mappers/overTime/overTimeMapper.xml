@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="overTimeDao">
+  	<select id="selectAllEmployeeDao" resultType="EmployeeDto">
+  		SELECT employeeNo,
+  		       employeeName
+  		FROM EMPLOYEE
+  	</select>
+  	
+  	<select id="selectEmployeeOfSearchDao" parameterType="EmployeeDto" resultType="EmployeeDto">
+  		SELECT employeeNo,
+  			   employeeName
+  	    FROM EMPLOYEE
+  	    WHERE employeeName LIKE CONCAT('%',#{employeeName},'%')
+  	</select>
+  	
+  	<select id="sellectAllInterPhoneDao" resultType="InterPhoneDto">
+  		SELECT companyType,
+  			   teamName,
+  			   partName,
+  			   phoneNumber
+  	    FROM INTERPHONE
+  	</select>
+  	
+  	<select id="selectCallerOfSearchDao" parameterType="InterPhoneDto" resultType="InterPhoneDto">
+  		SELECT companyType,
+  			   teamName,
+  			   partName,
+  			   phoneNumber
+  	    FROM INTERPHONE
+  	    WHERE phoneNumber LIKE CONCAT('%',#{phoneNumber},'%')
+  	</select>
+  	
+  	<select id="selectAllChainDao" resultType="ChainTableDto">
+  		SELECT chainId,
+  			   chainName
+  	    FROM CHAINTABLE
+  	</select>
+  	
+  	<select id="selectChainOfDao" parameterType="ChainTableDto" resultType="ChainTableDto">
+   		SELECT chainId,
+  			   chainName
+  	    FROM CHAINTABLE
+  	    WHERE chainName LIKE CONCAT('%',#{chainName},'%')
+  	</select>
+  	
+  	<insert id="insertOverTimeRequestDao" parameterType="OverTimeDto">
+ 		INSERT INTO OVERTIME (
+ 								acceptDate,
+ 								acceptTime,
+ 								accepter,
+ 								caller,
+ 								phoneNumber,
+ 								acceptDescription,
+ 								measureTime,
+ 								cause,
+ 								measures,
+ 								relatedChain,
+ 								remarks,
+ 								typeOfProcessing,
+ 								statusCode
+                     		 )
+    	  			VALUES   (
+    	  						#{acceptDate},
+    	  						#{acceptTime},
+    	  						#{accepter},
+    	  						#{caller},
+    	  						#{phoneNumber},
+    	  						#{acceptDescription},
+    	  						#{measureTime},
+    	  						#{cause},
+    	  						#{measures},
+    	  						#{relatedChain},
+    	  						#{remarks},
+    	  						#{typeOfProcessing},
+    	  						"01"
+                             )   
+  	</insert>
+  	
+  	<select id="selectMaxAcceptNoDao" resultType="LONG">
+  		SELECT
+        	 MAX(acceptNo)
+   		FROM OVERTIME
+  	</select>
+  	
+  	<insert id="insertMeasurerDao" parameterType="MeasurerDto">
+  		INSERT INTO MEASURER(
+  								acceptNo,
+  								measurer
+  		                    )
+  		              VALUES(
+  		            			#{acceptNo},
+  		            			#{measurer}
+  		                    )
+  	</insert>
+  	
+  	<insert id="insertMeasureDescriptionDao" parameterType="MeasureDescriptionDto">
+  		INSERT INTO MEASUREDESCRIPTION(
+  										acceptNo,
+  										measureDescription
+  		                              )
+  		                    	VALUES(
+  		                    			#{acceptNo},
+  		                    			#{measureDescription}
+  		                          	  )
+  	</insert>
+  	
+  	<insert id="InsertOverTimeApprovalForOverTimeRequestDao" parameterType="OverTimeApprovalDto">
+  		INSERT INTO OVERTIMEAPPROVAL(
+  										acceptNo,
+  										Drafter,
+  										DraftDate,
+  										ApprovalRequestDate,
+  										ApprovalLine,
+  										ApprovalDescription
+  		                            )
+  		                      VALUES(
+  		                      			#{acceptNo},
+  		                      			#{Drafter},
+  		                      			now(),
+  		                      			now(),
+  		                      			#{ApprovalLine},
+  		                      			#{ApprovalDescription}
+  		                            )  
+  	</insert>
+  </mapper>

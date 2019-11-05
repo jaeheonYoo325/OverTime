@@ -1,7 +1,7 @@
 package com.springproject.dtos;
 
 public class OverTimeDto {
-	private int acceptNo;
+	private Long acceptNo;
 	private String acceptDate;
 	private String acceptTime;
 	private String accepter;
@@ -14,10 +14,10 @@ public class OverTimeDto {
 	private String relatedChain;
 	private String remarks;
 	private String typeOfProcessing;
-	public int getAcceptNo() {
+	public Long getAcceptNo() {
 		return acceptNo;
 	}
-	public void setAcceptNo(int acceptNo) {
+	public void setAcceptNo(Long acceptNo) {
 		this.acceptNo = acceptNo;
 	}
 	public String getAcceptDate() {

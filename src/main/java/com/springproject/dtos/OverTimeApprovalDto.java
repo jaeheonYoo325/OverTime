@@ -1,11 +1,11 @@
 package com.springproject.dtos;
 
 public class OverTimeApprovalDto {
-	private int acceptNo;
-	public int getAcceptNo() {
+	private Long acceptNo;
+	public Long getAcceptNo() {
 		return acceptNo;
 	}
-	public void setAcceptNo(int acceptNo) {
+	public void setAcceptNo(Long acceptNo) {
 		this.acceptNo = acceptNo;
 	}
 	public String getDrafter() {

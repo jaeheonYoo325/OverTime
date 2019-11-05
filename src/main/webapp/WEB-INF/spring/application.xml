@@ -17,19 +17,19 @@
 	<mvc:resources location="/WEB-INF/static/js/" mapping="/js/**" />
 	<mvc:resources location="/WEB-INF/static/images/" mapping="/images/**" />
 	
-	<mvc:interceptors>
-		<mvc:interceptor>
-			<mvc:mapping path="/main/main.do"/>			
-			<mvc:mapping path="/employee/**.do"/>			
-			<mvc:exclude-mapping path="/employee/employeeLogin.do"/>
-			<bean id="sessionInterceptor" class="com.springproject.common.interceptor.SessionInterceptor"></bean>
-		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/employee/employeeLogin.do"/>
-			<mvc:exclude-mapping path="/employee/employeeLogout.do"/>
-			<bean id="preventSessionInterceptor" class="com.springproject.common.interceptor.PreventSessionInterceptor"></bean>
-		</mvc:interceptor>
-	</mvc:interceptors>
+<!-- 	<mvc:interceptors> -->
+<!-- 		<mvc:interceptor> -->
+<!-- 			<mvc:mapping path="/main/main.do"/>			 -->
+<!-- 			<mvc:mapping path="/employee/**.do"/>			 -->
+<!-- 			<mvc:exclude-mapping path="/employee/employeeLogin.do"/> -->
+<!-- 			<bean id="sessionInterceptor" class="com.springproject.common.interceptor.SessionInterceptor"></bean> -->
+<!-- 		</mvc:interceptor> -->
+<!-- 		<mvc:interceptor> -->
+<!-- 			<mvc:mapping path="/employee/employeeLogin.do"/> -->
+<!-- 			<mvc:exclude-mapping path="/employee/employeeLogout.do"/> -->
+<!-- 			<bean id="preventSessionInterceptor" class="com.springproject.common.interceptor.PreventSessionInterceptor"></bean> -->
+<!-- 		</mvc:interceptor> -->
+<!-- 	</mvc:interceptors> -->
 	
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/"></property>
