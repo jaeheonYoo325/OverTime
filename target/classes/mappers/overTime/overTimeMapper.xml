@@ -247,4 +247,16 @@
   		FROM MEASUREDESCRIPTION
   		WHERE acceptNo=#{acceptNo}
   	</select>
+  	
+  	<select id="selectOverTimeofEmployeeDao" parameterType="EmployeeDto" resultType="OverTimeofEmployeeDto">
+  		SELECT 
+  				o.employeeNo,
+  				e.employeeName,
+  				o.sumOfOverTime,
+  				FLOOR(sumOfOverTime/8) AS amountOfAnnualVacation
+  		FROM    OVERTIMEOFEMPLOYEE o
+  		JOIN    EMPLOYEE e
+  		ON		(o.employeeNo=e.employeeNo)
+  		WHERE o.employeeNo="3";
+  	</select>
   </mapper>

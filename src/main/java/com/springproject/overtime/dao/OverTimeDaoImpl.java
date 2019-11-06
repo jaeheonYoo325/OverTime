@@ -15,6 +15,7 @@ import com.springproject.dtos.MeasureDescriptionDto;
 import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeApprovalDto;
 import com.springproject.dtos.OverTimeDto;
+import com.springproject.dtos.OverTimeofEmployeeDto;
 import com.springproject.employee.dto.EmployeeDto;
 
 @Repository
@@ -101,6 +102,10 @@ public class OverTimeDaoImpl extends SqlSessionDaoSupport implements OverTimeDao
 	@Override
 	public List<MeasureDescriptionDto> selectMeasureDescriptionOfAcceptNoDao(Long acceptNo) {
 		return getSqlSession().selectList("overTimeDao.selectMeasureDescriptionOfAcceptNoDao",acceptNo);
+	}
+	@Override
+	public OverTimeofEmployeeDto selectOverTimeofEmployeeDao(EmployeeDto employeeDto) {
+		return getSqlSession().selectOne("overTimeDao.selectOverTimeofEmployeeDao",employeeDto);
 	}
 
 }

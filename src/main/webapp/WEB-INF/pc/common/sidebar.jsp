@@ -11,12 +11,13 @@
 	      <li class="nav-item dropdown">
 	        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	          <i class="fas fa-fw fa fa-file"></i>
-	          <span>배포</span>
+	          <span>overTime</span>
 	        </a>
 	        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
 	          <h6 class="dropdown-header">OverTime</h6>
 	          <a class="dropdown-item" href="<c:url value='/overTime/overTimeRequest.do' />">OverTime요청</a>
 	          <a class="dropdown-item" href="<c:url value='/overTime/overTimeList.do' />">OverTime요청현황</a>
+	          <a class="dropdown-item" href="<c:url value='/overTime/myOverTime.do' />">MyOverTime</a>
 	        </div>
 	      </li>
 	      

@@ -10,6 +10,7 @@ import com.springproject.dtos.MeasureDescriptionDto;
 import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeApprovalDto;
 import com.springproject.dtos.OverTimeDto;
+import com.springproject.dtos.OverTimeofEmployeeDto;
 import com.springproject.employee.dto.EmployeeDto;
 
 public interface OverTimeDao {
@@ -49,4 +50,6 @@ public interface OverTimeDao {
 	public List<MeasurerDto> selectMeasurerOfAcceptNoDao(Long acceptNo);
 
 	public List<MeasureDescriptionDto> selectMeasureDescriptionOfAcceptNoDao(Long acceptNo);
+
+	public OverTimeofEmployeeDto selectOverTimeofEmployeeDao(EmployeeDto employeeDto);
 }

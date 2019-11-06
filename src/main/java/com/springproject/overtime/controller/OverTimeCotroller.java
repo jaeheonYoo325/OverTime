@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.springproject.common.session.Session;
 import com.springproject.common.utils.HttpRequestHelper;
 import com.springproject.dtos.CategoryTypeDto;
 import com.springproject.dtos.ChainTableDto;
@@ -28,6 +30,7 @@ import com.springproject.dtos.MasterTableDto;
 import com.springproject.dtos.MeasureDescriptionDto;
 import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeDto;
+import com.springproject.dtos.OverTimeofEmployeeDto;
 import com.springproject.employee.dto.EmployeeDto;
 import com.springproject.overtime.service.OverTimeService;
 
@@ -214,6 +217,14 @@ public class OverTimeCotroller {
 		mv.addObject("measureDescriptionMap",measureDescriptionMap);
 		mv.addObject("masterCodeOfSearchTypeMap",masterCodeOfSearchTypeMap);
 		
+		return mv;
+	}
+	
+	@GetMapping("/overTime/myOverTime.do")
+	public ModelAndView viewmyOverTimePage(HttpSession session) {
+		ModelAndView mv=new ModelAndView(HttpRequestHelper.getJspPath());
+		OverTimeofEmployeeDto overTimeofEmployeeDto=this.overTimeService.selectOverTimeofEmployeeService((EmployeeDto)session.getAttribute(Session.USER));
+		mv.addObject("overTimeofEmployeeDto",overTimeofEmployeeDto);
 		return mv;
 	}
 }
