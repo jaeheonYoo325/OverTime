@@ -14,9 +14,9 @@
 	          <span>배포</span>
 	        </a>
 	        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-	          <h6 class="dropdown-header">배포</h6>
-	          <a class="dropdown-item" href="#">OverTime 요청</a>
-	          <a class="dropdown-item" href="#">OverTime 요청 현황</a>
+	          <h6 class="dropdown-header">OverTime</h6>
+	          <a class="dropdown-item" href="<c:url value='/overTime/overTimeRequest.do' />">OverTime요청</a>
+	          <a class="dropdown-item" href="<c:url value='/overTime/overTimeList.do' />">OverTime요청현황</a>
 	        </div>
 	      </li>
 	      

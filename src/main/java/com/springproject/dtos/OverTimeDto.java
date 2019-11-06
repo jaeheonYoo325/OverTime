@@ -14,6 +14,20 @@ public class OverTimeDto {
 	private String relatedChain;
 	private String remarks;
 	private String typeOfProcessing;
+	private String employeeName;
+	public String getEmployeeName() {
+		return employeeName;
+	}
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
+	public String getChainName() {
+		return chainName;
+	}
+	public void setChainName(String chainName) {
+		this.chainName = chainName;
+	}
+	private String chainName;
 	public Long getAcceptNo() {
 		return acceptNo;
 	}

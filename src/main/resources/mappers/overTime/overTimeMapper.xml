@@ -126,4 +126,125 @@
   		                      			#{approvalDescription}
   		                            )  
   	</insert>
+  	
+  	<select id="selectMasterCodeOfCategoryDao" resultType="MasterTableDto">
+      SELECT  DISTINCT(codeType)
+      FROM   MASTERTABLE
+      WHERE  codeType LIKE "CTGY%"   
+  	</select>
+  	
+  	<select id="selectCategoryMasterCodesOfCodeTypeDao" parameterType="string" resultType="MasterTableDto">
+      SELECT
+            codeType
+            , codeValue
+            , codeName
+      FROM   MASTERTABLE
+      WHERE  CODETYPE=#{codeType} 	
+  	</select>
+  	
+  	<select id="selectMasterCodeOfSearchTypeMapDao" parameterType="string" resultType="MasterTableDto">
+  	  SELECT
+            codeType
+            , codeValue
+            , codeName
+      FROM   MASTERTABLE
+      WHERE   CODETYPE=#{searchTypeString}
+  	</select>
+  	
+  	<select id="selectCategoryOverTimeRequestDao" parameterType="CategoryTypeDto" resultType="OverTimeDto">
+  		SELECT
+  			o.acceptNo,
+  			o.acceptDate,
+  			o.acceptTime,
+  			o.accepter,
+  			e.employeeName,
+  			o.caller,
+  			o.phoneNumber,
+  			o.acceptDescription,
+  			o.measureTime,
+  			o.cause,
+  			o.measures,
+  			o.relatedChain,
+  			c.chainName,
+  			o.remarks,
+  			o.typeOfProcessing,
+  			o.statusCode,
+  			mr.measurer,
+  			md.measureDescription
+  	    FROM OVERTIME o
+  	    JOIN CHAINTABLE c
+  	    JOIN MASTERTABLE m
+  	    JOIN EMPLOYEE e
+  	    JOIN EMPLOYEE e2
+  	    JOIN MEASURER mr
+  	    JOIN MEASUREDESCRIPTION md
+  	    ON (o.relatedChain=c.chainId)
+  	    AND (o.statusCode=m.codeValue)
+  	    AND (o.accepter=e.employeeNo)
+  	    AND (mr.measurer=e2.employeeNo)
+  	    AND (o.acceptNo=mr.acceptNo)
+  	    AND (o.acceptNo=md.acceptNo)
+  	    AND (o.acceptNo=mr.acceptNo)
+  	    WHERE 1=1
+  	    	<if test="searchType == '전화번호' and searchKeyword != ''">
+				AND o.phoneNumber LIKE CONCAT(#{searchKeyword}, '%')
+			</if>
+  	    	<if test="searchType == '접수자' and searchKeyword != ''">
+				AND e.employeeName LIKE CONCAT(#{searchKeyword}, '%')
+			</if>
+  	    	<if test="searchType == '조치자' and searchKeyword != ''">
+				AND  e2.employeeName LIKE CONCAT(#{searchKeyword}, '%')
+			</if>		
+				AND o.relatedChain LIKE CONCAT(#{categoryChain}, '%')
+				AND m.codeValue LIKE CONCAT(#{categoryStatus}, '%')
+				AND m.codeType="CTGY_STATUS"
+		GROUP BY o.acceptNo
+		ORDER BY CASE WHEN #{categoryAcceptDate} = '오름차순' THEN o.acceptDate END ASC,
+			     CASE WHEN #{categoryAcceptDate} = '내림차순' THEN o.acceptDate END DESC,
+			     CASE WHEN #{categoryAcceptDate} = '접수일자' THEN o.acceptDate END DESC;
+  	</select>
+  	
+  	<select id="selectAllOverTimeRequestDao" resultType="OverTimeDto">
+		SELECT
+	  			O.acceptNo,
+	  			O.acceptDate,
+	  			O.acceptTime,
+	  			O.accepter,
+	  			E.employeeName,
+	  			O.caller,
+	  			O.phoneNumber,
+	  			O.acceptDescription,
+	  			O.measureTime,
+	  			O.cause,
+	  			O.measures,
+	  			O.relatedChain,
+	  			C.chainName,
+	  			O.remarks,
+	  			O.typeOfProcessing,
+	  			O.statusCode
+	  	FROM OVERTIME O
+	  	JOIN CHAINTABLE C
+	  	JOIN EMPLOYEE E
+	  	ON(O.relatedChain=C.chainId) 
+	  	AND(O.accepter=E.employeeNo)
+  	</select>
+  	
+  	<select id="selectMeasurerOfAcceptNoDao" parameterType="Long" resultType="MeasurerDto">
+  		SELECT
+  				mr.acceptNo,
+  				mr.measurer,
+  				m.employeeName
+  		FROM MEASURER mr
+  		JOIN EMPLOYEE m
+  		ON (mr.measurer=m.employeeNo)
+  		WHERE acceptNo=#{acceptNo}
+  	</select>
+  	
+  	<select id="selectMeasureDescriptionOfAcceptNoDao" parameterType="Long" resultType="MeasureDescriptionDto">
+  		SELECT
+  				acceptNo,
+  				measureDescription
+  		FROM MEASUREDESCRIPTION
+  		WHERE acceptNo=#{acceptNo}
+  	</select>
   </mapper>

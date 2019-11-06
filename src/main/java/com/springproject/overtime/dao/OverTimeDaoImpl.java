@@ -7,8 +7,10 @@ import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.springproject.dtos.CategoryTypeDto;
 import com.springproject.dtos.ChainTableDto;
 import com.springproject.dtos.InterPhoneDto;
+import com.springproject.dtos.MasterTableDto;
 import com.springproject.dtos.MeasureDescriptionDto;
 import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeApprovalDto;
@@ -72,4 +74,33 @@ public class OverTimeDaoImpl extends SqlSessionDaoSupport implements OverTimeDao
 	public int InsertOverTimeApprovalForOverTimeRequestDao(OverTimeApprovalDto overTimeApprovalDto) {
 		return getSqlSession().insert("overTimeDao.InsertOverTimeApprovalForOverTimeRequestDao",overTimeApprovalDto);
 	}
+	@Override
+	public List<MasterTableDto> selectMasterCodeOfCategoryDao() {
+		return getSqlSession().selectList("overTimeDao.selectMasterCodeOfCategoryDao");
+	}
+	@Override
+	public List<MasterTableDto> selectCategoryMasterCodesOfCodeTypeDao(String codeType) {
+		return getSqlSession().selectList("overTimeDao.selectCategoryMasterCodesOfCodeTypeDao",codeType);
+	}
+	@Override
+	public List<MasterTableDto> selectMasterCodeOfSearchTypeMapDao(String searchTypeString) {
+		return getSqlSession().selectList("overTimeDao.selectMasterCodeOfSearchTypeMapDao",searchTypeString);
+	}
+	@Override
+	public List<OverTimeDto> selectCategoryOverTimeRequestDao(CategoryTypeDto overTimeRequestForCategory) {
+		return getSqlSession().selectList("overTimeDao.selectCategoryOverTimeRequestDao",overTimeRequestForCategory);
+	}
+	@Override
+	public List<OverTimeDto> selectAllOverTimeRequestDao() {
+		return getSqlSession().selectList("overTimeDao.selectAllOverTimeRequestDao");
+	}
+	@Override
+	public List<MeasurerDto> selectMeasurerOfAcceptNoDao(Long acceptNo) {
+		return getSqlSession().selectList("overTimeDao.selectMeasurerOfAcceptNoDao",acceptNo);
+	}
+	@Override
+	public List<MeasureDescriptionDto> selectMeasureDescriptionOfAcceptNoDao(Long acceptNo) {
+		return getSqlSession().selectList("overTimeDao.selectMeasureDescriptionOfAcceptNoDao",acceptNo);
+	}
+
 }

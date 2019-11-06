@@ -21,8 +21,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 		employeeDto.setEmployeePassWord(password);
 		employeeDto.setSalt(salt);
+		boolean isInsertOneEmployeeSuccess=this.employeeDao.insertOneEmployeeDao(employeeDto) > 0;
+		boolean isInsertOneOvertimeofemployee=this.employeeDao.isInsertOneOvertimeOfEmployeeDao(employeeDto)>0;
 		
-		return this.employeeDao.insertOneEmployeeDao(employeeDto) > 0;
+		return isInsertOneEmployeeSuccess&isInsertOneOvertimeofemployee;
 	}
 	
 	public String getHashedPassword(String salt, String password) {

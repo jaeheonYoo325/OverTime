@@ -73,4 +73,16 @@
   		FROM	EMPLOYEE
   		WHERE	employeeNo = #{employeeNo}  	
   	</select>
+  	
+  	<insert id="isInsertOneOvertimeOfEmployeeDao" parameterType="EmployeeDto">
+  		INSERT INTO OVERTIMEOFEMPLOYEE(
+  										employeeNo,
+  										sumOfOverTime
+  		                              )
+  		                       VALUES (
+  		                       			#{employeeNo},
+  		                       			"0"
+  		                       		  )
+  		
+  	</insert>
   </mapper>

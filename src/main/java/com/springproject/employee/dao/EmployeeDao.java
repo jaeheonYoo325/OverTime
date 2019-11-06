@@ -11,5 +11,7 @@ public interface EmployeeDao {
 	public String getSaltByEmployeeNumber(String empNo);
 	
 	public int duplicateCheckOfEmployeeNoDao(String employeeNo);
+
+	public int isInsertOneOvertimeOfEmployeeDao(EmployeeDto employeeDto);
 	
 }

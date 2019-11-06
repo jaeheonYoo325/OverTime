@@ -35,6 +35,11 @@ public class EmployeeDaoImpl extends SqlSessionDaoSupport implements EmployeeDao
 	public int duplicateCheckOfEmployeeNoDao(String employeeNo) {
 		return this.getSqlSession().selectOne("EmployeeDao.duplicateCheckOfEmployeeNoDao", employeeNo);
 	}
+
+	@Override
+	public int isInsertOneOvertimeOfEmployeeDao(EmployeeDto employeeDto) {
+		return this.getSqlSession().insert("EmployeeDao.isInsertOneOvertimeOfEmployeeDao",employeeDto);
+	}
 	
 	
 }

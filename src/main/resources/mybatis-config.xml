@@ -13,5 +13,7 @@
  			<typeAlias type="com.springproject.dtos.MeasurerDto" alias="MeasurerDto"/>
  			<typeAlias type="com.springproject.dtos.MeasureDescriptionDto" alias="MeasureDescriptionDto"/>
  			<typeAlias type="com.springproject.dtos.OverTimeApprovalDto" alias="OverTimeApprovalDto"/>
+ 			<typeAlias type="com.springproject.dtos.MasterTableDto" alias="MasterTableDto"/>
+ 			<typeAlias type="com.springproject.dtos.CategoryTypeDto" alias="CategoryTypeDto"/>
  		</typeAliases>        
     </configuration>

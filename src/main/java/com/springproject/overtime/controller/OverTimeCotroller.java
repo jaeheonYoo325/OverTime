@@ -1,9 +1,12 @@
 package com.springproject.overtime.controller;
 
 import java.io.IOException;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,12 +16,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.springproject.common.utils.HttpRequestHelper;
+import com.springproject.dtos.CategoryTypeDto;
 import com.springproject.dtos.ChainTableDto;
 import com.springproject.dtos.InterPhoneDto;
+import com.springproject.dtos.MasterTableDto;
+import com.springproject.dtos.MeasureDescriptionDto;
+import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeDto;
 import com.springproject.employee.dto.EmployeeDto;
 import com.springproject.overtime.service.OverTimeService;
@@ -146,9 +154,66 @@ public class OverTimeCotroller {
 		return mv;
 	}
 	
-	@GetMapping("/overTime/overTimeList.do")
-	public ModelAndView viewOverTimeListPage() {
+	@RequestMapping("/overTime/overTimeList.do")
+	public ModelAndView doOverTimeListAction(HttpServletRequest request) {
 		ModelAndView mv=new ModelAndView(HttpRequestHelper.getJspPath());
+		
+		List<OverTimeDto> overTime=new ArrayList<OverTimeDto>();
+		List<MeasurerDto> measurerOfAcceptNo=new ArrayList<MeasurerDto>();
+		List<MeasureDescriptionDto> measureDescriptionOfAcceptNo=new ArrayList<MeasureDescriptionDto>();
+		List<ChainTableDto> chain=this.overTimeService.selectAllChainService();
+		
+		CategoryTypeDto categoryTypeDto=new CategoryTypeDto();
+		Map<Long, List<MeasurerDto>> measurerMap = new HashMap<Long, List<MeasurerDto>>(); 
+		Map<Long, List<MeasureDescriptionDto>> measureDescriptionMap = new HashMap<Long, List<MeasureDescriptionDto>>();
+		
+		List<MasterTableDto> masterCodeOfCategory=this.overTimeService.selectMasterCodeOfCategoryService();
+		Map<String, List<MasterTableDto>> categoryMasterCodesOfCodeTypeMap=this.overTimeService.selectCategoryMasterCodesOfCodeTypeService(masterCodeOfCategory);
+		Map<String, List<MasterTableDto>> masterCodeOfSearchTypeMap=this.overTimeService.selectMasterCodeOfSearchTypeMapService(categoryTypeDto.getSearchTypeString());
+		
+		Long acceptNo=0L;
+		
+		if(request.getParameter("searchType") != null && request.getParameter("searchKeyword") != null && request.getParameter("categoryChain")!=null && request.getParameter("categoryAcceptDate")!=null && request.getParameter("categoryStatus")!=null) {
+			String searchType = request.getParameter("searchType"); 
+	    	String searchKeyword = request.getParameter("searchKeyword");
+	    	String categoryChain = request.getParameter("categoryChain");
+	    	String categoryAcceptDate = request.getParameter("categoryAcceptDate");
+	    	String categoryStatus = request.getParameter("categoryStatus");
+	    	
+	    	categoryTypeDto.setSearchType(searchType);
+	    	categoryTypeDto.setSearchKeyword(searchKeyword);
+	    	categoryTypeDto.setCategoryChain(categoryChain);
+	    	categoryTypeDto.setCategoryAcceptDate(categoryAcceptDate);
+	    	categoryTypeDto.setCategoryStatus(categoryStatus);
+	    	
+	    	overTime=this.overTimeService.selectCategoryOverTimeRequestService(categoryTypeDto);
+		}
+		else {
+			categoryTypeDto.setSearchType("검색타입");
+			categoryTypeDto.setSearchKeyword("");
+			categoryTypeDto.setCategoryChain("관련체인");
+			categoryTypeDto.setCategoryStatus("상태");
+			categoryTypeDto.setCategoryAcceptDate("접수일자");
+			
+			overTime=this.overTimeService.selectAllOverTimeRequestService();
+		}
+		
+		for(int i=0; i<overTime.size(); i++) {
+			acceptNo=overTime.get(i).getAcceptNo();
+			measurerOfAcceptNo=this.overTimeService.selectMeasurerOfAcceptNoService(acceptNo);
+			measurerMap.put(acceptNo, measurerOfAcceptNo);
+			measureDescriptionOfAcceptNo=this.overTimeService.selectMeasureDescriptionOfAcceptNoService(acceptNo);
+			measureDescriptionMap.put(acceptNo, measureDescriptionOfAcceptNo);
+		}
+		
+		mv.addObject("overTime",overTime);
+		mv.addObject("chain",chain);
+		mv.addObject("categoryTypeDto",categoryTypeDto);
+		mv.addObject("categoryMasterCodesOfCodeTypeMap",categoryMasterCodesOfCodeTypeMap);
+		mv.addObject("measurerMap",measurerMap);
+		mv.addObject("measureDescriptionMap",measureDescriptionMap);
+		mv.addObject("masterCodeOfSearchTypeMap",masterCodeOfSearchTypeMap);
+		
 		return mv;
 	}
 }
