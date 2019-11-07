@@ -149,9 +149,9 @@
                              <tr>   
                                 <td>부서</td>
                                 <td>
-                                	<input type="text" id="depName" name="depName" class="form-control" placeholder="부서명" />
+                                	<input type="text" id="departmentName" name="departmentName" class="form-control" placeholder="부서명" />
                                     <input type="button" class="btn btn-primary" value="부서 조회" id="searchDepartmentPopupBtn" />
-                                    <input type="hidden" id="depNo" name="depNo" value="부서번호" />
+                                    <input type="hidden" id="departmentNo" name="departmentNo" value="부서번호" />
                                 </td>
                              </tr>
                              <tr>   

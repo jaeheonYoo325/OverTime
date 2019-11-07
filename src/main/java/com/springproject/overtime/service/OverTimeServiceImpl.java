@@ -18,6 +18,7 @@ import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeApprovalDto;
 import com.springproject.dtos.OverTimeDto;
 import com.springproject.dtos.OverTimeofEmployeeDto;
+import com.springproject.employee.dao.EmployeeDao;
 import com.springproject.employee.dto.EmployeeDto;
 import com.springproject.overtime.dao.OverTimeDao;
 
@@ -27,6 +28,9 @@ public class OverTimeServiceImpl implements OverTimeService {
 	
 	@Autowired
 	private OverTimeDao overTimeDao;
+	
+	@Autowired
+	private EmployeeDao employeeDao;
 
 	@Override
 	public List<EmployeeDto> selectAllEmployeeService() {
@@ -169,4 +173,50 @@ public class OverTimeServiceImpl implements OverTimeService {
 	public OverTimeofEmployeeDto selectOverTimeofEmployeeService(EmployeeDto employeeDto) {
 		return this.overTimeDao.selectOverTimeofEmployeeDao(employeeDto);
 	}
+
+	@Override
+	public OverTimeDto selectOverTimeRequestOfAcceptNoService(Long acceptNo) {
+		return this.overTimeDao.selectOverTimeRequestOfAcceptNoDao(acceptNo);
+	}
+
+	@Override
+	public boolean overTimeReRequestService(OverTimeDto overTimeDto, ArrayList<String> measurer, ArrayList<String> measureDescription) {
+		
+		Long acceptNo = overTimeDto.getAcceptNo();
+		
+		boolean isOverTimeReRequestFinalSuccess = true;
+		boolean insertMeasurerSuccess = true;
+		boolean insertMeasureDescriptionSuccess = true;		
+		
+		overTimeDto.setStatusCode("01");
+		boolean isOverTimeReRequestSuccess = this.overTimeDao.updateOneOverTimeRequestDao(overTimeDto) > 0;
+		boolean isDeleteMeasurerOfAcceptNoSuccess = this.overTimeDao.deleteMeasurerOfAcceptNoDao(acceptNo) > 0;
+		boolean isDeleteMeasureDescriptionOfAcceptNoSuccess = this.overTimeDao.deleteMeasureDescriptionOfAcceptNoDao(acceptNo) > 0;
+		
+		for(int i = 0; i < measurer.size(); i++) {
+			MeasurerDto measurerDto = new MeasurerDto();
+			measurerDto.setAcceptNo(acceptNo);
+			measurerDto.setMeasurer(measurer.get(i).toString());
+			insertMeasurerSuccess = insertMeasurerSuccess && ( this.overTimeDao.insertMeasurerDao(measurerDto) > 0);
+		}
+		
+		for(int i = 0; i < measureDescription.size(); i++) {
+			MeasureDescriptionDto measureDescriptionDto = new MeasureDescriptionDto();
+			measureDescriptionDto.setAcceptNo(acceptNo);
+			measureDescriptionDto.setMeasureDescription(measureDescription.get(i).toString());
+			insertMeasureDescriptionSuccess = insertMeasureDescriptionSuccess && ( this.overTimeDao.insertMeasureDescriptionDao(measureDescriptionDto) > 0);
+		}
+		
+		OverTimeApprovalDto overTimeApprovalDto = this.employeeDao.selectMyOverTimeApprovalOfAcceptNoDao(acceptNo);
+		overTimeApprovalDto.setApprovalLineConfirm(overTimeDto.getAccepter());
+		boolean isDoApprovalingSuccessOfCompleteNowApproval = this.employeeDao.myOverTimeDoApprovalingOfCompleteNowApprovalDao(overTimeApprovalDto) > 0;
+		overTimeApprovalDto.setApprovalLine("3");
+		overTimeApprovalDto.setApprovalDescription("overTimeApprovalB0");
+		boolean isDoApprovalingSuccessOfNextApproval = this.employeeDao.myOverTimeDoApprovalingOfAddNextApprovalDao(overTimeApprovalDto) > 0;
+		
+		isOverTimeReRequestFinalSuccess = isOverTimeReRequestFinalSuccess && isOverTimeReRequestSuccess && isDeleteMeasurerOfAcceptNoSuccess && isDeleteMeasureDescriptionOfAcceptNoSuccess 
+				&& insertMeasurerSuccess && insertMeasureDescriptionSuccess && isDoApprovalingSuccessOfCompleteNowApproval && isDoApprovalingSuccessOfNextApproval;
+		return isOverTimeReRequestFinalSuccess;
+	}
+
 }

@@ -62,6 +62,7 @@ $(document).ready(function() {
 							               <td>팀</td>
 							               <td>담당파트</td>
 							               <td>전화번호</td>
+							               <td>사용</td>
 							            </tr>
 			        				</thead>
 			        				<tbody>

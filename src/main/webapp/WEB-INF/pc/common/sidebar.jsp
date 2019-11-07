@@ -24,38 +24,14 @@
 	      <li class="nav-item dropdown">
 	        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	          <i class="fas fa-fw fa fa-edit"></i>
-	          <span>1차 결재선</span>
+	          <span>결재선</span>
 	        </a>
 	        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-	          <h6 class="dropdown-header">1차 결재선</h6>
-	          <a class="dropdown-item" href="#">1차 결재</a>
-	          <a class="dropdown-item" href="#">2차 결재내역</a>
-	        </div>
-	      </li>
-	      
-	      <li class="nav-item dropdown">
-	        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-	          <i class="fas fa-fw fa fa-check-square"></i>
-	          <span>2차 결재선</span>
-	        </a>
-	        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-	          <h6 class="dropdown-header">2차 결재선</h6>
-	          <a class="dropdown-item" href="#">2차 결재</a>
-	          <a class="dropdown-item" href="#">2차 결재내역</a>
-	        </div>
-	      </li>
-	      
-	      <li class="nav-item dropdown">
-	        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-	          <i class="fas fa-fw fa-folder"></i>
-	          <span>결재함</span>
-	        </a>
-	        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-	          <h6 class="dropdown-header">완료</h6>
-	          <a class="dropdown-item" href="#">완료함</a>
-	          <div class="dropdown-divider"></div>
-	          <h6 class="dropdown-header">반려</h6>
-	          <a class="dropdown-item" href="#">반려함</a>
+<!-- 	          <h6 class="dropdown-header">결재선</h6> -->
+	          <a class="dropdown-item" href="<c:url value='/employee/myOverTimeWillApproval.do' />">결재</a>
+	          <a class="dropdown-item" href="<c:url value='/employee/myOverTimeApproved.do' />">결재내역</a>
+	          <a class="dropdown-item" href="<c:url value='/employee/myOverTimeCompleted.do' />">완료함</a>
+	          <a class="dropdown-item" href="<c:url value='/employee/myOverTimeReturned.do' />">반려함</a>
 	        </div>
 	      </li>
 	      

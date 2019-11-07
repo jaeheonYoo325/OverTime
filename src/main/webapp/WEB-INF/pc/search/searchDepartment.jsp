@@ -37,9 +37,9 @@
       });
    });
 
-   function useDepartment(depNo, depName) {
-      opener.document.getElementById("depNo").value = depNo
-      opener.document.getElementById("depName").value = depName
+   function useDepartment(departmentNo, departmentName) {
+      opener.document.getElementById("departmentNo").value = departmentNo
+      opener.document.getElementById("departmentName").value = departmentName
       window.close();
    }
 </script>
@@ -55,7 +55,7 @@
             <div class="card-body">
                <form:form id="searchDepartmentFrm" modelAttribute="departmentDto">
                   <div id="employeeSearchDiv">
-                     부서명 : <input type="text" name="depName" id="depName">
+                     	부서명 : <input type="text" name="departmentName" id="departmentName">
                            <input type="button" id="searchBtn" value="검색" class="btn-primary"><br><br>
                   </div>
                   <div class="table-responsive">
@@ -72,11 +72,9 @@
                               <c:when test="${not empty departmentDtoList}">
                                  <c:forEach items="${departmentDtoList}" var="department">
                                     <tr>
-                                       <td>${department.depNo}</td>
-                                       <td>${department.depName}</td>
-                                       <td><input type="button" value="사용"
-                                          onclick="useDepartment('${department.depNo}','${department.depName}')">
-                                       <td>
+                                       <td>${department.departmentNo}</td>
+                                       <td>${department.departmentName}</td>
+                                       <td><input type="button" value="사용" class="btn btn-primary" onclick="useDepartment('${department.departmentNo}','${department.departmentName}')"></td>
                                     </tr>
                                  </c:forEach>
                               </c:when>

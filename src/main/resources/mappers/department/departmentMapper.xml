@@ -5,10 +5,10 @@
 
 <mapper namespace="DepartmentDao">
    <select id="selectSomeDepartment" parameterType="DepartmentDto" resultType="DepartmentDto">
-      SELECT   depNo
-            , depName
+      SELECT   departmentNo
+            , departmentName
       FROM   DEPARTMENT
-      WHERE   depName LIKE CONCAT('%',#{depName},'%')
+      WHERE   departmentName LIKE CONCAT('%',#{departmentName},'%')
    </select>
 </mapper>
   

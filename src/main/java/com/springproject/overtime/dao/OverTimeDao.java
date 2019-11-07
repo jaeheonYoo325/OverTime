@@ -52,4 +52,13 @@ public interface OverTimeDao {
 	public List<MeasureDescriptionDto> selectMeasureDescriptionOfAcceptNoDao(Long acceptNo);
 
 	public OverTimeofEmployeeDto selectOverTimeofEmployeeDao(EmployeeDto employeeDto);
+	
+	public OverTimeDto selectOverTimeRequestOfAcceptNoDao(Long acceptNo);
+	
+	public int updateOneOverTimeRequestDao(OverTimeDto overTimeDto);
+	
+	public int deleteMeasurerOfAcceptNoDao(Long acceptNo);
+	
+	public int deleteMeasureDescriptionOfAcceptNoDao(Long acceptNo);
+	
 }

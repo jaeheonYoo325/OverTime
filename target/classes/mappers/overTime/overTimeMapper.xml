@@ -257,6 +257,63 @@
   		FROM    OVERTIMEOFEMPLOYEE o
   		JOIN    EMPLOYEE e
   		ON		(o.employeeNo=e.employeeNo)
-  		WHERE o.employeeNo="3";
+  		WHERE o.employeeNo=#{employeeNo}
   	</select>
+  	
+	<select id="selectOverTimeRequestOfAcceptNoDao" parameterType="Long" resultType="OverTimeDto">
+		SELECT
+				o.acceptNo
+		        , o.acceptDate
+		        , o.acceptTime
+		        , o.accepter
+		        , e.employeeName        
+				, o.caller
+		        , o.phoneNumber
+		        , o.acceptDescription
+		        , o.measureTime
+		        , o.cause
+		        , o.measures
+		        , o.relatedChain
+		        , o.remarks
+		        , o.typeOfProcessing
+		        , o.statusCode
+		        , c.chainName
+		FROM	OVERTIME o
+		JOIN	CHAINTABLE c
+		JOIN	EMPLOYEE e
+		ON		o.relatedChain = c.chainId
+		AND		o.accepter = e.employeeNo
+		WHERE	o.acceptNo = #{acceptNo};
+	</select>
+	
+	<update id="updateOneOverTimeRequestDao" parameterType="OverTimeDto">
+		UPDATE	OVERTIME
+		SET		
+				acceptDate = #{acceptDate}
+				, acceptTime = #{acceptTime}
+				, accepter = #{accepter}
+				, caller = #{caller}
+				, phoneNumber = #{phoneNumber}
+				, acceptDescription = #{acceptDescription}
+				, measureTime = #{measureTime}
+				, cause = #{cause}
+				, measures = #{measures}
+				, relatedChain = #{relatedChain}
+				, remarks = #{remarks}
+				, typeOfProcessing = #{typeOfProcessing}
+				, statusCode = #{statusCode}
+		WHERE	acceptNo = #{acceptNo}
+	</update>
+  	
+  	<delete id="deleteMeasurerOfAcceptNoDao" parameterType="Long">
+  		DELETE
+  		FROM	MEASURER
+  		WHERE	acceptNo = #{acceptNo}
+  	</delete>
+  	
+  	<delete id="deleteMeasureDescriptionOfAcceptNoDao" parameterType="Long">
+  		DELETE
+  		FROM	MEASUREDESCRIPTION
+  		WHERE	acceptNo = #{acceptNo}
+  	</delete>	  	
   </mapper>

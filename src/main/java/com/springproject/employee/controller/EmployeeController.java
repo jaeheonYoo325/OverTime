@@ -2,10 +2,12 @@ package com.springproject.employee.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -15,6 +17,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,12 +29,20 @@ import com.springproject.common.utils.HttpRequestHelper;
 import com.springproject.common.validator.employee.EmployeeValidator;
 import com.springproject.department.dto.DepartmentDto;
 import com.springproject.department.service.DepartmentService;
+import com.springproject.dtos.MeasureDescriptionDto;
+import com.springproject.dtos.MeasurerDto;
+import com.springproject.dtos.OverTimeApprovalDto;
+import com.springproject.dtos.OverTimeDto;
 import com.springproject.employee.dto.EmployeeDto;
 import com.springproject.employee.service.EmployeeService;
+import com.springproject.overtime.service.OverTimeService;
 
 @Controller
 public class EmployeeController {
 
+	@Autowired
+	private OverTimeService overTimeService;
+	
 	@Autowired
 	private EmployeeService employeeService;
 
@@ -164,5 +175,204 @@ public class EmployeeController {
 
 		return map;
 	}
+	
+	// 결재
+	@GetMapping("/employee/myOverTimeWillApproval.do")
+	public ModelAndView viewMyOverTimeApprovalPage(HttpSession session) {
+		
+		ModelAndView mv = new ModelAndView(HttpRequestHelper.getJspPath());
+		List<OverTimeApprovalDto> overTimeApproval = this.employeeService.selectMyOverTimeApprovalService((EmployeeDto)session.getAttribute(Session.USER));
+		mv.addObject("overTimeApproval", overTimeApproval);			
 
+		return mv;
+	}	
+
+	@GetMapping("/employee/showOverTimeApprovalDetail.do/{acceptNo}/{overTimeApprovalDetailCode}")
+	public ModelAndView viewMyOverTimeApprovalDetail(@PathVariable Long acceptNo, @PathVariable String overTimeApprovalDetailCode, HttpSession session) {
+		
+		ModelAndView mv = new ModelAndView(HttpRequestHelper.getJspPath());
+		OverTimeDto overTimeRequestOfAcceptNo = this.overTimeService.selectOverTimeRequestOfAcceptNoService(acceptNo);
+		List<MeasurerDto> overTimeMeasurerOfAcceptNo = this.overTimeService.selectMeasurerOfAcceptNoService(acceptNo);
+		List<MeasureDescriptionDto> overTimeMeasureDescriptionOfAcceptNo = this.overTimeService.selectMeasureDescriptionOfAcceptNoService(acceptNo);
+				
+		mv.addObject("overTimeRequestOfAcceptNo", overTimeRequestOfAcceptNo);
+		mv.addObject("overTimeMeasurerOfAcceptNo", overTimeMeasurerOfAcceptNo);		
+		mv.addObject("overTimeMeasureDescriptionOfAcceptNo", overTimeMeasureDescriptionOfAcceptNo);
+		mv.addObject("overTimeApprovalDetailCode", overTimeApprovalDetailCode);
+		
+		return mv;
+	}
+	
+	@GetMapping("/employee/myOverTimeDoApprovaling.do/{acceptNo}")
+	public void doMyOverTimeApprovalAction(@PathVariable Long acceptNo, HttpSession session, HttpServletResponse response) {
+	
+		response.setCharacterEncoding("UTF-8"); 
+		response.setContentType("text/html; charset=UTF-8");
+		
+		OverTimeApprovalDto overTimeApprovalDto = this.employeeService.selectMyOverTimeApprovalOfAcceptNoService(acceptNo);
+		
+		overTimeApprovalDto.setApprovalLineConfirm(((EmployeeDto)session.getAttribute(Session.USER)).getEmployeeNo());
+		boolean isDoApprovalingSuccess = this.employeeService.myOverTimeDoApprovalingService(overTimeApprovalDto);
+		PrintWriter out;
+		
+		if ( isDoApprovalingSuccess ) {
+			try {
+				out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('결제완료')");
+				out.println("window.opener.location.reload()");
+				out.println("window.close()");
+				out.println("</script>");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('오류')");
+				out.println("history.back()");
+				out.println("</script>");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	@GetMapping("/employee/myOverTimeApproved.do")
+	public ModelAndView viewMyOverTimeApprovedPage(HttpSession session) {
+		List<OverTimeApprovalDto> overTimeApproved = this.employeeService.selectMyOverTimeApprovedService((EmployeeDto)session.getAttribute(Session.USER));
+		ModelAndView mv = new ModelAndView(HttpRequestHelper.getJspPath());
+		
+		if ( overTimeApproved.size() > 0 ) {
+			mv.addObject("overTimeApproved", overTimeApproved);
+		}
+		
+		return mv;
+	}
+	
+	@GetMapping("/employee/myOverTimeCompleted.do")
+	public ModelAndView viewMyOverTimeCompletedPage(HttpSession session) {
+		List<OverTimeApprovalDto> overTimeCompleted = this.employeeService.selectMyOverTimeCompletedService((EmployeeDto)session.getAttribute(Session.USER));
+		ModelAndView mv = new ModelAndView(HttpRequestHelper.getJspPath());
+		
+		if ( overTimeCompleted.size() > 0 ) {
+			mv.addObject("overTimeCompleted",overTimeCompleted);
+		}
+	    
+	    return mv;
+	}
+	
+	@GetMapping("/employee/MyOverTimeDoReturning.do/{acceptNo}")
+	public void doMyOverTimeReturnAction(@PathVariable Long acceptNo, HttpSession session, HttpServletResponse response) {
+		response.setCharacterEncoding("UTF-8"); 
+		response.setContentType("text/html; charset=UTF-8");
+		
+		OverTimeApprovalDto overTimeApprovalDto = this.employeeService.selectMyOverTimeApprovalOfAcceptNoService(acceptNo);
+		overTimeApprovalDto.setApprovalLineConfirm(((EmployeeDto)session.getAttribute(Session.USER)).getEmployeeNo());
+		
+		boolean isDoReturningSuccess = this.employeeService.myOverTimeDoReturningService(overTimeApprovalDto);
+		
+		PrintWriter out;
+		if (isDoReturningSuccess) {
+			try {
+				out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('반려완료')");
+				out.println("window.opener.location.reload()");
+				out.println("window.close()");
+				out.println("</script>");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('반려실패')");
+				out.println("history.back()");
+				out.println("</script>");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+   @GetMapping("/employee/myOverTimeReturned.do")
+   public ModelAndView viewMyDeployReturnedPage(HttpSession session) {	   
+      List<OverTimeApprovalDto> overTimeReturned = this.employeeService.selectMyOverTimeReturnedService((EmployeeDto)session.getAttribute(Session.USER));
+      ModelAndView mv = new ModelAndView(HttpRequestHelper.getJspPath());
+      
+      if ( overTimeReturned.size() > 0 ) {
+    	 mv.addObject("overTimeReturned",overTimeReturned);
+      }
+      
+      return mv;
+   }
+   
+   @GetMapping("/employee/showMyApprovalReturnedDetail.do/{acceptNo}")
+   public ModelAndView viewOverTimeUpdatePage(@PathVariable Long acceptNo) {
+	   ModelAndView mv = new ModelAndView(HttpRequestHelper.getJspPath());
+	   OverTimeDto overTimeRequestOfAcceptNo = this.overTimeService.selectOverTimeRequestOfAcceptNoService(acceptNo);
+	   List<MeasurerDto> overTimeMeasurerOfAcceptNo = this.overTimeService.selectMeasurerOfAcceptNoService(acceptNo);
+	   List<MeasureDescriptionDto> overTimeMeasureDescriptionOfAcceptNo = this.overTimeService.selectMeasureDescriptionOfAcceptNoService(acceptNo);
+				
+	   mv.addObject("overTimeRequestOfAcceptNo", overTimeRequestOfAcceptNo);
+	   mv.addObject("overTimeMeasurerOfAcceptNo", overTimeMeasurerOfAcceptNo);		
+	   mv.addObject("overTimeMeasureDescriptionOfAcceptNo", overTimeMeasureDescriptionOfAcceptNo);
+	   
+	   return mv;
+   }
+   
+   @PostMapping("/employee/showMyApprovalReturnedDetail.do")
+   public ModelAndView doOverTimeUpdateAction(@ModelAttribute OverTimeDto overTimeDto, HttpServletResponse response, HttpServletRequest request) {
+	   response.setCharacterEncoding("UTF-8"); 
+	   response.setContentType("text/html; charset=UTF-8");
+	   
+	   ModelAndView mv = null;
+	   ArrayList<String> measurer = new ArrayList<String>();
+	   ArrayList<String> measureDescription = new ArrayList<String>();
+		
+	   for(int i=0;;i++) {
+		   if(request.getParameter("measurer"+i)==null) {
+			   break;
+		   }
+		   measurer.add(request.getParameter("measurer"+i));
+	   }
+		
+	   for(int i=0;;i++) {
+		   if(request.getParameter("measureDescription"+i)==null) {
+			   break;
+		   }
+		   measureDescription.add(request.getParameter("measureDescription"+i));
+		}
+
+	   boolean isOverTimeReRequestSuccess = this.overTimeService.overTimeReRequestService(overTimeDto, measurer, measureDescription);
+	   
+	   PrintWriter out;
+	   if (isOverTimeReRequestSuccess) {
+		   try {
+				out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('수정완료')");
+				out.println("window.opener.location.reload()");
+				out.println("window.close()");
+				out.println("</script>");
+		   } catch (IOException e) {
+			   e.printStackTrace();
+		   }
+		   return mv;
+	   } else {
+		   try {
+				out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('수정실패')");
+				out.println("history.back()");				
+				out.println("</script>");
+		   } catch (IOException e) {
+			   e.printStackTrace();
+		   }
+		   return mv;
+		}	   
+   	}
 }

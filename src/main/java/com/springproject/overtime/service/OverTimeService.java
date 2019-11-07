@@ -45,4 +45,8 @@ public interface OverTimeService {
 	public List<MeasureDescriptionDto> selectMeasureDescriptionOfAcceptNoService(Long acceptNo);
 
 	public OverTimeofEmployeeDto selectOverTimeofEmployeeService(EmployeeDto employeeDto);
+	
+	public OverTimeDto selectOverTimeRequestOfAcceptNoService(Long acceptNo);
+	
+	public boolean overTimeReRequestService(OverTimeDto overTimeDto, ArrayList<String> measurer, ArrayList<String> measureDescription);
 }

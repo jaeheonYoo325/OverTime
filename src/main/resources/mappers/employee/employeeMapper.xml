@@ -85,4 +85,179 @@
   		                       		  )
   		
   	</insert>
+  	
+  	<select id="selectMyOverTimeApprovalDao" parameterType="EmployeeDto" resultType="OverTimeApprovalDto">
+  		SELECT	
+  				o.acceptNo
+  				, o.drafter
+  				, (select employeeName from employee where employeeNo = o.drafter) as drafterName
+  				, o.draftDate
+  				, o.approvalRequestDate
+  				, o.approvalLine
+  				, (select employeeName from employee where employeeNo = o.approvalLine) as approvalLineName
+  				, o.approvalDescription
+  				, m.codeName
+  		FROM 	OVERTIMEAPPROVAL o
+  		JOIN	MASTERTABLE	m
+  		ON		o.approvalDescription = m.codeValue
+  		WHERE	o.approvalLine = #{employeeNo}
+  		AND		o.approvalDate is null AND NOT o.approvalDescription = "overTimeApprovalA1"
+  	</select>
+  	
+  	<select id="selectMyOverTimeApprovalOfAcceptNoDao" parameterType="Long" resultType="OverTimeApprovalDto">
+  		SELECT
+              o.acceptNo
+              , o.drafter
+              , e.employeeName
+              , o.draftDate
+              , o.approvalRequestDate
+              , o.approvalLine
+              , o.approvalDescription
+              , m.codeName
+        FROM OVERTIMEAPPROVAL o
+      	JOIN EMPLOYEE e
+      	JOIN MASTERTABLE m
+        ON o.drafter = e.employeeNo AND o.approvalDescription = m.codeValue
+        WHERE o.acceptNo = #{acceptNo} AND o.approvalDate is null;
+  	</select>  	
+  	 
+  	<update id="myOverTimeDoApprovalingOfCompleteNowApprovalDao" parameterType="OverTimeApprovalDto">
+		UPDATE    OVERTIMEAPPROVAL
+		SET     
+				approvalDate = now(),
+				approvalLineConfirm = #{approvalLineConfirm}
+		WHERE   acceptNo = #{acceptNo} 
+		AND 	approvalDate is null
+  	</update>
+  	
+	<insert id="myOverTimeDoApprovalingOfAddNextApprovalDao" parameterType="OverTimeApprovalDto">
+	    INSERT INTO OVERTIMEAPPROVAL	(
+									       acceptNo
+									       , drafter
+									       , draftDate
+									       , approvalRequestDate
+									       , approvalLine
+									       , approvalDescription
+									    ) 
+	    VALUES							(
+									       #{acceptNo}
+									       , #{drafter}
+									       , #{draftDate}
+									       , now()
+									       , #{approvalLine}
+									       , #{approvalDescription}
+									    )
+	</insert>
+	
+    <update id="changeStatusCodeForOverTimeDoApprovalingDao" parameterType="OverTimeDto">
+	    UPDATE OVERTIME
+	    SET statusCode = #{statusCode}
+	    WHERE acceptNo = #{acceptNo}
+    </update>
+    
+  	<select id="selectMyOverTimeApprovedDao" parameterType="EmployeeDto" resultType="OverTimeApprovalDto">
+  		 SELECT 
+		    	o.acceptNo
+		    	, o.drafter
+		    	, (select employeeName from employee where employeeNo = o.drafter) as drafterName
+		    	, o.draftDate
+		    	, o.approvalRequestDate
+		    	, o.approvalLine
+		    	, (select employeeName from employee where employeeNo = o.approvalLine) as approvalLineName
+		    	, o.approvalDescription
+		    	, m.codeName
+		    	, o.approvalDate
+		    	, o.approvalLineConfirm
+		    	, (select employeeName from employee where employeeNo = o.approvalLineConfirm) as approvalLineConfirmName
+	   	FROM	OVERTIMEAPPROVAL o
+	    JOIN	MASTERTABLE	m
+  		ON		o.approvalDescription = m.codeValue
+	    WHERE	o.approvalLineConfirm = #{employeeNo} AND o.approvalDate is NOT NULL
+  	</select>
+  	
+  	<select id="selectOverTimeOfEmployeeNoDao" parameterType="string" resultType="OverTimeofEmployeeDto">
+  		SELECT 
+				employeeNo
+		        , sumOfOverTime
+		FROM 	OVERTIMEOFEMPLOYEE
+		WHERE	employeeNo = #{employeeNo};
+  	</select> 
+  	
+  	<select id="selectMyOverTimeCompletedDao" parameterType="EmployeeDto" resultType="OverTimeApprovalDto">
+  		 SELECT 
+		    	o.acceptNo
+		    	, o.drafter
+		    	, (select employeeName from employee where employeeNo = o.drafter) as drafterName
+		    	, o.draftDate
+		    	, o.approvalRequestDate
+		    	, o.approvalLine
+		    	, (select employeeName from employee where employeeNo = o.approvalLine) as approvalLineName
+		    	, o.approvalDescription
+		    	, m.codeName
+		    	, o.approvalDate
+		    	, o.approvalLineConfirm
+		    	, (select employeeName from employee where employeeNo = o.approvalLineConfirm) as approvalLineConfirmName
+	   	FROM	OVERTIMEAPPROVAL o
+	    JOIN	MASTERTABLE	m
+  		ON		o.approvalDescription = m.codeValue
+	    WHERE	o.approvalDescription = "overTimeApprovalD0"
+	    AND o.approvalDate is NOT NULL
+	    AND o.drafter = #{employeeNo} 
+	    
+  	</select>
+  	
+  	<insert id="myDeployDoReturningOfNextApprovalDao" parameterType="OverTimeApprovalDto">
+  		INSERT INTO OVERTIMEAPPROVAL	(
+  											acceptNo
+  											, drafter
+  											, draftDate
+										    , approvalRequestDate
+										    , approvalLine
+										    , approvalDescription
+  										)
+		VALUES							(
+											#{acceptNo}
+  											, #{drafter}
+  											, #{draftDate}
+										    , now()
+										    , #{approvalLineConfirm}
+										    , #{approvalDescription}
+										)  										
+  	</insert>
+  	
+  	<select id="selectMyOverTimeReturnedDao" parameterType="EmployeeDto" resultType="OverTimeApprovalDto">
+  		 SELECT 
+		    	o.acceptNo
+		    	, o.drafter
+		    	, (select employeeName from employee where employeeNo = o.drafter) as drafterName
+		    	, o.draftDate
+		    	, o.approvalRequestDate
+		    	, o.approvalLine
+		    	, (select employeeName from employee where employeeNo = o.approvalLine) as approvalLineName
+		    	, o.approvalDescription
+		    	, m.codeName
+		    	, o.approvalDate
+		    	, o.approvalLineConfirm
+		    	, (select employeeName from employee where employeeNo = o.approvalLineConfirm) as approvalLineConfirmName
+	   	FROM	OVERTIMEAPPROVAL o
+	    JOIN	MASTERTABLE	m
+  		ON		o.approvalDescription = m.codeValue
+	    WHERE	o.approvalDescription = "overTimeApprovalA1"
+	    AND o.approvalDate is NULL
+	    AND o.drafter = #{employeeNo} 
+	    
+  	</select>
+  	
+  	<select id="measurerListOfAcceptNoDao" parameterType="Long" resultType="MeasurerDto">
+  		SELECT 
+				measurer
+		FROM	MEASURER
+		WHERE	acceptNo = #{acceptNo}
+  	</select>  	 
+  	
+  	<update id="measurerOfMeasureTimeAccumulationDao" parameterType="OverTimeofEmployeeDto">
+  		UPDATE	OVERTIMEOFEMPLOYEE
+  		SET		sumOfOverTime = sumOfOverTime + #{sumOfOverTime}
+  		WHERE	employeeNo = #{employeeNo}
+  	</update>
   </mapper>

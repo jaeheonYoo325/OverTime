@@ -127,7 +127,7 @@ $(document).ready(function() {
 			        					</tr>
 			        					<tr>
 			        						<td>조치시간</td>
-			        						<td><input type="text" id="measureTime" name="measureTime">Hr</td>
+			        						<td><input type="number" step="0.1" id="measureTime" name="measureTime">Hr</td>
 			        					</tr>
 			        					<tr>
 			        						<td>원인</td>

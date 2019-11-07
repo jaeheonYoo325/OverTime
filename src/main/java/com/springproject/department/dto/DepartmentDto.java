@@ -2,23 +2,23 @@ package com.springproject.department.dto;
 
 public class DepartmentDto {
 
-	private String depNo;
-	private String depName;
+	private String departmentNo;
+	private String departmentName;
 
-	public String getDepNo() {
-		return depNo;
+	public String getDepartmentNo() {
+		return departmentNo;
 	}
 
-	public void setDepNo(String depNo) {
-		this.depNo = depNo;
+	public void setDepartmentNo(String departmentNo) {
+		this.departmentNo = departmentNo;
 	}
 
-	public String getDepName() {
-		return depName;
+	public String getDepartmentName() {
+		return departmentName;
 	}
 
-	public void setDepName(String depName) {
-		this.depName = depName;
+	public void setDepartmentName(String departmentName) {
+		this.departmentName = departmentName;
 	}
 
 }

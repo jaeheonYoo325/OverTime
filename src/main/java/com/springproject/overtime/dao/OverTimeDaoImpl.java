@@ -107,5 +107,21 @@ public class OverTimeDaoImpl extends SqlSessionDaoSupport implements OverTimeDao
 	public OverTimeofEmployeeDto selectOverTimeofEmployeeDao(EmployeeDto employeeDto) {
 		return getSqlSession().selectOne("overTimeDao.selectOverTimeofEmployeeDao",employeeDto);
 	}
+	@Override
+	public OverTimeDto selectOverTimeRequestOfAcceptNoDao(Long acceptNo) {
+		return getSqlSession().selectOne("overTimeDao.selectOverTimeRequestOfAcceptNoDao", acceptNo);
+	}
+	@Override
+	public int updateOneOverTimeRequestDao(OverTimeDto overTimeDto) {
+		return getSqlSession().update("overTimeDao.updateOneOverTimeRequestDao", overTimeDto);
+	}
+	@Override
+	public int deleteMeasurerOfAcceptNoDao(Long acceptNo) {
+		return getSqlSession().delete("overTimeDao.deleteMeasurerOfAcceptNoDao", acceptNo);
+	}
+	@Override
+	public int deleteMeasureDescriptionOfAcceptNoDao(Long acceptNo) {
+		return getSqlSession().delete("overTimeDao.deleteMeasureDescriptionOfAcceptNoDao", acceptNo);
+	}
 
 }
