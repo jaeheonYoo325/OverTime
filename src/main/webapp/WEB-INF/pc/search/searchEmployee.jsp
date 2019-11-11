@@ -24,6 +24,7 @@
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/datatables/jquery.dataTables.js' />"></script>
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/datatables/dataTables.bootstrap4.js' />"></script>
 	<%-- <script src="<c:url value='/js/search/searchEmployee.js' />"></script> --%>
+	<script src="<c:url value='/js/common/jquery.bpopup.min.js' />"></script>
 </head>
 <script>
 $(document).ready(function() {
@@ -37,13 +38,24 @@ $(document).ready(function() {
  });
  
  function useThisEmployee(employeeNo,employeeName){
-	   var employeeSearchWhere=window.location.search.slice(window.location.search.indexOf('=')+1);
-	   if(employeeSearchWhere=='accepter'){
-	      opener.document.getElementById("accepterName").value=employeeName
-	      opener.document.getElementById("accepter").value=employeeNo
-	   }  
-	   window.close();
-	}
+	var employeeSearchWhere=window.location.search.slice(window.location.search.indexOf('=')+1);
+
+	parent.document.getElementById("accepterName").value = employeeName;
+	parent.document.getElementById("accepter").value = employeeNo;
+	
+	parent.$("#popupLayer").bPopup().close(); 
+	parent.$("#popupLayer").html("");	   
+  }
+ 
+//  function useThisEmployee(employeeNo,employeeName){
+// 	   var employeeSearchWhere=window.location.search.slice(window.location.search.indexOf('=')+1);
+// 	   if(employeeSearchWhere=='accepter'){
+// 	      opener.document.getElementById("accepterName").value=employeeName;
+// 	      opener.document.getElementById("accepter").value=employeeNo;
+// 	   }  
+// 	   window.close();
+// 	}
+
 </script>
 	<body id="page-top">
 		<div id="wrapper">

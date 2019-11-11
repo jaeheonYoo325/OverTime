@@ -37,10 +37,19 @@ $(document).ready(function() {
  });
  
  function useThisChain(chainId,chainName){
-     opener.document.getElementById("relatedChain").value=chainId
-     opener.document.getElementById("relatedChainName").value=chainName
-     window.close();
+	
+	parent.document.getElementById("relatedChain").value = chainId;
+	parent.document.getElementById("relatedChainName").value = chainName;
+	
+	parent.$("#popupLayer").bPopup().close(); 
+	parent.$("#popupLayer").html("");    
   }
+ 
+//  function useThisChain(chainId,chainName){
+//      opener.document.getElementById("relatedChain").value=chainId
+//      opener.document.getElementById("relatedChainName").value=chainName
+//      window.close();
+//   }
 </script>
 	<body id="page-top">
 		<div id="wrapper">

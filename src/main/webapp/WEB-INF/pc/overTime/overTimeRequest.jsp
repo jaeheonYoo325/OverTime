@@ -23,6 +23,13 @@
 	<script src="<c:url value='/bootstrapUiTemplate/js/sb-admin.min.js' />"></script>
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/datatables/jquery.dataTables.js' />"></script>
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/datatables/dataTables.bootstrap4.js' />"></script>
+	<script src="<c:url value='/js/common/jquery.bpopup.min.js' />"></script>
+	<style type="text/css">
+		#popupLayer {display:none;border:5px solid #cccccc;margin:0;padding:5px;background-color:#ffffff;z-index:5;}
+        #popupLayer .b-close {position:absolute;top:10px;right:25px;color:#f37a20;font-weight:bold;cursor:hand;}
+        #popupLayer .popupContent {margin:0;padding:0;text-align:center;border:0;}
+		#popupLayer .popupContent iframe {width:1000px;height:800px;border:0;padding:0px;margin:0;z-index:10;}
+	</style>
 </head>
 <script>
 $(document).ready(function() {
@@ -37,7 +44,7 @@ $(document).ready(function() {
     $('.addMeasurerAndMeasureDescription').click (function () {
   		i=i+1;
         $('.divMeasurerAndMeasureDescription').append (           
-			$("<input type='text' name='measurerName"+i+"'id='measurerName"+i+"' value='조치자' readonly='readonly'><input type='hidden' name='measurer"+i+"' id='measurer"+i+"'><input type='button' class='btn btn-primary' value='검색' onclick='searchMeasurer("+i+")'><input type='text' name='measureDescription"+i+"' id='measureDescription"+i+"' value='조치내용'><br>")
+			$("<input type='text' name='measurerName"+i+"'id='measurerName"+i+"' value='조치자' readonly='readonly'><input type='hidden' name='measurer"+i+"' id='measurer"+i+"'><input type='button' class='btn btn-primary' value='검색' onclick='openPopup("+i+")'><input type='text' name='measureDescription"+i+"' id='measureDescription"+i+"' value='조치내용'><br>")
         );
         
         MeasurerAndMeasureDescriptionSize = i;
@@ -57,21 +64,58 @@ $(document).ready(function() {
  });
 </script>
 <script>
-  	function searchEmployee(employeeSearchWhat){
-	   window.open("/search/searchEmployee.do?employeeSearchWhat="+employeeSearchWhat,"임직원검색", "width=1000, height=800");
- 	}
+//   	function searchEmployee(employeeSearchWhat){
+// 	   window.open("/search/searchEmployee.do?employeeSearchWhat="+employeeSearchWhat,"임직원검색", "width=1000, height=800");
+//  	}
   	
-    function searchMeasurer(measurerNo){
-    	window.open("/search/searchMeasurer.do?measurerNo="+measurerNo,"임직원검색", "width=1000, height=800");
+//     function searchMeasurer(measurerNo){
+//     	window.open("/search/searchMeasurer.do?measurerNo="+measurerNo,"임직원검색", "width=1000, height=800");
+//     }
+  	
+//   	function searchCaller(){
+//  	   window.open("/search/searchCaller.do","발신자검색", "width=1000, height=800");
+//   	}
+  	
+//   	function searchChain(){
+//   		window.open("/search/searchChain.do","관련체인검색", "width=1000, height=800");
+//   	}
+  	
+  	function openPopup(src) {
+  		console.log(typeof src);
+  		var param = "";
+  		var url = "";
+  		if ( typeof src == "string" && src == "accepter" ) {
+  			url = "/search/searchEmployee.do?employeeSearchWhat=";
+  			param = "accepter";
+  		} else if ( typeof src == "string" && src == "caller" ){
+  			url = "/search/searchCaller.do";
+  			param = "";
+  		} else if ( typeof src == "number" ) {
+  			url = "/search/searchMeasurer.do?measurerNo=";
+  			param = src;
+  		}
+  		else if ( typeof src == "string" && src =="chain") {
+  			url = "/search/searchChain.do";
+  			param = "";
+  		}
+  		
+        $("#popupLayer").bPopup({
+            content:'iframe',
+            iframeAttr:'frameborder="auto"',
+            iframeAttr:'frameborder="0"',
+            contentContainer:'.popupContent',
+            loadUrl: url + param,            
+            onOpen: function() {
+            	$("#popupLayer").append("<div class='popupContent'></div><div class='b-close'><img src='<c:url value='/images/employee/layerPopupCancel.jpg'/>' width='30' height='30'></div>");            	
+            }, 
+            onClose: function() {
+            	$("#popupLayer").html("");
+            }
+        },
+        function() {
+        });
     }
   	
-  	function searchCaller(){
- 	   window.open("/search/searchCaller.do","발신자검색", "width=1000, height=800");
-  	}
-  	
-  	function searchChain(){
-  		window.open("/search/searchChain.do","관련체인검색", "width=1000, height=800");
-  	}
 </script>
 <body id="page-top">
 <jsp:include page="/WEB-INF/pc/common/header.jsp" />
@@ -87,6 +131,7 @@ $(document).ready(function() {
 			        <div class="card-body">
 						<div class="table-responsive">
 		        			<form:form id="overTimeRequestFrm" modelAttribute="OverTimeDto" name="overTimeRequestFrm">
+		        				<div id="popupLayer"></div>
 			        			<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 			        				<thead>
 			        					<tr>
@@ -101,13 +146,15 @@ $(document).ready(function() {
 			        						<td>접수자</td>
 			        						<td><input type="text" id="accepterName" name="accepterName" readonly="readonly">
 			        							<input type="hidden" id="accepter" name="accepter">
-			        						    <input type="button" class="btn btn-primary" value="검색" onclick="searchEmployee('accepter')">
+			        						    <input type="button" class="btn btn-primary" value="검색" onclick="javascript:openPopup('accepter')">
+<!-- 			        						    <input type="button" class="btn btn-primary" value="검색" onclick="searchEmployee('accepter')"> -->
 			        						</td>
 			        					</tr>
 			        					<tr>
 			        						<td>발신자</td>
 			        						<td><input type="text" id="caller" name="caller" readonly="readonly">
-			        							<input type="button" class="btn btn-primary" value="검색" onclick="searchCaller()">
+			        							<input type="button" class="btn btn-primary" value="검색" onclick="openPopup('caller')">
+<!-- 			        							<input type="button" class="btn btn-primary" value="검색" onclick="searchCaller()"> -->
 			        						</td>
 			        					</tr>
 			        					<tr>
@@ -140,7 +187,8 @@ $(document).ready(function() {
 			        					<tr>
 			        						<td>관련체인</td>
 			        						<td><input type="text" id="relatedChainName" name="relatedChainName" readonly="readonly"><input type="hidden" id="relatedChain" name="relatedChain">
-			        							<input type="button" class="btn btn-primary" value="검색" onclick="searchChain()">
+			        							<input type="button" class="btn btn-primary" value="검색" onclick="javascript:openPopup('chain')">
+<!-- 			        							<input type="button" class="btn btn-primary" value="검색" onclick="searchChain()"> -->
 			        						</td>
 			        					</tr>
 			        					<tr>

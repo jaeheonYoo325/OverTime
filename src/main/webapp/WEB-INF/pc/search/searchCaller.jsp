@@ -36,12 +36,22 @@ $(document).ready(function() {
  });
  
  function useThisInterPhone(companyType,teamName,partName,PhoneNumber){
-	      opener.document.getElementById("caller").value=partName
-	      opener.document.getElementById("phoneNumber").value=PhoneNumber
-	   window.close();
-	}
+
+	parent.document.getElementById("caller").value = partName;
+	parent.document.getElementById("phoneNumber").value = PhoneNumber;
+	
+	parent.$("#popupLayer").bPopup().close(); 
+	parent.$("#popupLayer").html("");	     
+ }
+ 
+//  function useThisInterPhone(companyType,teamName,partName,PhoneNumber){
+// 	      opener.document.getElementById("caller").value=partName
+// 	      opener.document.getElementById("phoneNumber").value=PhoneNumber
+// 	   window.close();
+// 	}
+
 </script>
-	<body id="page-top">
+	<body id="page-top">		
 		<div id="wrapper">
 			<div id="content-wrapper">
 		        <div class="card mb-3">

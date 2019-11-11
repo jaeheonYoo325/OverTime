@@ -37,11 +37,22 @@ $(document).ready(function() {
  });
  
  function useThisEmployee(employeeNo,employeeName){
-	   var measurerNo=window.location.search.slice(window.location.search.indexOf('=')+1);
-		   opener.document.getElementById("measurerName"+measurerNo).value=employeeName
-		   opener.document.getElementById("measurer"+measurerNo).value=employeeNo
-	   window.close();
+	var measurerNo=window.location.search.slice(window.location.search.indexOf('=')+1);
+	
+	parent.document.getElementById("measurerName"+measurerNo).value = employeeName;
+	parent.document.getElementById("measurer"+measurerNo).value = employeeNo;
+
+	parent.$("#popupLayer").bPopup().close(); 
+	parent.$("#popupLayer").html("");	
+	   
 	}
+
+//  function useThisEmployee(employeeNo,employeeName){
+// 	   var measurerNo=window.location.search.slice(window.location.search.indexOf('=')+1);
+// 		   opener.document.getElementById("measurerName"+measurerNo).value=employeeName
+// 		   opener.document.getElementById("measurer"+measurerNo).value=employeeNo
+// 	   window.close();
+// 	}
 </script>
 	<body id="page-top">
 		<div id="wrapper">
