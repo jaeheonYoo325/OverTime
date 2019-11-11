@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nhncorp.lucy.security.xss.XssFilter;
 import com.springproject.dtos.CategoryTypeDto;
 import com.springproject.dtos.ChainTableDto;
 import com.springproject.dtos.InterPhoneDto;
@@ -63,10 +64,19 @@ public class OverTimeServiceImpl implements OverTimeService {
 	}
 
 	@Override
-	public boolean insertOverTimeRequestService(OverTimeDto overtimeDto, ArrayList<String> measurer,ArrayList<String> measureDescription) {
-		boolean isInsertOverTimeRequestSuccess=this.overTimeDao.insertOverTimeRequestDao(overtimeDto)>0;
-		boolean isInsertMeasurerSuccess=true;
-		boolean isInsertMeasureDescriptionSuccess=true;
+	public boolean insertOverTimeRequestService(OverTimeDto overtimeDto, ArrayList<String> measurer,ArrayList<String> measureDescription) {		
+		boolean isInsertMeasurerSuccess = true;
+		boolean isInsertMeasureDescriptionSuccess = true;
+		
+		// XSS 방어로직 구현
+		XssFilter xssFilter = XssFilter.getInstance("xssfilter/lucy-xss-superset.xml", true);
+		overtimeDto.setAcceptDescription(xssFilter.doFilter(overtimeDto.getAcceptDescription()));		
+		overtimeDto.setCause(xssFilter.doFilter(overtimeDto.getCause()));
+		overtimeDto.setMeasures(xssFilter.doFilter(overtimeDto.getMeasures()));
+		overtimeDto.setRemarks(xssFilter.doFilter(overtimeDto.getRemarks()));
+		overtimeDto.setTypeOfProcessing(xssFilter.doFilter(overtimeDto.getTypeOfProcessing()));
+		
+		boolean isInsertOverTimeRequestSuccess = this.overTimeDao.insertOverTimeRequestDao(overtimeDto) > 0;
 		
 		Long acceptNo=this.overTimeDao.selectMaxAcceptNoDao();
 		
@@ -80,7 +90,8 @@ public class OverTimeServiceImpl implements OverTimeService {
 		for(int i=0; i<measureDescription.size(); i++) {
 			MeasureDescriptionDto measureDescriptionDto=new MeasureDescriptionDto();
 			measureDescriptionDto.setAcceptNo(acceptNo);
-			measureDescriptionDto.setMeasureDescription(measureDescription.get(i).toString());
+			measureDescriptionDto.setMeasureDescription(xssFilter.doFilter(measureDescription.get(i).toString()));
+//			measureDescriptionDto.setMeasureDescription(measureDescription.get(i).toString());
 			isInsertMeasureDescriptionSuccess=isInsertMeasureDescriptionSuccess&this.overTimeDao.insertMeasureDescriptionDao(measureDescriptionDto)>0;
 		}
 		
@@ -188,6 +199,14 @@ public class OverTimeServiceImpl implements OverTimeService {
 		boolean insertMeasurerSuccess = true;
 		boolean insertMeasureDescriptionSuccess = true;		
 		
+		// XSS 방어로직 구현
+		XssFilter xssFilter = XssFilter.getInstance("xssfilter/lucy-xss-superset.xml", true);
+		overTimeDto.setAcceptDescription(xssFilter.doFilter(overTimeDto.getAcceptDescription()));		
+		overTimeDto.setCause(xssFilter.doFilter(overTimeDto.getCause()));
+		overTimeDto.setMeasures(xssFilter.doFilter(overTimeDto.getMeasures()));
+		overTimeDto.setRemarks(xssFilter.doFilter(overTimeDto.getRemarks()));
+		overTimeDto.setTypeOfProcessing(xssFilter.doFilter(overTimeDto.getTypeOfProcessing()));
+		
 		overTimeDto.setStatusCode("01");
 		boolean isOverTimeReRequestSuccess = this.overTimeDao.updateOneOverTimeRequestDao(overTimeDto) > 0;
 		boolean isDeleteMeasurerOfAcceptNoSuccess = this.overTimeDao.deleteMeasurerOfAcceptNoDao(acceptNo) > 0;
@@ -203,7 +222,8 @@ public class OverTimeServiceImpl implements OverTimeService {
 		for(int i = 0; i < measureDescription.size(); i++) {
 			MeasureDescriptionDto measureDescriptionDto = new MeasureDescriptionDto();
 			measureDescriptionDto.setAcceptNo(acceptNo);
-			measureDescriptionDto.setMeasureDescription(measureDescription.get(i).toString());
+			measureDescriptionDto.setMeasureDescription(xssFilter.doFilter(measureDescription.get(i).toString()));
+//			measureDescriptionDto.setMeasureDescription(measureDescription.get(i).toString());
 			insertMeasureDescriptionSuccess = insertMeasureDescriptionSuccess && ( this.overTimeDao.insertMeasureDescriptionDao(measureDescriptionDto) > 0);
 		}
 		

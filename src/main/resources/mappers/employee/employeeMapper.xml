@@ -260,4 +260,21 @@
   		SET		sumOfOverTime = sumOfOverTime + #{sumOfOverTime}
   		WHERE	employeeNo = #{employeeNo}
   	</update>
+  	
+    <select id="checkIsThisUserHaveRequestOfOverTimeAuthorityDao" parameterType="EmployeeDto" resultType="AuthorityDto">
+        SELECT
+         employeeNo,
+         roleCode
+      FROM authority
+      WHERE employeeNo=#{employeeNo} AND roleCode="RequestOfOverTime"
+    </select>
+    
+    <select id="checkisThisUserHaveAuthorityOfEmployeeRegistDao" parameterType="EmployeeDto" resultType="AuthorityDto">
+         SELECT
+         employeeNo,
+         roleCode
+      FROM authority
+      WHERE employeeNo=#{employeeNo} AND roleCode="EmployeeRegist"
+    </select>    
+    
   </mapper>

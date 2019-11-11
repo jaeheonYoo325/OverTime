@@ -39,7 +39,7 @@ $(document).ready(function() {
  function useThisChain(chainId,chainName){
 	
 	parent.document.getElementById("relatedChain").value = chainId;
-	parent.document.getElementById("relatedChainName").value = chainName;
+	parent.document.getElementById("chainName").value = chainName;
 	
 	parent.$("#popupLayer").bPopup().close(); 
 	parent.$("#popupLayer").html("");    

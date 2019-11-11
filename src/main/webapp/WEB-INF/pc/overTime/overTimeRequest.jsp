@@ -33,21 +33,92 @@
 </head>
 <script>
 $(document).ready(function() {
+	
+	var isMeasurerAndMeasureDescription = true;
+	var measurerAndMeasureDescriptionSize = 0;
+	
     $("#overTimeRequestBtn").click(function() {
-	     $("#overTimeRequestFrm").attr({
-	          method:"post",                                         
-	            action:"/overTime/overTimeRequest.do"
-	     }).submit();
+    	
+    	var acceptDate = $("#acceptDate").val();
+    	var acceptTime = $("#acceptTime").val();
+    	var employeeName = $("#employeeName").val();
+    	var caller = $("#caller").val();
+    	var acceptDescription = $("#acceptDescription").val();
+    	var measureTime = $("#measureTime").val();
+    	var cause = $("#cause").val();
+    	var measures = $("#measures").val();
+    	var relatedChain = $("#relatedChain").val();
+    	
+    	if ( acceptDate == "") {
+    		alert("접수 날짜를 입력해주세요.");
+    		return;
+    	}
+    	if ( acceptTime == "") {
+    		alert("접수 시간을 입력해주세요.");
+    		return;
+    	}
+    	if ( employeeName == "") {
+    		alert("접수자를 조회해서 선택해주세요.");
+    		return;
+    	}
+    	if ( caller == "") {
+    		alert("발신자를 조회해서 선택해주세요.");
+    		return;
+    	}
+    	if ( acceptDescription == "") {
+    		alert("접수내용을 입력해주세요.");
+    		return;
+    	}
+    	
+    	var k = 0;
+    	for (k = 0; k <= measurerAndMeasureDescriptionSize; k++) {
+    		if ( $("#measurer" + k).val() == "") {
+    			alert((k+1) + "번째 조치자를 검색해서 사용해주세요.");
+    			return;
+    		}
+    		if ( $("#measureDescription" + k).val() == "") {
+    			alert((k+1) + "번째 조치 내용을 입력해주세요.");
+    			return;
+    		}
+    	}
+    	
+    	if ( isMeasurerAndMeasureDescription == true ) {
+    		alert("조치자 및 조치 내용은 필수 입력 값입니다.");
+    		return;
+    	}
+    	
+    	if ( measureTime == "" || measureTime == 0) {
+    		alert("조치시간을 입력해주세요.");
+    		return;
+    	}
+    	if ( cause == "") {
+    		alert("원인 내용을 입력해주세요.");
+    		return;
+    	}
+    	if ( measures == "") {
+    		alert("대책 내용을 입력해주세요.");
+    		return;
+    	}
+    	if ( relatedChain == "") {
+    		alert("관련 체인을 조회해서 선택해주세요.");
+    		return;
+    	}
+    	
+    	
+		$("#overTimeRequestFrm").attr({
+			method:"post",                                         
+			action:"/overTime/overTimeRequest.do"
+		}).submit();
     });  
 
     var i = -1;
     $('.addMeasurerAndMeasureDescription').click (function () {
   		i=i+1;
         $('.divMeasurerAndMeasureDescription').append (           
-			$("<input type='text' name='measurerName"+i+"'id='measurerName"+i+"' value='조치자' readonly='readonly'><input type='hidden' name='measurer"+i+"' id='measurer"+i+"'><input type='button' class='btn btn-primary' value='검색' onclick='openPopup("+i+")'><input type='text' name='measureDescription"+i+"' id='measureDescription"+i+"' value='조치내용'><br>")
+        		$("<input type='text' name='measurerName"+i+"'id='measurerName"+i+"' placeholder='조치자검색' readonly='readonly'><input type='hidden' name='measurer"+i+"' id='measurer"+i+"'><input type='button' class='btn btn-primary' value='검색' onclick='openPopup("+i+")'><input type='text' name='measureDescription"+i+"' id='measureDescription"+i+"' placeholder='조치내용입력' style='width:800px;'><br>")
         );
         
-        MeasurerAndMeasureDescriptionSize = i;
+        measurerAndMeasureDescriptionSize = i;
         isMeasurerAndMeasureDescription = false;
         $('.removeMeasurerAndMeasureDescription').on('click', function () {     	  
             $(".divMeasurerAndMeasureDescription").html("");
@@ -100,6 +171,7 @@ $(document).ready(function() {
   		}
   		
         $("#popupLayer").bPopup({
+        	modalClose: false,
             content:'iframe',
             iframeAttr:'frameborder="auto"',
             iframeAttr:'frameborder="0"',
@@ -130,40 +202,52 @@ $(document).ready(function() {
 			        </div>
 			        <div class="card-body">
 						<div class="table-responsive">
-		        			<form:form id="overTimeRequestFrm" modelAttribute="OverTimeDto" name="overTimeRequestFrm">
+		        			<form:form id="overTimeRequestFrm" modelAttribute="overTimeDto" name="overTimeRequestFrm">
+		        				<div id = "errorsDiv">
+		        					<form:errors id="errorsAcceptDate" cssStyle="color: red;" path="acceptDate" />
+		        					<form:errors id="errorsAcceptTime" cssStyle="color: red;" path="acceptTime" />
+		        					<form:errors id="errorsAccepter" cssStyle="color: red;" path="accepter" />
+		        					<form:errors id="errorsCaller" cssStyle="color: red;" path="caller" />
+		        					<form:errors id="errorsPhoneNumber" cssStyle="color: red;" path="phoneNumber" />
+		        					<form:errors id="errorsAcceptDescription" cssStyle="color: red;" path="acceptDescription" />
+		        					<form:errors id="errorsMeasureTime" cssStyle="color: red;" path="measureTime" />
+		        					<form:errors id="errorsCause" cssStyle="color: red;" path="cause" />
+		        					<form:errors id="errorsMeasures" cssStyle="color: red;" path="measures" />
+		        					<form:errors id="errorsRelatedChain" cssStyle="color: red;" path="relatedChain" />
+		        				</div>
 		        				<div id="popupLayer"></div>
 			        			<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 			        				<thead>
 			        					<tr>
 			        						<td>일자</td>
-			        						<td><input type="Date" id="acceptDate" name="acceptDate"></td>
+			        						<td><input type="Date" id="acceptDate" name="acceptDate" value="${overtimeDto.acceptDate}"></td>
 			        					</tr>
 			        					<tr>
 			        						<td>접수시각</td>
-			        						<td><input type="time" id="acceptTime" name="acceptTime"></td>
+			        						<td><input type="time" id="acceptTime" name="acceptTime" value="${overtimeDto.acceptTime}"></td>
 			        					</tr>
 			        					<tr>
 			        						<td>접수자</td>
-			        						<td><input type="text" id="accepterName" name="accepterName" readonly="readonly">
-			        							<input type="hidden" id="accepter" name="accepter">
+			        						<td><input type="text" id="employeeName" name="employeeName" value="${overtimeDto.employeeName}" readonly="readonly">
+			        							<input type="hidden" id="accepter" name="accepter" value="${overtimeDto.accepter}">
 			        						    <input type="button" class="btn btn-primary" value="검색" onclick="javascript:openPopup('accepter')">
 <!-- 			        						    <input type="button" class="btn btn-primary" value="검색" onclick="searchEmployee('accepter')"> -->
 			        						</td>
 			        					</tr>
 			        					<tr>
 			        						<td>발신자</td>
-			        						<td><input type="text" id="caller" name="caller" readonly="readonly">
+			        						<td><input type="text" id="caller" name="caller" value="${overtimeDto.caller}" readonly="readonly">
 			        							<input type="button" class="btn btn-primary" value="검색" onclick="openPopup('caller')">
 <!-- 			        							<input type="button" class="btn btn-primary" value="검색" onclick="searchCaller()"> -->
 			        						</td>
 			        					</tr>
 			        					<tr>
 			        						<td>전화번호</td>
-			        						<td><input type="text" id="phoneNumber" name="phoneNumber" readonly="readonly"></td>
+			        						<td><input type="text" id="phoneNumber" name="phoneNumber" value="${overtimeDto.phoneNumber}" readonly="readonly"></td>
 			        					</tr>
 			        					<tr>
-			        						<td>접수내용</td>
-			        						<td><input type="text" id="acceptDescription" name="acceptDescription" style="width: 1000px"></td>
+			        						<td>접수내용</td>			        						
+			        						<td><textarea id="acceptDescription" name="acceptDescription" cols="100" rows="5">${overtimeDto.acceptDescription}</textarea></td>
 			        					</tr>
 			        					<tr>
 			        						<td>조치자 및 조치내용</td>
@@ -174,19 +258,19 @@ $(document).ready(function() {
 			        					</tr>
 			        					<tr>
 			        						<td>조치시간</td>
-			        						<td><input type="number" step="0.1" id="measureTime" name="measureTime">Hr</td>
+			        						<td><input type="number" min="0" step="0.1" id="measureTime" name="measureTime" value="${overtimeDto.measureTime}" >Hr</td>
 			        					</tr>
 			        					<tr>
 			        						<td>원인</td>
-			        						<td><input type="text" id="cause" name="cause"></td>
-			        					</tr>
+			        						<td><textarea id="cause" name="cause" cols="100" rows="5">${overtimeDto.cause}</textarea></td>
+			        					</tr>												        					
 			        					<tr>
 			        						<td>대책</td>
-			        						<td><input type="text" id="measures" name="measures"></td>
-			        					</tr>
+			        						<td><textarea id="measures" name="measures" cols="100" rows="5">${overtimeDto.measures}</textarea></td>
+			        					</tr>			        					
 			        					<tr>
 			        						<td>관련체인</td>
-			        						<td><input type="text" id="relatedChainName" name="relatedChainName" readonly="readonly"><input type="hidden" id="relatedChain" name="relatedChain">
+			        						<td><input type="text" id="chainName" name="chainName" value="${overtimeDto.chainName}" readonly="readonly"><input type="hidden" id="relatedChain" name="relatedChain" value="${overtimeDto.relatedChain}">
 			        							<input type="button" class="btn btn-primary" value="검색" onclick="javascript:openPopup('chain')">
 <!-- 			        							<input type="button" class="btn btn-primary" value="검색" onclick="searchChain()"> -->
 			        						</td>

@@ -28,19 +28,19 @@
 </head>
 <script>
 $(document).ready(function() {
-    var employeeSearchWhere=window.location.search.slice(window.location.search.indexOf('=')+1);
-    $("#searchEmployeeBtn").click(function() {
-       $("#searchEmpFrm").attr({
-          method:"post",                                         
+	var employeeSearchWhere = window.location.search.slice(window.location.search.indexOf('=')+1);
+	$("#searchEmployeeBtn").click(function() {
+		$("#searchEmpFrm").attr({
+			method:"post",                                         
             action:"/search/searchEmployee.do?employeeSearchWhere="+employeeSearchWhere
-     }).submit();
+		}).submit();
     });
  });
  
  function useThisEmployee(employeeNo,employeeName){
 	var employeeSearchWhere=window.location.search.slice(window.location.search.indexOf('=')+1);
 
-	parent.document.getElementById("accepterName").value = employeeName;
+	parent.document.getElementById("employeeName").value = employeeName;
 	parent.document.getElementById("accepter").value = employeeNo;
 	
 	parent.$("#popupLayer").bPopup().close(); 

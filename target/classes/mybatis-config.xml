@@ -15,5 +15,6 @@
  			<typeAlias type="com.springproject.dtos.MasterTableDto" alias="MasterTableDto"/>
  			<typeAlias type="com.springproject.dtos.CategoryTypeDto" alias="CategoryTypeDto"/>
  			<typeAlias type="com.springproject.dtos.OverTimeofEmployeeDto" alias="OverTimeofEmployeeDto"/>
+ 			<typeAlias type="com.springproject.dtos.AuthorityDto" alias="AuthorityDto"/>
  		</typeAliases>        
     </configuration>

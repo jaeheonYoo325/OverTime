@@ -2,6 +2,7 @@ package com.springproject.employee.dao;
 
 import java.util.List;
 
+import com.springproject.dtos.AuthorityDto;
 import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeApprovalDto;
 import com.springproject.dtos.OverTimeDto;
@@ -43,5 +44,9 @@ public interface EmployeeDao {
 	public List<MeasurerDto> measurerListOfAcceptNoDao(Long acceptNo);
 	
 	public int measurerOfMeasureTimeAccumulationDao(OverTimeofEmployeeDto overTimeofEmployeeDto);
+
+	public List<AuthorityDto> checkIsThisUserHaveRequestOfOverTimeAuthorityDao(EmployeeDto employeeDto);
+
+	public List<AuthorityDto> checkisThisUserHaveAuthorityOfEmployeeRegistDao(EmployeeDto employeeDto);
 	
 }

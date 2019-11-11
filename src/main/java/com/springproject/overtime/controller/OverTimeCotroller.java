@@ -11,9 +11,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +34,7 @@ import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeDto;
 import com.springproject.dtos.OverTimeofEmployeeDto;
 import com.springproject.employee.dto.EmployeeDto;
+import com.springproject.employee.service.EmployeeService;
 import com.springproject.overtime.service.OverTimeService;
 
 @Controller
@@ -39,6 +42,9 @@ public class OverTimeCotroller {
 	
 	@Autowired
 	private OverTimeService overTimeService;
+	
+	@Autowired
+	private EmployeeService employeeService;
 
 	@GetMapping("/main/main.do")
 	public String viewMainPage() {
@@ -46,18 +52,43 @@ public class OverTimeCotroller {
 	}
 	
 	@GetMapping("/overTime/overTimeRequest.do")
-	public String viewOverTimeRequestPage() {
-		return HttpRequestHelper.getJspPath();
+	public String viewOverTimeRequestPage(HttpSession session, HttpServletResponse response) {
+		boolean isThisUserHaveRequestOfOverTimeAuthority= this.employeeService.checkIsThisUserHaveRequestOfOverTimeAuthorityService((EmployeeDto)session.getAttribute(Session.USER));
+      
+		if(isThisUserHaveRequestOfOverTimeAuthority) {
+			return HttpRequestHelper.getJspPath();
+		}
+		else {
+			response.setCharacterEncoding("UTF-8"); 
+			response.setContentType("text/html; charset=UTF-8"); 
+			PrintWriter out;
+			try {
+				out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('요청권한이없습니다')");
+				out.println("history.back()");
+				out.println("</script>");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
 	}
 	
 	@PostMapping("/overTime/overTimeRequest.do")
-	public String doOverTimeRequest(@ModelAttribute OverTimeDto overtimeDto, HttpServletResponse response, HttpServletRequest request) {
+	public ModelAndView doOverTimeRequest(@Valid @ModelAttribute OverTimeDto overtimeDto, Errors errors, HttpServletResponse response, HttpServletRequest request) {
 		response.setCharacterEncoding("UTF-8"); 
 		response.setContentType("text/html; charset=UTF-8"); 
 		
+		ModelAndView mv = null;
 		ArrayList<String> measurer= new ArrayList<String>();
 		ArrayList<String> measureDescription= new ArrayList<String>();
 		
+		if ( errors.hasErrors() ) {
+			mv = new ModelAndView(HttpRequestHelper.getJspPath());
+			mv.addObject("overtimeDto", overtimeDto);
+			return mv;
+		}
 		for(int i=0;;i++) {
 			if(request.getParameter("measurer"+i)==null) {
 				break;
@@ -85,7 +116,9 @@ public class OverTimeCotroller {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			return "redirect:/overTime/overTimeList.do";
+			mv = new ModelAndView("redirect:/overTime/overTimeList.do");
+			return mv;
+//			return "redirect:/overTime/overTimeList.do";
 		} else {
 			try {
 				out = response.getWriter();
@@ -96,7 +129,7 @@ public class OverTimeCotroller {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			return null;
+			return mv;
 		}
 	}
 	
@@ -207,6 +240,25 @@ public class OverTimeCotroller {
 			measurerMap.put(acceptNo, measurerOfAcceptNo);
 			measureDescriptionOfAcceptNo=this.overTimeService.selectMeasureDescriptionOfAcceptNoService(acceptNo);
 			measureDescriptionMap.put(acceptNo, measureDescriptionOfAcceptNo);
+		}
+		
+      
+		for(int i=0; i<overTime.size(); i++) {
+			String BeforeAcceptDescriptionReplacedStringForMultiLine = overTime.get(i).getAcceptDescription();
+			String AfterAcceptDescriptionReplacedStringForMultiLine=BeforeAcceptDescriptionReplacedStringForMultiLine.replace("\n", "<br>");
+			overTime.get(i).setAcceptDescription(AfterAcceptDescriptionReplacedStringForMultiLine);
+		}
+       
+		for(int i=0; i<overTime.size(); i++) {
+			String BeforeCauseReplacedStringForMultiLine = overTime.get(i).getCause();
+			String AfterCauseReplacedStringForMultiLine=BeforeCauseReplacedStringForMultiLine.replace("\n", "<br>");
+			overTime.get(i).setCause(AfterCauseReplacedStringForMultiLine);
+		}
+       
+		for(int i=0; i<overTime.size(); i++) {
+			String BeforeMeasuresReplacedStringForMultiLine = overTime.get(i).getMeasures();
+			String AfterMeasuresReplacedStringForMultiLine=BeforeMeasuresReplacedStringForMultiLine.replace("\n", "<br>");
+			overTime.get(i).setMeasures(AfterMeasuresReplacedStringForMultiLine);
 		}
 		
 		mv.addObject("overTime",overTime);
