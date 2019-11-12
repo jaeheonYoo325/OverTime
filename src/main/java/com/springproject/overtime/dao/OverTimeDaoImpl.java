@@ -16,6 +16,7 @@ import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeApprovalDto;
 import com.springproject.dtos.OverTimeDto;
 import com.springproject.dtos.OverTimeofEmployeeDto;
+import com.springproject.dtos.RelatedChainDto;
 import com.springproject.employee.dto.EmployeeDto;
 
 @Repository
@@ -122,6 +123,18 @@ public class OverTimeDaoImpl extends SqlSessionDaoSupport implements OverTimeDao
 	@Override
 	public int deleteMeasureDescriptionOfAcceptNoDao(Long acceptNo) {
 		return getSqlSession().delete("overTimeDao.deleteMeasureDescriptionOfAcceptNoDao", acceptNo);
+	}
+	@Override
+	public int insertRelatedChainDao(RelatedChainDto relatedChainDto) {
+		return getSqlSession().insert("overTimeDao.insertRelatedChainDao",relatedChainDto);
+	}
+	@Override
+	public List<RelatedChainDto> selectRelatedChainOfAcceptNoDao(Long acceptNo) {
+		return getSqlSession().selectList("overTimeDao.selectRelatedChainOfAcceptNoDao",acceptNo);
+	}
+	@Override
+	public int deleteRelatedChainOfAcceptNoDao(Long acceptNo) {
+		return getSqlSession().delete("overTimeDao.deleteRelatedChainOfAcceptNoDao", acceptNo);
 	}
 
 }

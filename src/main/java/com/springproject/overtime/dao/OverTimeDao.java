@@ -11,6 +11,7 @@ import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeApprovalDto;
 import com.springproject.dtos.OverTimeDto;
 import com.springproject.dtos.OverTimeofEmployeeDto;
+import com.springproject.dtos.RelatedChainDto;
 import com.springproject.employee.dto.EmployeeDto;
 
 public interface OverTimeDao {
@@ -60,5 +61,11 @@ public interface OverTimeDao {
 	public int deleteMeasurerOfAcceptNoDao(Long acceptNo);
 	
 	public int deleteMeasureDescriptionOfAcceptNoDao(Long acceptNo);
+
+	public int insertRelatedChainDao(RelatedChainDto relatedChainDto);
+
+	public List<RelatedChainDto> selectRelatedChainOfAcceptNoDao(Long acceptNo);
+
+	public int deleteRelatedChainOfAcceptNoDao(Long acceptNo);
 	
 }

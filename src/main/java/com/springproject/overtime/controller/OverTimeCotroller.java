@@ -31,7 +31,9 @@ import com.springproject.dtos.MeasureDescriptionDto;
 import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeDto;
 import com.springproject.dtos.OverTimeofEmployeeDto;
+import com.springproject.dtos.RelatedChainDto;
 import com.springproject.employee.dto.EmployeeDto;
+import com.springproject.employee.service.EmployeeService;
 import com.springproject.overtime.service.OverTimeService;
 
 @Controller
@@ -39,6 +41,9 @@ public class OverTimeCotroller {
 	
 	@Autowired
 	private OverTimeService overTimeService;
+	
+	@Autowired
+	private EmployeeService employeeService;
 
 	@GetMapping("/main/main.do")
 	public String viewMainPage() {
@@ -46,8 +51,27 @@ public class OverTimeCotroller {
 	}
 	
 	@GetMapping("/overTime/overTimeRequest.do")
-	public String viewOverTimeRequestPage() {
-		return HttpRequestHelper.getJspPath();
+	public String viewOverTimeRequestPage(HttpSession session, HttpServletResponse response) {
+		boolean isThisUserHaveRequestOfOverTimeAuthority=this.employeeService.checkIsThisUserHaveRequestOfOverTimeAuthorityService((EmployeeDto)session.getAttribute(Session.USER));
+		
+		if(isThisUserHaveRequestOfOverTimeAuthority) {
+			return HttpRequestHelper.getJspPath();
+		}
+		else {
+			response.setCharacterEncoding("UTF-8"); 
+			response.setContentType("text/html; charset=UTF-8"); 
+			PrintWriter out;
+			try {
+				out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('요청권한이없습니다')");
+				out.println("history.back()");
+				out.println("</script>");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
 	}
 	
 	@PostMapping("/overTime/overTimeRequest.do")
@@ -57,6 +81,7 @@ public class OverTimeCotroller {
 		
 		ArrayList<String> measurer= new ArrayList<String>();
 		ArrayList<String> measureDescription= new ArrayList<String>();
+		ArrayList<String> relatedChain= new ArrayList<String>();
 		
 		for(int i=0;;i++) {
 			if(request.getParameter("measurer"+i)==null) {
@@ -72,7 +97,14 @@ public class OverTimeCotroller {
 			measureDescription.add(request.getParameter("measureDescription"+i));
 		}
 		
-		boolean isOverTimeRequestSuccess=this.overTimeService.insertOverTimeRequestService(overtimeDto, measurer, measureDescription);
+		for(int i=0;;i++) {
+			if(request.getParameter("relatedChain"+i)==null) {
+				break;
+			}
+			relatedChain.add(request.getParameter("relatedChain"+i));
+		}
+		
+		boolean isOverTimeRequestSuccess=this.overTimeService.insertOverTimeRequestService(overtimeDto, measurer, measureDescription, relatedChain);
 		
 		PrintWriter out;
 		if (isOverTimeRequestSuccess) {
@@ -164,11 +196,13 @@ public class OverTimeCotroller {
 		List<OverTimeDto> overTime=new ArrayList<OverTimeDto>();
 		List<MeasurerDto> measurerOfAcceptNo=new ArrayList<MeasurerDto>();
 		List<MeasureDescriptionDto> measureDescriptionOfAcceptNo=new ArrayList<MeasureDescriptionDto>();
+		List<RelatedChainDto> relatedChainOfAcceptNo=new ArrayList<RelatedChainDto>();
 		List<ChainTableDto> chain=this.overTimeService.selectAllChainService();
 		
 		CategoryTypeDto categoryTypeDto=new CategoryTypeDto();
 		Map<Long, List<MeasurerDto>> measurerMap = new HashMap<Long, List<MeasurerDto>>(); 
 		Map<Long, List<MeasureDescriptionDto>> measureDescriptionMap = new HashMap<Long, List<MeasureDescriptionDto>>();
+		Map<Long, List<RelatedChainDto>> relatedChainMap = new HashMap<Long, List<RelatedChainDto>>();
 		
 		List<MasterTableDto> masterCodeOfCategory=this.overTimeService.selectMasterCodeOfCategoryService();
 		Map<String, List<MasterTableDto>> categoryMasterCodesOfCodeTypeMap=this.overTimeService.selectCategoryMasterCodesOfCodeTypeService(masterCodeOfCategory);
@@ -176,16 +210,17 @@ public class OverTimeCotroller {
 		
 		Long acceptNo=0L;
 		
-		if(request.getParameter("searchType") != null && request.getParameter("searchKeyword") != null && request.getParameter("categoryChain")!=null && request.getParameter("categoryAcceptDate")!=null && request.getParameter("categoryStatus")!=null) {
+//		if(request.getParameter("searchType") != null && request.getParameter("searchKeyword") != null && request.getParameter("categoryChain")!=null && request.getParameter("categoryAcceptDate")!=null && request.getParameter("categoryStatus")!=null) {
+		if(request.getParameter("searchType") != null && request.getParameter("searchKeyword") != null && request.getParameter("categoryAcceptDate")!=null && request.getParameter("categoryStatus")!=null) {	
 			String searchType = request.getParameter("searchType"); 
 	    	String searchKeyword = request.getParameter("searchKeyword");
-	    	String categoryChain = request.getParameter("categoryChain");
+//	    	String categoryChain = request.getParameter("categoryChain");
 	    	String categoryAcceptDate = request.getParameter("categoryAcceptDate");
 	    	String categoryStatus = request.getParameter("categoryStatus");
 	    	
 	    	categoryTypeDto.setSearchType(searchType);
 	    	categoryTypeDto.setSearchKeyword(searchKeyword);
-	    	categoryTypeDto.setCategoryChain(categoryChain);
+//	    	categoryTypeDto.setCategoryChain(categoryChain);
 	    	categoryTypeDto.setCategoryAcceptDate(categoryAcceptDate);
 	    	categoryTypeDto.setCategoryStatus(categoryStatus);
 	    	
@@ -194,7 +229,7 @@ public class OverTimeCotroller {
 		else {
 			categoryTypeDto.setSearchType("검색타입");
 			categoryTypeDto.setSearchKeyword("");
-			categoryTypeDto.setCategoryChain("관련체인");
+//			categoryTypeDto.setCategoryChain("관련체인");
 			categoryTypeDto.setCategoryStatus("상태");
 			categoryTypeDto.setCategoryAcceptDate("접수일자");
 			
@@ -205,8 +240,30 @@ public class OverTimeCotroller {
 			acceptNo=overTime.get(i).getAcceptNo();
 			measurerOfAcceptNo=this.overTimeService.selectMeasurerOfAcceptNoService(acceptNo);
 			measurerMap.put(acceptNo, measurerOfAcceptNo);
+			
 			measureDescriptionOfAcceptNo=this.overTimeService.selectMeasureDescriptionOfAcceptNoService(acceptNo);
 			measureDescriptionMap.put(acceptNo, measureDescriptionOfAcceptNo);
+			
+			relatedChainOfAcceptNo=this.overTimeService.selectRelatedChainOfAcceptNoService(acceptNo);
+			relatedChainMap.put(acceptNo, relatedChainOfAcceptNo);
+		}
+		
+		for(int i=0; i<overTime.size(); i++) {
+			String BeforeAcceptDescriptionReplacedStringForMultiLine = overTime.get(i).getAcceptDescription();
+			String AfterAcceptDescriptionReplacedStringForMultiLine=BeforeAcceptDescriptionReplacedStringForMultiLine.replace("\n", "<br>");
+			overTime.get(i).setAcceptDescription(AfterAcceptDescriptionReplacedStringForMultiLine);
+		}
+		
+		for(int i=0; i<overTime.size(); i++) {
+			String BeforeCauseReplacedStringForMultiLine = overTime.get(i).getCause();
+			String AfterCauseReplacedStringForMultiLine=BeforeCauseReplacedStringForMultiLine.replace("\n", "<br>");
+			overTime.get(i).setCause(AfterCauseReplacedStringForMultiLine);
+		}
+		
+		for(int i=0; i<overTime.size(); i++) {
+			String BeforeMeasuresReplacedStringForMultiLine = overTime.get(i).getMeasures();
+			String AfterMeasuresReplacedStringForMultiLine=BeforeMeasuresReplacedStringForMultiLine.replace("\n", "<br>");
+			overTime.get(i).setMeasures(AfterMeasuresReplacedStringForMultiLine);
 		}
 		
 		mv.addObject("overTime",overTime);
@@ -216,6 +273,7 @@ public class OverTimeCotroller {
 		mv.addObject("measurerMap",measurerMap);
 		mv.addObject("measureDescriptionMap",measureDescriptionMap);
 		mv.addObject("masterCodeOfSearchTypeMap",masterCodeOfSearchTypeMap);
+		mv.addObject("relatedChainMap",relatedChainMap);
 		
 		return mv;
 	}

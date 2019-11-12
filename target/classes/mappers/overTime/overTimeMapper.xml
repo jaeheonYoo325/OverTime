@@ -14,7 +14,7 @@
   		SELECT employeeNo,
   			   employeeName
   	    FROM EMPLOYEE
-  	    WHERE employeeName LIKE CONCAT('%',#{employeeName},'%')
+  	    WHERE employeeName LIKE CONCAT('%',#{employeeName},'%') || employeeNo LIKE CONCAT('%',#{employeeName},'%') 
   	</select>
   	
   	<select id="sellectAllInterPhoneDao" resultType="InterPhoneDto">
@@ -31,7 +31,7 @@
   			   partName,
   			   phoneNumber
   	    FROM INTERPHONE
-  	    WHERE phoneNumber LIKE CONCAT('%',#{phoneNumber},'%')
+  	    WHERE phoneNumber LIKE CONCAT('%',#{phoneNumber},'%') || partName LIKE CONCAT('%',#{phoneNumber},'%')
   	</select>
   	
   	<select id="selectAllChainDao" resultType="ChainTableDto">
@@ -44,7 +44,7 @@
    		SELECT chainId,
   			   chainName
   	    FROM CHAINTABLE
-  	    WHERE chainName LIKE CONCAT('%',#{chainName},'%')
+  	    WHERE chainName LIKE CONCAT('%',#{chainName},'%') || chainId LIKE CONCAT('%',#{chainName},'%')
   	</select>
   	
   	<insert id="insertOverTimeRequestDao" parameterType="OverTimeDto">
@@ -58,7 +58,6 @@
  								measureTime,
  								cause,
  								measures,
- 								relatedChain,
  								remarks,
  								typeOfProcessing,
  								statusCode
@@ -73,7 +72,6 @@
     	  						#{measureTime},
     	  						#{cause},
     	  						#{measures},
-    	  						#{relatedChain},
     	  						#{remarks},
     	  						#{typeOfProcessing},
     	  						"01"
@@ -164,22 +162,18 @@
   			o.measureTime,
   			o.cause,
   			o.measures,
-  			o.relatedChain,
-  			c.chainName,
   			o.remarks,
   			o.typeOfProcessing,
   			o.statusCode,
   			mr.measurer,
   			md.measureDescription
   	    FROM OVERTIME o
-  	    JOIN CHAINTABLE c
   	    JOIN MASTERTABLE m
   	    JOIN EMPLOYEE e
   	    JOIN EMPLOYEE e2
   	    JOIN MEASURER mr
   	    JOIN MEASUREDESCRIPTION md
-  	    ON (o.relatedChain=c.chainId)
-  	    AND (o.statusCode=m.codeValue)
+  	    ON (o.statusCode=m.codeValue)
   	    AND (o.accepter=e.employeeNo)
   	    AND (mr.measurer=e2.employeeNo)
   	    AND (o.acceptNo=mr.acceptNo)
@@ -195,7 +189,6 @@
   	    	<if test="searchType == '조치자' and searchKeyword != ''">
 				AND  e2.employeeName LIKE CONCAT(#{searchKeyword}, '%')
 			</if>		
-				AND o.relatedChain LIKE CONCAT(#{categoryChain}, '%')
 				AND m.codeValue LIKE CONCAT(#{categoryStatus}, '%')
 				AND m.codeType="CTGY_STATUS"
 		GROUP BY o.acceptNo
@@ -217,16 +210,12 @@
 	  			O.measureTime,
 	  			O.cause,
 	  			O.measures,
-	  			O.relatedChain,
-	  			C.chainName,
 	  			O.remarks,
 	  			O.typeOfProcessing,
 	  			O.statusCode
 	  	FROM OVERTIME O
-	  	JOIN CHAINTABLE C
 	  	JOIN EMPLOYEE E
-	  	ON(O.relatedChain=C.chainId) 
-	  	AND(O.accepter=E.employeeNo)
+	  	ON (O.accepter=E.employeeNo)
   	</select>
   	
   	<select id="selectMeasurerOfAcceptNoDao" parameterType="Long" resultType="MeasurerDto">
@@ -273,16 +262,12 @@
 		        , o.measureTime
 		        , o.cause
 		        , o.measures
-		        , o.relatedChain
 		        , o.remarks
 		        , o.typeOfProcessing
 		        , o.statusCode
-		        , c.chainName
 		FROM	OVERTIME o
-		JOIN	CHAINTABLE c
 		JOIN	EMPLOYEE e
-		ON		o.relatedChain = c.chainId
-		AND		o.accepter = e.employeeNo
+		ON		o.accepter = e.employeeNo
 		WHERE	o.acceptNo = #{acceptNo};
 	</select>
 	
@@ -298,7 +283,6 @@
 				, measureTime = #{measureTime}
 				, cause = #{cause}
 				, measures = #{measures}
-				, relatedChain = #{relatedChain}
 				, remarks = #{remarks}
 				, typeOfProcessing = #{typeOfProcessing}
 				, statusCode = #{statusCode}
@@ -315,5 +299,33 @@
   		DELETE
   		FROM	MEASUREDESCRIPTION
   		WHERE	acceptNo = #{acceptNo}
-  	</delete>	  	
+  	</delete>	  
+  	
+  	<insert id="insertRelatedChainDao" parameterType="RelatedChainDto">
+  	    INSERT INTO RELATEDCHAIN(
+  								acceptNo,
+  								relatedChain
+  		                    )
+  		              VALUES(
+  		            			#{acceptNo},
+  		            			#{relatedChain}
+  		                    )
+  	</insert>
+  	
+  	<select id="selectRelatedChainOfAcceptNoDao" parameterType="Long" resultType="RelatedChainDto">
+  	  	SELECT
+  				rc.acceptNo,
+  				rc.relatedChain,
+  				c.chainName
+  		FROM RELATEDCHAIN rc
+  		JOIN CHAINTABLE c
+  		ON (rc.relatedChain=c.chainId)
+  		WHERE acceptNo=#{acceptNo}
+  	</select>	
+  	
+  	<delete id="deleteRelatedChainOfAcceptNoDao" parameterType="Long">
+  	  DELETE
+  	  FROM	RELATEDCHAIN
+  	  WHERE	acceptNo = #{acceptNo}
+  	</delete>
   </mapper>

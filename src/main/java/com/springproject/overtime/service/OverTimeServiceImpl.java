@@ -18,6 +18,7 @@ import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeApprovalDto;
 import com.springproject.dtos.OverTimeDto;
 import com.springproject.dtos.OverTimeofEmployeeDto;
+import com.springproject.dtos.RelatedChainDto;
 import com.springproject.employee.dao.EmployeeDao;
 import com.springproject.employee.dto.EmployeeDto;
 import com.springproject.overtime.dao.OverTimeDao;
@@ -63,10 +64,11 @@ public class OverTimeServiceImpl implements OverTimeService {
 	}
 
 	@Override
-	public boolean insertOverTimeRequestService(OverTimeDto overtimeDto, ArrayList<String> measurer,ArrayList<String> measureDescription) {
+	public boolean insertOverTimeRequestService(OverTimeDto overtimeDto, ArrayList<String> measurer,ArrayList<String> measureDescription, ArrayList<String> relatedChain) {
 		boolean isInsertOverTimeRequestSuccess=this.overTimeDao.insertOverTimeRequestDao(overtimeDto)>0;
 		boolean isInsertMeasurerSuccess=true;
 		boolean isInsertMeasureDescriptionSuccess=true;
+		boolean isInsertRelatedChainSuccess=true;
 		
 		Long acceptNo=this.overTimeDao.selectMaxAcceptNoDao();
 		
@@ -84,6 +86,13 @@ public class OverTimeServiceImpl implements OverTimeService {
 			isInsertMeasureDescriptionSuccess=isInsertMeasureDescriptionSuccess&this.overTimeDao.insertMeasureDescriptionDao(measureDescriptionDto)>0;
 		}
 		
+		for(int i=0; i<relatedChain.size(); i++) {
+			RelatedChainDto relatedChainDto=new RelatedChainDto();
+			relatedChainDto.setAcceptNo(acceptNo);
+			relatedChainDto.setRelatedChain(relatedChain.get(i).toString());
+			isInsertRelatedChainSuccess=isInsertRelatedChainSuccess&&this.overTimeDao.insertRelatedChainDao(relatedChainDto)>0;
+		}
+		
 		OverTimeApprovalDto overTimeApprovalDto=new OverTimeApprovalDto();
 		overTimeApprovalDto.setAcceptNo(acceptNo);
 		overTimeApprovalDto.setDrafter(overtimeDto.getAccepter());
@@ -91,7 +100,7 @@ public class OverTimeServiceImpl implements OverTimeService {
 		overTimeApprovalDto.setApprovalDescription("overTimeApprovalB0");
 		boolean isInsertOverTimeApprovalForOverTimeRequestSuccess=this.overTimeDao.InsertOverTimeApprovalForOverTimeRequestDao(overTimeApprovalDto)>0;
 		
-		boolean isRequestSuccess=isInsertOverTimeRequestSuccess&isInsertMeasurerSuccess&isInsertMeasureDescriptionSuccess&isInsertOverTimeApprovalForOverTimeRequestSuccess;
+		boolean isRequestSuccess=isInsertOverTimeRequestSuccess&isInsertMeasurerSuccess&isInsertMeasureDescriptionSuccess&isInsertOverTimeApprovalForOverTimeRequestSuccess&isInsertRelatedChainSuccess;
 		return isRequestSuccess;
 	}
 
@@ -138,11 +147,11 @@ public class OverTimeServiceImpl implements OverTimeService {
 			OverTimeRequestForCategory.setSearchKeyword("%"+categoryTypeDto.getSearchKeyword());
 		}
 		
-		if (categoryTypeDto.getCategoryChain().equals("관련체인")) {
-			OverTimeRequestForCategory.setCategoryChain("%");
-		} else {
-			OverTimeRequestForCategory.setCategoryChain(categoryTypeDto.getCategoryChain());
-		}
+//		if (categoryTypeDto.getCategoryChain().equals("관련체인")) {
+//			OverTimeRequestForCategory.setCategoryChain("%");
+//		} else {
+//			OverTimeRequestForCategory.setCategoryChain(categoryTypeDto.getCategoryChain());
+//		}
 		
 		if (categoryTypeDto.getCategoryStatus().equals("00")) {
 			OverTimeRequestForCategory.setCategoryStatus("%");
@@ -180,18 +189,20 @@ public class OverTimeServiceImpl implements OverTimeService {
 	}
 
 	@Override
-	public boolean overTimeReRequestService(OverTimeDto overTimeDto, ArrayList<String> measurer, ArrayList<String> measureDescription) {
+	public boolean overTimeReRequestService(OverTimeDto overTimeDto, ArrayList<String> measurer, ArrayList<String> measureDescription, ArrayList<String> relatedChain) {
 		
 		Long acceptNo = overTimeDto.getAcceptNo();
 		
 		boolean isOverTimeReRequestFinalSuccess = true;
 		boolean insertMeasurerSuccess = true;
-		boolean insertMeasureDescriptionSuccess = true;		
+		boolean insertMeasureDescriptionSuccess = true;	
+		boolean insertRelatedChainSuccess = true;
 		
 		overTimeDto.setStatusCode("01");
 		boolean isOverTimeReRequestSuccess = this.overTimeDao.updateOneOverTimeRequestDao(overTimeDto) > 0;
 		boolean isDeleteMeasurerOfAcceptNoSuccess = this.overTimeDao.deleteMeasurerOfAcceptNoDao(acceptNo) > 0;
 		boolean isDeleteMeasureDescriptionOfAcceptNoSuccess = this.overTimeDao.deleteMeasureDescriptionOfAcceptNoDao(acceptNo) > 0;
+		boolean isDeleteRelatedChainOfAcceptNoSuccess = this.overTimeDao.deleteRelatedChainOfAcceptNoDao(acceptNo)>0;
 		
 		for(int i = 0; i < measurer.size(); i++) {
 			MeasurerDto measurerDto = new MeasurerDto();
@@ -207,6 +218,13 @@ public class OverTimeServiceImpl implements OverTimeService {
 			insertMeasureDescriptionSuccess = insertMeasureDescriptionSuccess && ( this.overTimeDao.insertMeasureDescriptionDao(measureDescriptionDto) > 0);
 		}
 		
+		for(int i=0; i<relatedChain.size(); i++) {
+			RelatedChainDto relatedChainDto=new RelatedChainDto();
+			relatedChainDto.setAcceptNo(acceptNo);
+			relatedChainDto.setRelatedChain(relatedChain.get(i).toString());
+			insertRelatedChainSuccess=insertRelatedChainSuccess&&(this.overTimeDao.insertRelatedChainDao(relatedChainDto)>0);
+		}
+		
 		OverTimeApprovalDto overTimeApprovalDto = this.employeeDao.selectMyOverTimeApprovalOfAcceptNoDao(acceptNo);
 		overTimeApprovalDto.setApprovalLineConfirm(overTimeDto.getAccepter());
 		boolean isDoApprovalingSuccessOfCompleteNowApproval = this.employeeDao.myOverTimeDoApprovalingOfCompleteNowApprovalDao(overTimeApprovalDto) > 0;
@@ -215,8 +233,13 @@ public class OverTimeServiceImpl implements OverTimeService {
 		boolean isDoApprovalingSuccessOfNextApproval = this.employeeDao.myOverTimeDoApprovalingOfAddNextApprovalDao(overTimeApprovalDto) > 0;
 		
 		isOverTimeReRequestFinalSuccess = isOverTimeReRequestFinalSuccess && isOverTimeReRequestSuccess && isDeleteMeasurerOfAcceptNoSuccess && isDeleteMeasureDescriptionOfAcceptNoSuccess 
-				&& insertMeasurerSuccess && insertMeasureDescriptionSuccess && isDoApprovalingSuccessOfCompleteNowApproval && isDoApprovalingSuccessOfNextApproval;
+				&& insertMeasurerSuccess && insertMeasureDescriptionSuccess && isDoApprovalingSuccessOfCompleteNowApproval && isDoApprovalingSuccessOfNextApproval&&insertRelatedChainSuccess&&isDeleteRelatedChainOfAcceptNoSuccess;
 		return isOverTimeReRequestFinalSuccess;
+	}
+
+	@Override
+	public List<RelatedChainDto> selectRelatedChainOfAcceptNoService(Long acceptNo) {
+		return this.overTimeDao.selectRelatedChainOfAcceptNoDao(acceptNo);
 	}
 
 }

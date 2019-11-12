@@ -12,12 +12,10 @@ public class OverTimeDto {
 	private String measureTime;
 	private String cause;
 	private String measures;
-	private String relatedChain;
 	private String remarks;
 	private String typeOfProcessing;
 	private String statusCode;
 	private String employeeName;
-	private String chainName;
 
 	public String getEmployeeName() {
 		return employeeName;
@@ -25,14 +23,6 @@ public class OverTimeDto {
 
 	public void setEmployeeName(String employeeName) {
 		this.employeeName = employeeName;
-	}
-
-	public String getChainName() {
-		return chainName;
-	}
-
-	public void setChainName(String chainName) {
-		this.chainName = chainName;
 	}
 
 	public Long getAcceptNo() {
@@ -113,14 +103,6 @@ public class OverTimeDto {
 
 	public void setMeasures(String measures) {
 		this.measures = measures;
-	}
-
-	public String getRelatedChain() {
-		return relatedChain;
-	}
-
-	public void setRelatedChain(String relatedChain) {
-		this.relatedChain = relatedChain;
 	}
 
 	public String getRemarks() {

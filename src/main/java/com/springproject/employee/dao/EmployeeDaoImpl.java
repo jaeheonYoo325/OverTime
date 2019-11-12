@@ -7,6 +7,7 @@ import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.springproject.dtos.AuthorityDto;
 import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeApprovalDto;
 import com.springproject.dtos.OverTimeDto;
@@ -105,6 +106,16 @@ public class EmployeeDaoImpl extends SqlSessionDaoSupport implements EmployeeDao
 	@Override
 	public int measurerOfMeasureTimeAccumulationDao(OverTimeofEmployeeDto overTimeofEmployeeDto) {
 		return this.getSqlSession().update("EmployeeDao.measurerOfMeasureTimeAccumulationDao", overTimeofEmployeeDto);
+	}
+
+	@Override
+	public List<AuthorityDto> checkIsThisUserHaveRequestOfOverTimeAuthorityDao(EmployeeDto employeeDto) {
+		 return this.getSqlSession().selectList("EmployeeDao.checkIsThisUserHaveRequestOfOverTimeAuthorityDao",employeeDto);
+	}
+
+	@Override
+	public List<AuthorityDto> checkisThisUserHaveAuthorityOfEmployeeRegistDao(EmployeeDto employeeDto) {
+		return this.getSqlSession().selectList("EmployeeDao.checkisThisUserHaveAuthorityOfEmployeeRegistDao",employeeDto);
 	}
 	
 	

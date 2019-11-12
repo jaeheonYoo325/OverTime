@@ -33,6 +33,7 @@ import com.springproject.dtos.MeasureDescriptionDto;
 import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeApprovalDto;
 import com.springproject.dtos.OverTimeDto;
+import com.springproject.dtos.RelatedChainDto;
 import com.springproject.employee.dto.EmployeeDto;
 import com.springproject.employee.service.EmployeeService;
 import com.springproject.overtime.service.OverTimeService;
@@ -78,6 +79,7 @@ public class EmployeeController {
 			loginEmployeeDto.setEmployeePassWord(employeeDto.getEmployeePassWord());
 			session.setAttribute(Session.USER, loginEmployeeDto);
 
+
 			try {
 				out = response.getWriter();
 				out.println("<script>");
@@ -112,25 +114,25 @@ public class EmployeeController {
 	public String viewEmployeeRegistPage(HttpServletResponse response, HttpSession session) {
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
-		return HttpRequestHelper.getJspPath();
 
-//       boolean isThisUserHaveAuthorityOfEmployeeRegist=this.employeeService.checkisThisUserHaveAuthorityOfEmployeeRegistService((EmployeeDto)session.getAttribute(Session.USER));
-//       if(isThisUserHaveAuthorityOfEmployeeRegist) {
-//          return HttpRequestHelper.getJspPath();
-//       }
-//       else {
-//          try {
-//            PrintWriter out;
-//            out = response.getWriter();
-//            out.println("<script>");
-//            out.println("alert('사원등록권한이 없습니다')");
-//            out.println("history.back()");
-//            out.println("</script>");
-//         } catch (IOException e) {
-//            e.printStackTrace();
-//         }
-//         return null;
-//       }
+       boolean isThisUserHaveAuthorityOfEmployeeRegist=this.employeeService.checkisThisUserHaveAuthorityOfEmployeeRegistService((EmployeeDto)session.getAttribute(Session.USER));
+       
+       if(isThisUserHaveAuthorityOfEmployeeRegist) {
+          return HttpRequestHelper.getJspPath();
+       }
+       else {
+          try {
+            PrintWriter out;
+            out = response.getWriter();
+            out.println("<script>");
+            out.println("alert('사원등록권한이 없습니다')");
+            out.println("history.back()");
+            out.println("</script>");
+         } catch (IOException e) {
+            e.printStackTrace();
+         }
+         return null;
+       }
 	}
 
 	@PostMapping("/employee/employeeRegist.do")
@@ -194,11 +196,13 @@ public class EmployeeController {
 		OverTimeDto overTimeRequestOfAcceptNo = this.overTimeService.selectOverTimeRequestOfAcceptNoService(acceptNo);
 		List<MeasurerDto> overTimeMeasurerOfAcceptNo = this.overTimeService.selectMeasurerOfAcceptNoService(acceptNo);
 		List<MeasureDescriptionDto> overTimeMeasureDescriptionOfAcceptNo = this.overTimeService.selectMeasureDescriptionOfAcceptNoService(acceptNo);
+		List<RelatedChainDto> overTimeRelatedChainOfAcceptNo = this.overTimeService.selectRelatedChainOfAcceptNoService(acceptNo);
 				
 		mv.addObject("overTimeRequestOfAcceptNo", overTimeRequestOfAcceptNo);
 		mv.addObject("overTimeMeasurerOfAcceptNo", overTimeMeasurerOfAcceptNo);		
 		mv.addObject("overTimeMeasureDescriptionOfAcceptNo", overTimeMeasureDescriptionOfAcceptNo);
 		mv.addObject("overTimeApprovalDetailCode", overTimeApprovalDetailCode);
+		mv.addObject("overTimeRelatedChainOfAcceptNo",overTimeRelatedChainOfAcceptNo);
 		
 		return mv;
 	}
@@ -316,10 +320,12 @@ public class EmployeeController {
 	   OverTimeDto overTimeRequestOfAcceptNo = this.overTimeService.selectOverTimeRequestOfAcceptNoService(acceptNo);
 	   List<MeasurerDto> overTimeMeasurerOfAcceptNo = this.overTimeService.selectMeasurerOfAcceptNoService(acceptNo);
 	   List<MeasureDescriptionDto> overTimeMeasureDescriptionOfAcceptNo = this.overTimeService.selectMeasureDescriptionOfAcceptNoService(acceptNo);
+	   List<RelatedChainDto> overTimeRelatedChainOfAcceptNo=this.overTimeService.selectRelatedChainOfAcceptNoService(acceptNo);
 				
 	   mv.addObject("overTimeRequestOfAcceptNo", overTimeRequestOfAcceptNo);
 	   mv.addObject("overTimeMeasurerOfAcceptNo", overTimeMeasurerOfAcceptNo);		
 	   mv.addObject("overTimeMeasureDescriptionOfAcceptNo", overTimeMeasureDescriptionOfAcceptNo);
+	   mv.addObject("overTimeRelatedChainOfAcceptNo",overTimeRelatedChainOfAcceptNo);
 	   
 	   return mv;
    }
@@ -332,6 +338,7 @@ public class EmployeeController {
 	   ModelAndView mv = null;
 	   ArrayList<String> measurer = new ArrayList<String>();
 	   ArrayList<String> measureDescription = new ArrayList<String>();
+		ArrayList<String> relatedChain= new ArrayList<String>();
 		
 	   for(int i=0;;i++) {
 		   if(request.getParameter("measurer"+i)==null) {
@@ -346,8 +353,15 @@ public class EmployeeController {
 		   }
 		   measureDescription.add(request.getParameter("measureDescription"+i));
 		}
+	   
+		for(int i=0;;i++) {
+			if(request.getParameter("relatedChain"+i)==null) {
+				break;
+			}
+			relatedChain.add(request.getParameter("relatedChain"+i));
+		}
 
-	   boolean isOverTimeReRequestSuccess = this.overTimeService.overTimeReRequestService(overTimeDto, measurer, measureDescription);
+	   boolean isOverTimeReRequestSuccess = this.overTimeService.overTimeReRequestService(overTimeDto, measurer, measureDescription, relatedChain);
 	   
 	   PrintWriter out;
 	   if (isOverTimeReRequestSuccess) {

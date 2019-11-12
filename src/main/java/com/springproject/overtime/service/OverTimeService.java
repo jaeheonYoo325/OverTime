@@ -12,6 +12,7 @@ import com.springproject.dtos.MeasureDescriptionDto;
 import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeDto;
 import com.springproject.dtos.OverTimeofEmployeeDto;
+import com.springproject.dtos.RelatedChainDto;
 import com.springproject.employee.dto.EmployeeDto;
 
 public interface OverTimeService {
@@ -28,7 +29,7 @@ public interface OverTimeService {
 
 	public List<ChainTableDto> selectChainOfSearchService(ChainTableDto chainTableDto);
 
-	public boolean insertOverTimeRequestService(OverTimeDto overtimeDto, ArrayList<String> measurer,ArrayList<String> measureDescription);
+	public boolean insertOverTimeRequestService(OverTimeDto overtimeDto, ArrayList<String> measurer,ArrayList<String> measureDescription, ArrayList<String> relatedChain);
 
 	public List<MasterTableDto> selectMasterCodeOfCategoryService();
 
@@ -48,5 +49,7 @@ public interface OverTimeService {
 	
 	public OverTimeDto selectOverTimeRequestOfAcceptNoService(Long acceptNo);
 	
-	public boolean overTimeReRequestService(OverTimeDto overTimeDto, ArrayList<String> measurer, ArrayList<String> measureDescription);
+	public boolean overTimeReRequestService(OverTimeDto overTimeDto, ArrayList<String> measurer, ArrayList<String> measureDescription, ArrayList<String> relatedChain);
+
+	public List<RelatedChainDto> selectRelatedChainOfAcceptNoService(Long acceptNo);
 }

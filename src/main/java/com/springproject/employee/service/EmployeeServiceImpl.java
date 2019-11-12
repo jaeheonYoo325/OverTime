@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.springproject.common.utils.SHA256Util;
+import com.springproject.dtos.AuthorityDto;
 import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeApprovalDto;
 import com.springproject.dtos.OverTimeDto;
@@ -154,6 +155,26 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public List<OverTimeApprovalDto> selectMyOverTimeReturnedService(EmployeeDto employeeDto) {
 		return this.employeeDao.selectMyOverTimeReturnedDao(employeeDto);
+	}
+
+	@Override
+	public boolean checkIsThisUserHaveRequestOfOverTimeAuthorityService(EmployeeDto employeeDto) {
+		List<AuthorityDto> authorityDto= this.employeeDao.checkIsThisUserHaveRequestOfOverTimeAuthorityDao(employeeDto);
+		if(authorityDto.size()>0) {
+			return true;
+		}
+		else 
+			return false;
+	}
+
+	@Override
+	public boolean checkisThisUserHaveAuthorityOfEmployeeRegistService(EmployeeDto employeeDto) {
+		List<AuthorityDto> authorityDto= this.employeeDao.checkisThisUserHaveAuthorityOfEmployeeRegistDao(employeeDto);
+		if(authorityDto.size()>0) {
+			return true;
+		}
+		else 
+			return false;
 	}
 	
 }

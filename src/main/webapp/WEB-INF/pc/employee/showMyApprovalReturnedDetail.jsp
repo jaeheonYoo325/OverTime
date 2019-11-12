@@ -49,20 +49,45 @@ $(document).ready(function() {
 	
 	$('.removeMeasurerAndMeasureDescription').on('click', function () {     	  
 		$(".divMeasurerAndMeasureDescription").html("");
-// 		isModifiedPrograms = true;
 		i = -1;
 	});
 
 	$('.addMeasurerAndMeasureDescription').click (function () {
 		
 	 	i=i+1;
-// 	 	modifiedProgramSize = i;
-// 	 	console.log("modifiedProgramSize : " + i);
-//      isModifiedPrograms = false;
 	 	$('.divMeasurerAndMeasureDescription').append (           
 			$("<input type='text' name='measurerName"+i+"'id='measurerName"+i+"' value='조치자' readonly='readonly'><input type='hidden' name='measurer"+i+"' id='measurer"+i+"'><input type='button' class='btn btn-primary' value='검색' onclick='searchMeasurer("+i+")'><input type='text' name='measureDescription"+i+"' id='measureDescription"+i+"' value='조치내용'><br>")
 	    );
 	});
+	
+	
+	var lastRelatedChain = $("#lastRelatedChain").val();
+	var j=lastRelatedChain;
+	
+	if(j==lastRelatedChain) {
+		j=lastRelatedChain;
+		j*=1;
+	}
+	else {
+		j=-1;
+		j*=1;
+	}
+	
+	$('.removeRelatedChain').on('click', function () {     	  
+		$(".divRelatedChain").html("");
+		j = -1;
+	});
+
+	$('.addRelatedChain').click (function () {
+		
+	 	j=j+1;
+	 	$('.divRelatedChain').append (           
+	 		$("<input type='text' name='relatedChain"+j+"' id='relatedChain"+j+"' placeholder='관련체인검색'><br>")
+	    );
+	});
+	
+	
+	
 	
     $("#sidebarToggle").on('click', function(e) {
 	    e.preventDefault();
@@ -164,8 +189,13 @@ $(document).ready(function() {
 			        					</tr>
 			        					<tr>
 			        						<td>관련체인</td>
-			        						<td><input type="text" id="relatedChainName" name="relatedChainName" value="${overTimeRequestOfAcceptNo.chainName}" readonly="readonly"><input type="hidden" id="relatedChain" name="relatedChain" value="${overTimeRequestOfAcceptNo.relatedChain}">
-			        							<input type="button" class="btn btn-primary" value="검색" onclick="searchChain()">
+			        						<td><input type="button" class="addRelatedChain btn btn-info" value="추가"><input type='button' class='removeRelatedChain btn btn-danger' id='removeRelatedChain' value='전체삭제'>
+			        						    <div class="divRelatedChain">
+			        						   		<c:forEach items="${overTimeRelatedChainOfAcceptNo}" varStatus="status">
+			        						   			<input type="text" name="relatedChain${status.index}" id="relatedChain${status.index}" value="<c:out value="${overTimeRelatedChainOfAcceptNo[status.index].relatedChain}"/>"><br>
+								            		</c:forEach>
+								            		<input type="hidden" name=lastRelatedChain id="lastRelatedChain" value="${fn:length(overTimeRelatedChainOfAcceptNo)-1}">
+										        </div>
 			        						</td>
 			        					</tr>
 			        					<tr>

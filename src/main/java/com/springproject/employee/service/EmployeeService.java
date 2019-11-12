@@ -26,6 +26,9 @@ public interface EmployeeService {
 	public boolean myOverTimeDoReturningService(OverTimeApprovalDto overTimeApprovalDto);
 	
 	public List<OverTimeApprovalDto> selectMyOverTimeReturnedService(EmployeeDto employeeDto);
-	
+
+	public boolean checkIsThisUserHaveRequestOfOverTimeAuthorityService(EmployeeDto employeeDto);
+
+	public boolean checkisThisUserHaveAuthorityOfEmployeeRegistService(EmployeeDto employeeDto);
 	
 }

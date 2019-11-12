@@ -31,7 +31,6 @@
 		#popupLayer .popupContent iframe {width:1000px;height:800px;border:0;padding:0px;margin:0;z-index:10;}
 	</style>
 </head>
-
 <script>
 $(document).ready(function() {
     $("#overTimeRequestBtn").click(function() {
@@ -54,23 +53,6 @@ $(document).ready(function() {
             $(".divMeasurerAndMeasureDescription").html("");
             isMeasurerAndMeasureDescription = true;
             i = -1;
-        });
-    });
-    
-    
-    var j = -1;
-    $('.addRelatedChain').click (function () {
-  		j=j+1;
-        $('.divRelatedChain').append (           
-        		$("<input type='text' name='relatedChain"+j+"' id='relatedChain"+j+"' placeholder='관련체인검색'><br>")
-        );
-        
-        RelatedChainSize = j;
-        isRelatedChain = false;
-        $('.removeRelatedChain').on('click', function () {     	  
-            $(".divRelatedChain").html("");
-            isRelatedChain = true;
-            j = -1;
         });
     });
     
@@ -192,7 +174,7 @@ $(document).ready(function() {
 			        					</tr>
 			        					<tr>
 			        						<td>조치시간</td>
-												<td><input type="text" id="measureTime" name="measureTime">Hr</td>
+			        						<td><input type="number" step="0.1" id="measureTime" name="measureTime">Hr</td>
 			        					</tr>
 			        					<tr>
 			        						<td>원인</td>
@@ -204,9 +186,9 @@ $(document).ready(function() {
 			        					</tr>
 			        					<tr>
 			        						<td>관련체인</td>
-			        						<td><input type="button" class="addRelatedChain btn btn-info" value="추가"><input type='button' class='removeRelatedChain btn btn-danger' id='removeRelatedChain' value='전체삭제'>
-			        						    <div class="divRelatedChain">
-										        </div>
+			        						<td><input type="text" id="relatedChainName" name="relatedChainName" readonly="readonly"><input type="hidden" id="relatedChain" name="relatedChain">
+			        							<input type="button" class="btn btn-primary" value="검색" onclick="javascript:openPopup('chain')">
+<!-- 			        							<input type="button" class="btn btn-primary" value="검색" onclick="searchChain()"> -->
 			        						</td>
 			        					</tr>
 			        					<tr>
@@ -229,18 +211,4 @@ $(document).ready(function() {
 	</div>
 <jsp:include page="/WEB-INF/pc/common/footer.jsp" />
 </body>
-<script>
-const target = document.getElementById('measureTime');
-
-target.addEventListener('mousewheel',function (e) {
-      e.preventDefault();
-      var num = Number(this.value);
-      if(e.wheelDelta > 0){
-        this.value = num + 0.1 ;
-      }else{
-        if(num < 0) return false;
-        this.value = num - 0.1 ;
-      }
-});
-</script>
 </html>

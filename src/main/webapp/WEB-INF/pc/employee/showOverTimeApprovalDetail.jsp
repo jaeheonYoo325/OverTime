@@ -78,7 +78,11 @@
 		        						<td>${overTimeRequestOfAcceptNo.measureTime}</td>
 		        						<td>${overTimeRequestOfAcceptNo.cause}</td>
 		        						<td>${overTimeRequestOfAcceptNo.measures}</td>
-		        						<td>${overTimeRequestOfAcceptNo.chainName}</td>
+		        						<td>
+		        							<c:forEach items="${overTimeRelatedChainOfAcceptNo}" varStatus="status">
+												${overTimeRelatedChainOfAcceptNo[status.index].relatedChain}(${overTimeRelatedChainOfAcceptNo[status.index].chainName})<br>
+								            </c:forEach>
+		        						</td>
 		        						<td>${overTimeRequestOfAcceptNo.remarks}</td>
 		        						<td>${overTimeRequestOfAcceptNo.typeOfProcessing}</td>
 		        					</tr>		        					

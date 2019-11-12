@@ -159,7 +159,11 @@
 												<td>${overTime.measureTime}</td>
 												<td>${overTime.cause}</td>
 												<td>${overTime.measures}</td>
-												<td>${overTime.relatedChain}(${overTime.chainName})</td>
+												<td>
+													<c:forEach items="${relatedChainMap[overTime.acceptNo]}" varStatus="status">
+														<c:out value="${relatedChainMap[overTime.acceptNo][status.index].relatedChain}"></c:out>(<c:out value="${relatedChainMap[overTime.acceptNo][status.index].chainName}"></c:out>)<br>
+													</c:forEach>
+												</td>
 												<td>${overTime.remarks}</td>
 												<td>${overTime.typeOfProcessing}</td>
 												<td>
