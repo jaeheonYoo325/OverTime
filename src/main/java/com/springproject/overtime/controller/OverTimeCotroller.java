@@ -11,9 +11,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -75,14 +77,20 @@ public class OverTimeCotroller {
 	}
 	
 	@PostMapping("/overTime/overTimeRequest.do")
-	public String doOverTimeRequest(@ModelAttribute OverTimeDto overtimeDto, HttpServletResponse response, HttpServletRequest request) {
+	public ModelAndView doOverTimeRequest(@Valid @ModelAttribute OverTimeDto overtimeDto, Errors errors, HttpServletResponse response, HttpServletRequest request) {
 		response.setCharacterEncoding("UTF-8"); 
 		response.setContentType("text/html; charset=UTF-8"); 
 		
+		ModelAndView mv = null;
 		ArrayList<String> measurer= new ArrayList<String>();
 		ArrayList<String> measureDescription= new ArrayList<String>();
 		ArrayList<String> relatedChain= new ArrayList<String>();
 		
+		if ( errors.hasErrors() ) {
+			mv = new ModelAndView(HttpRequestHelper.getJspPath());
+			mv.addObject("overtimeDto", overtimeDto);
+			return mv;
+		}
 		for(int i=0;;i++) {
 			if(request.getParameter("measurer"+i)==null) {
 				break;
@@ -117,7 +125,9 @@ public class OverTimeCotroller {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			return "redirect:/overTime/overTimeList.do";
+			mv = new ModelAndView("redirect:/overTime/overTimeList.do");
+			return mv;
+//			return "redirect:/overTime/overTimeList.do";
 		} else {
 			try {
 				out = response.getWriter();
@@ -128,7 +138,7 @@ public class OverTimeCotroller {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			return null;
+			return mv;
 		}
 	}
 	
@@ -260,6 +270,25 @@ public class OverTimeCotroller {
 			overTime.get(i).setCause(AfterCauseReplacedStringForMultiLine);
 		}
 		
+		for(int i=0; i<overTime.size(); i++) {
+			String BeforeMeasuresReplacedStringForMultiLine = overTime.get(i).getMeasures();
+			String AfterMeasuresReplacedStringForMultiLine=BeforeMeasuresReplacedStringForMultiLine.replace("\n", "<br>");
+			overTime.get(i).setMeasures(AfterMeasuresReplacedStringForMultiLine);
+		}
+		
+      
+		for(int i=0; i<overTime.size(); i++) {
+			String BeforeAcceptDescriptionReplacedStringForMultiLine = overTime.get(i).getAcceptDescription();
+			String AfterAcceptDescriptionReplacedStringForMultiLine=BeforeAcceptDescriptionReplacedStringForMultiLine.replace("\n", "<br>");
+			overTime.get(i).setAcceptDescription(AfterAcceptDescriptionReplacedStringForMultiLine);
+		}
+       
+		for(int i=0; i<overTime.size(); i++) {
+			String BeforeCauseReplacedStringForMultiLine = overTime.get(i).getCause();
+			String AfterCauseReplacedStringForMultiLine=BeforeCauseReplacedStringForMultiLine.replace("\n", "<br>");
+			overTime.get(i).setCause(AfterCauseReplacedStringForMultiLine);
+		}
+       
 		for(int i=0; i<overTime.size(); i++) {
 			String BeforeMeasuresReplacedStringForMultiLine = overTime.get(i).getMeasures();
 			String AfterMeasuresReplacedStringForMultiLine=BeforeMeasuresReplacedStringForMultiLine.replace("\n", "<br>");

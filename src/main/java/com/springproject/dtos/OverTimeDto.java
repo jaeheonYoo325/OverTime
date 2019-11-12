@@ -1,16 +1,27 @@
 package com.springproject.dtos;
 
+import javax.validation.constraints.NotEmpty;
+
 public class OverTimeDto {
 	
 	private Long acceptNo;
+	@NotEmpty(message = "접수 날짜는 필수 입력 값입니다.")
 	private String acceptDate;
+	@NotEmpty(message = "접수 시간은 필수 입력 값입니다.")
 	private String acceptTime;
+	@NotEmpty(message = "접수자는 필수 입력 값입니다.")
 	private String accepter;
+	@NotEmpty(message = "발신자는 필수 입력 값입니다.")
 	private String caller;
+	@NotEmpty(message = "전화번호는 필수 입력 값입니다.")
 	private String phoneNumber;
+	@NotEmpty(message = "접수내용은 필수 입력 값입니다.")
 	private String acceptDescription;
+	@NotEmpty(message = "조치시간은 필수 입력 값입니다.")
 	private String measureTime;
+	@NotEmpty(message = "원인 내용은 필수 입력 값입니다.")
 	private String cause;
+	@NotEmpty(message = "대책 내용은 필수 입력 값입니다.")
 	private String measures;
 	private String remarks;
 	private String typeOfProcessing;

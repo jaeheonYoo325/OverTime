@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -114,7 +115,7 @@ public class EmployeeController {
 	public String viewEmployeeRegistPage(HttpServletResponse response, HttpSession session) {
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
-
+		
        boolean isThisUserHaveAuthorityOfEmployeeRegist=this.employeeService.checkisThisUserHaveAuthorityOfEmployeeRegistService((EmployeeDto)session.getAttribute(Session.USER));
        
        if(isThisUserHaveAuthorityOfEmployeeRegist) {
@@ -331,15 +332,34 @@ public class EmployeeController {
    }
    
    @PostMapping("/employee/showMyApprovalReturnedDetail.do")
-   public ModelAndView doOverTimeUpdateAction(@ModelAttribute OverTimeDto overTimeDto, HttpServletResponse response, HttpServletRequest request) {
+   public ModelAndView doOverTimeUpdateAction(@Valid @ModelAttribute OverTimeDto overTimeDto, Errors errors, HttpServletResponse response, HttpServletRequest request) {
 	   response.setCharacterEncoding("UTF-8"); 
 	   response.setContentType("text/html; charset=UTF-8");
 	   
 	   ModelAndView mv = null;
 	   ArrayList<String> measurer = new ArrayList<String>();
 	   ArrayList<String> measureDescription = new ArrayList<String>();
-		ArrayList<String> relatedChain= new ArrayList<String>();
+	   ArrayList<String> relatedChain= new ArrayList<String>();
 		
+
+	   
+	   Long acceptNo = overTimeDto.getAcceptNo();
+	   	   
+	   List<MeasurerDto> overTimeMeasurerOfAcceptNo = this.overTimeService.selectMeasurerOfAcceptNoService(acceptNo);
+	   List<MeasureDescriptionDto> overTimeMeasureDescriptionOfAcceptNo = this.overTimeService.selectMeasureDescriptionOfAcceptNoService(acceptNo);
+	   List<RelatedChainDto> overTimeRelatedChainOfAcceptNo = this.overTimeService.selectRelatedChainOfAcceptNoService(acceptNo);
+	   
+	   if ( errors.hasErrors() ) {
+		   mv = new ModelAndView(HttpRequestHelper.getJspPath());
+		   
+		   mv.addObject("overTimeRequestOfAcceptNo", overTimeDto);
+		   mv.addObject("overTimeMeasurerOfAcceptNo", overTimeMeasurerOfAcceptNo);		
+		   mv.addObject("overTimeMeasureDescriptionOfAcceptNo", overTimeMeasureDescriptionOfAcceptNo);
+		   mv.addObject("overTimeRelatedChainOfAcceptNo", overTimeRelatedChainOfAcceptNo);
+		   
+		   return mv;
+	   }
+
 	   for(int i=0;;i++) {
 		   if(request.getParameter("measurer"+i)==null) {
 			   break;

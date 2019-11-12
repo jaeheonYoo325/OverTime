@@ -29,6 +29,5 @@ public interface EmployeeService {
 
 	public boolean checkIsThisUserHaveRequestOfOverTimeAuthorityService(EmployeeDto employeeDto);
 
-	public boolean checkisThisUserHaveAuthorityOfEmployeeRegistService(EmployeeDto employeeDto);
-	
+	public boolean checkisThisUserHaveAuthorityOfEmployeeRegistService(EmployeeDto employeeDto);	
 }

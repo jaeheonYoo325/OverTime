@@ -276,4 +276,5 @@
     	FROM authority
     	WHERE employeeNo=#{employeeNo} AND roleCode="EmployeeRegist"
   	</select>
+
   </mapper>
