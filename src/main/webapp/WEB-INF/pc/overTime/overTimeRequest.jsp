@@ -283,6 +283,7 @@ $(document).ready(function() {
 			        						<td><textarea id="cause" name="cause" cols="100" rows="5">${overtimeDto.cause}</textarea></td>
 			        					</tr>												        					
 			        					<tr>
+			        						<td>대책</td>
 			        						<td><textarea id="measures" name="measures" cols="100" rows="5">${overtimeDto.measures}</textarea></td>
 			        					</tr>			        					
 			        					<tr>
