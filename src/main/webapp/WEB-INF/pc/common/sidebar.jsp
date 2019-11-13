@@ -11,13 +11,13 @@
 	      <li class="nav-item dropdown">
 	        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	          <i class="fas fa-fw fa fa-file"></i>
-	          <span>overTime</span>
+	          <span>연장근로실적</span>
 	        </a>
 	        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-	          <h6 class="dropdown-header">OverTime</h6>
-	          <a class="dropdown-item" href="<c:url value='/overTime/overTimeRequest.do' />">OverTime요청</a>
-	          <a class="dropdown-item" href="<c:url value='/overTime/overTimeList.do' />">OverTime요청현황</a>
-	          <a class="dropdown-item" href="<c:url value='/overTime/myOverTime.do' />">MyOverTime</a>
+<!-- 	          <h6 class="dropdown-header">연장근로실적</h6> -->
+	          <a class="dropdown-item" href="<c:url value='/overTime/overTimeRequest.do' />">연장근로실적등록</a>
+	          <a class="dropdown-item" href="<c:url value='/overTime/overTimeList.do' />">연장근로실적조회</a>
+	          <a class="dropdown-item" href="<c:url value='/overTime/myOverTime.do' />">My 연장근로실적조회</a>
 	        </div>
 	      </li>
 	      

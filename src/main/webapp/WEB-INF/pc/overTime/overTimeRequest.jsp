@@ -35,8 +35,11 @@
 <script>
 $(document).ready(function() {
 	
-	var isMeasurerAndMeasureDescription = true;
 	var measurerAndMeasureDescriptionSize = 0;
+	var relatedChainSize = 0;
+	var isRelatedChain = true;
+	
+	setAcceptDateAndTime();
 	
     $("#overTimeRequestBtn").click(function() {
     	
@@ -83,11 +86,6 @@ $(document).ready(function() {
     		}
     	}
     	
-    	if ( isMeasurerAndMeasureDescription == true ) {
-    		alert("조치자 및 조치 내용은 필수 입력 값입니다.");
-    		return;
-    	}
-    	
     	if ( measureTime == "" || measureTime == 0) {
     		alert("조치시간을 입력해주세요.");
     		return;
@@ -100,11 +98,18 @@ $(document).ready(function() {
     		alert("대책 내용을 입력해주세요.");
     		return;
     	}
-    	if ( relatedChain == "") {
-    		alert("관련 체인을 조회해서 선택해주세요.");
+    	
+    	if ( isRelatedChain == true ) {
+    		alert("관련체인은 필수 입력 값입니다. 추가 버튼 클릭해서 관련 체인을 조회해주세요.");
     		return;
     	}
     	
+    	for (k = 0; k <= relatedChainSize; k++) {
+    		if ( $("#relatedChain" + k).val() == "") {
+    			alert((k+1) + "번째 관련체인를 검색해서 사용해주세요.");
+    			return;
+    		}
+    	}
     	
 		$("#overTimeRequestFrm").attr({
 			method:"post",                                         
@@ -112,44 +117,80 @@ $(document).ready(function() {
 		}).submit();
     });  
 
-    var i = -1;
-    $('.addMeasurerAndMeasureDescription').click (function () {
-  		i=i+1;
-        $('.divMeasurerAndMeasureDescription').append (           
-        		$("<input type='text' name='measurerName"+i+"'id='measurerName"+i+"' placeholder='조치자검색' readonly='readonly'><input type='hidden' name='measurer"+i+"' id='measurer"+i+"'><input type='button' class='btn btn-primary' value='검색' onclick='openPopup("+i+")'><input type='text' name='measureDescription"+i+"' id='measureDescription"+i+"' placeholder='조치내용입력' style='width:800px;'><br>")
-        );
-        
-        measurerAndMeasureDescriptionSize = i;
-        isMeasurerAndMeasureDescription = false;
-        $('.removeMeasurerAndMeasureDescription').on('click', function () {     	  
-            $(".divMeasurerAndMeasureDescription").html("");
-            isMeasurerAndMeasureDescription = true;
-            i = -1;
-        });
+	var lastMeasurer = $("#lastMeasurer").val();
+	var lastMeasureDescription = $("#lastMeasureDescription").val();
+	var i=lastMeasurer;
+	
+	if(i==lastMeasurer) {
+		i=lastMeasurer;
+		i*=1;
+	}
+	else {
+		i=-1;
+		i*=1;
+	}
+    
+	$('.removeMeasurerAndMeasureDescription').on('click', function () {     	  
+		$(".divMeasurerAndMeasureDescription").html("");
+		$('.divMeasurerAndMeasureDescription').append($("<c:set var='count' value='0' />"));
+		$('.divMeasurerAndMeasureDescription').append($("<input type='text' name='measurerName${count}'id='measurer${count}' value='${sessionScope._USER_.employeeName}' readonly='readonly'>"));
+		$('.divMeasurerAndMeasureDescription').append($("<input type='hidden' name='measurer${count}' id='measurer${count}' value='${sessionScope._USER_.employeeNo}' ><br>"));
+		$('.divMeasurerAndMeasureDescription').append($("<textarea id='measureDescription${count}' name='measureDescription${count}' placeholder='조치내용입력' cols='100' rows='5'></textarea><br>"));
+		$('.divMeasurerAndMeasureDescription').append($("<input type='hidden' name='lastMeasurer' id='lastMeasurer' value='${count}'>"));
+		$('.divMeasurerAndMeasureDescription').append($("<input type='hidden' name='lastMeasureDescription' id='lastMeasureDescription' value='${count}'>"));
+    	
+		i = 0;
+	});
+
+	$('.addMeasurerAndMeasureDescription').click (function () {
+		
+	 	i=i+1;
+	 	measurerAndMeasureDescriptionSize = i;
+	 	$('.divMeasurerAndMeasureDescription').append($("<input type='text' name='measurerName"+i+"'id='measurerName"+i+"' placeholder='조치자검색'>"));
+	 	$('.divMeasurerAndMeasureDescription').append($("<input type='hidden' name='measurer"+i+"' id='measurer"+i+"'>"));
+	 	$('.divMeasurerAndMeasureDescription').append($("<input type='button' class='btn btn-primary' value='검색' onclick='openPopup("+i+")'><br>"));
+	 	$('.divMeasurerAndMeasureDescription').append($("<div class='measurerDiv' id='measurerDiv'></div>"));
+	 	$('.divMeasurerAndMeasureDescription').append($("<textarea id='measureDescription"+i+"' name='measureDescription"+i+"'  placeholder='조치내용입력' cols='100' rows='5'></textarea><br>"));
+
+	});
+	
+    var j = -1;   
+    $('.removeRelatedChain').on('click', function () {          
+        $(".divRelatedChain").html("");
+        isRelatedChain = true;
+        j = -1;
     });
     
-    
-    var j = -1;
     $('.addRelatedChain').click (function () {
-  		j=j+1;
+        j=j+1;
         $('.divRelatedChain').append (           
-        		$("<input type='text' name='relatedChain"+j+"' id='relatedChain"+j+"' placeholder='관련체인검색'><br>")
+              $("<input type='text' name='relatedChain"+j+"' id='relatedChain"+j+"' placeholder='관련체인검색'><br>")
         );
         
-        RelatedChainSize = j;
+        relatedChainSize = j;
         isRelatedChain = false;
-        $('.removeRelatedChain').on('click', function () {     	  
-            $(".divRelatedChain").html("");
-            isRelatedChain = true;
-            j = -1;
-        });
+        
     });
     
+	$("#caller").on("keyup",function() {
+		var caller = $(this).val();
+		console.log(caller);
+	});
+	
+	
     $("#sidebarToggle").on('click', function(e) {
 	    e.preventDefault();
 	    $("body").toggleClass("sidebar-toggled");
 	    $(".sidebar").toggleClass("toggled");
 	 });
+    
+  	function setAcceptDateAndTime() {
+		var date = new Date();
+		var nowDate = date.toLocaleDateString();
+		var nowTime = date.toLocaleTimeString();
+		document.getElementById("acceptDate").value = nowDate;
+		document.getElementById("acceptTime").value = nowTime;
+	}
  });
 </script>
 <script>
@@ -231,30 +272,27 @@ $(document).ready(function() {
 		        					<form:errors id="errorsMeasureTime" cssStyle="color: red;" path="measureTime" />
 		        					<form:errors id="errorsCause" cssStyle="color: red;" path="cause" />
 		        					<form:errors id="errorsMeasures" cssStyle="color: red;" path="measures" />
-		        					<form:errors id="errorsRelatedChain" cssStyle="color: red;" path="relatedChain" />
+<%-- 		        					<form:errors id="errorsRelatedChain" cssStyle="color: red;" path="relatedChain" /> --%>
 		        				</div>
 		        				<div id="popupLayer"></div>
 			        			<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 			        				<thead>
 			        					<tr>
-			        						<td>일자</td>
-			        						<td><input type="Date" id="acceptDate" name="acceptDate" value="${overtimeDto.acceptDate}"></td>
-			        					</tr>
-			        					<tr>
+			        						<td>일자</td>			        						
+			        						<td><input type="text" id="acceptDate" name="acceptDate" value="${overtimeDto.acceptDate}" readonly="readonly"></td>
 			        						<td>접수시각</td>
-			        						<td><input type="time" id="acceptTime" name="acceptTime" value="${overtimeDto.acceptTime}"></td>
+			        						<td><input type="text" id="acceptTime" name="acceptTime" value="${overtimeDto.acceptTime}" readonly="readonly"></td>
 			        					</tr>
 			        					<tr>
 			        						<td>접수자</td>
-			        						<td><input type="text" id="employeeName" name="employeeName" value="${overtimeDto.employeeName}" readonly="readonly">
-			        							<input type="hidden" id="accepter" name="accepter" value="${overtimeDto.accepter}">
-			        						    <input type="button" class="btn btn-primary" value="검색" onclick="javascript:openPopup('accepter')">
-<!-- 			        						    <input type="button" class="btn btn-primary" value="검색" onclick="searchEmployee('accepter')"> -->
+			        						<td colspan="3">
+			        							<input type="text" id="employeeName" name="employeeName" value="${sessionScope._USER_.employeeName}" readonly="readonly">
+			        							<input type="hidden" id="accepter" name="accepter" value="${sessionScope._USER_.employeeNo}" readonly="readonly">
 			        						</td>
 			        					</tr>
 			        					<tr>
 			        						<td>발신자</td>
-			        						<td><input type="text" id="caller" name="caller" value="${overtimeDto.caller}" readonly="readonly">
+			        						<td colspan="3"><input type="text" id="caller" name="caller" value="${overtimeDto.caller}" >
 			        							<input type="button" class="btn btn-primary" value="검색" onclick="openPopup('caller')">
 <!-- 			        							<input type="button" class="btn btn-primary" value="검색" onclick="searchCaller()"> -->
 			        						</td>
@@ -265,26 +303,32 @@ $(document).ready(function() {
 			        					</tr>
 			        					<tr>
 			        						<td>접수내용</td>			        						
-			        						<td><textarea id="acceptDescription" name="acceptDescription" cols="100" rows="5">${overtimeDto.acceptDescription}</textarea></td>
+			        						<td colspan="3"><textarea id="acceptDescription" name="acceptDescription" cols="100" rows="5">${overtimeDto.acceptDescription}</textarea></td>
 			        					</tr>
 			        					<tr>
 			        						<td>조치자 및 조치내용</td>
-			        						<td><input type="button" class="addMeasurerAndMeasureDescription btn btn-info" value="추가"><input type='button' class='removeMeasurerAndMeasureDescription btn btn-danger' id='removeMeasurerAndMeasureDescription' value='전체삭제'>
+			        						<td colspan="3"><input type="button" class="addMeasurerAndMeasureDescription btn btn-info" value="추가"><input type='button' class='removeMeasurerAndMeasureDescription btn btn-danger' id='removeMeasurerAndMeasureDescription' value='전체삭제'>
 			        						    <div class="divMeasurerAndMeasureDescription">
+			        						    	<c:set var="count" value="0" />
+			        						    	<input type="text" name="measurerName${count}"id="measurer${count}" value="${sessionScope._USER_.employeeName}" readonly="readonly">
+			        						    	<input type="hidden" name="measurer${count}" id="measurer${count}" value="${sessionScope._USER_.employeeNo}" ><br>
+			        						    	<textarea id="measureDescription${count}" name="measureDescription${count}" placeholder='조치내용입력' cols='100' rows='5'></textarea><br>
+			        						    	<input type="hidden" name="lastMeasurer" id="lastMeasurer" value="${count}">
+													<input type="hidden" name="lastMeasureDescription" id="lastMeasureDescription" value="${count}">
 										        </div>
 			        						</td>
 			        					</tr>
 			        					<tr>
 			        						<td>조치시간</td>
-												<td><input type="text" id="measureTime" name="measureTime" value="${overtimeDto.measureTime}">Hr</td>
+			        						<td colspan="3"><input type="number" min="0" step="0.1" id="measureTime" name="measureTime" value="${overtimeDto.measureTime}" >Hr</td>
 			        					</tr>
 			        					<tr>
 			        						<td>원인</td>
-			        						<td><textarea id="cause" name="cause" cols="100" rows="5">${overtimeDto.cause}</textarea></td>
+			        						<td colspan="3"><textarea id="cause" name="cause" cols="100" rows="5">${overtimeDto.cause}</textarea></td>
 			        					</tr>												        					
 			        					<tr>
 			        						<td>대책</td>
-			        						<td><textarea id="measures" name="measures" cols="100" rows="5">${overtimeDto.measures}</textarea></td>
+			        						<td colspan="3"><textarea id="measures" name="measures" cols="100" rows="5">${overtimeDto.measures}</textarea></td>
 			        					</tr>			        					
 			        					<tr>
 			        						<td>관련체인</td>
@@ -295,11 +339,11 @@ $(document).ready(function() {
 			        					</tr>
 			        					<tr>
 			        						<td>비고</td>
-			        						<td><input type="text" id="remarks" name="remarks"></td>
+			        						<td colspan="3"><input type="text" id="remarks" name="remarks"></td>
 			        					</tr>
 			        					<tr>
 			        						<td>처리형태</td>
-			        						<td><input type="text" id="typeOfProcessing" name="typeOfProcessing"></td>
+			        						<td colspan="3"><input type="text" id="typeOfProcessing" name="typeOfProcessing"></td>
 			        					<tr>
 			        				</thead>
 			        			</table>
