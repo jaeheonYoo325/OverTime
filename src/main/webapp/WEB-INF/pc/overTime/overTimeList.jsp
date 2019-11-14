@@ -153,7 +153,7 @@
 												</td>
 												<td>
 													<c:forEach items="${measureDescriptionMap[overTime.acceptNo]}" varStatus="status">
-														<c:out value="${measureDescriptionMap[overTime.acceptNo][status.index].measureDescription}"></c:out><br>
+															${measureDescriptionMap[overTime.acceptNo][status.index].measureDescription}<br>
 													</c:forEach>
 												</td>
 												<td>${overTime.measureTime}</td>

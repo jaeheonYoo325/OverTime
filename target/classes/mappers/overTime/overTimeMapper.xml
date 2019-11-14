@@ -176,12 +176,14 @@
   	    JOIN EMPLOYEE e2
   	    JOIN MEASURER mr
   	    JOIN MEASUREDESCRIPTION md
+  	    JOIN RELATEDCHAIN rc
   	    ON (o.statusCode=m.codeValue)
   	    AND (o.accepter=e.employeeNo)
   	    AND (mr.measurer=e2.employeeNo)
   	    AND (o.acceptNo=mr.acceptNo)
   	    AND (o.acceptNo=md.acceptNo)
   	    AND (o.acceptNo=mr.acceptNo)
+  	    AND (o.acceptNo=rc.acceptNo)
   	    WHERE 1=1
   	    	<if test="searchType == '전화번호' and searchKeyword != ''">
 				AND o.phoneNumber LIKE CONCAT(#{searchKeyword}, '%')
@@ -191,7 +193,8 @@
 			</if>
   	    	<if test="searchType == '조치자' and searchKeyword != ''">
 				AND  e2.employeeName LIKE CONCAT(#{searchKeyword}, '%')
-			</if>		
+			</if>
+				AND rc.relatedChain LIKE CONCAT(#{categoryChain}, '%')	
 				AND m.codeValue LIKE CONCAT(#{categoryStatus}, '%')
 				AND m.codeType="CTGY_STATUS"
 		GROUP BY o.acceptNo

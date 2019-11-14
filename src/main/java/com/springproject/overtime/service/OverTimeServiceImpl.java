@@ -159,11 +159,11 @@ public class OverTimeServiceImpl implements OverTimeService {
 			OverTimeRequestForCategory.setSearchKeyword("%"+categoryTypeDto.getSearchKeyword());
 		}
 		
-//		if (categoryTypeDto.getCategoryChain().equals("관련체인")) {
-//			OverTimeRequestForCategory.setCategoryChain("%");
-//		} else {
-//			OverTimeRequestForCategory.setCategoryChain(categoryTypeDto.getCategoryChain());
-//		}
+		if (categoryTypeDto.getCategoryChain().equals("관련체인")) {
+			OverTimeRequestForCategory.setCategoryChain("%");
+		} else {
+			OverTimeRequestForCategory.setCategoryChain(categoryTypeDto.getCategoryChain());
+		}
 		
 		if (categoryTypeDto.getCategoryStatus().equals("00")) {
 			OverTimeRequestForCategory.setCategoryStatus("%");

@@ -226,17 +226,16 @@ public class OverTimeCotroller {
 		
 		Long acceptNo=0L;
 		
-//		if(request.getParameter("searchType") != null && request.getParameter("searchKeyword") != null && request.getParameter("categoryChain")!=null && request.getParameter("categoryAcceptDate")!=null && request.getParameter("categoryStatus")!=null) {
-		if(request.getParameter("searchType") != null && request.getParameter("searchKeyword") != null && request.getParameter("categoryAcceptDate")!=null && request.getParameter("categoryStatus")!=null) {	
+		if(request.getParameter("searchType") != null && request.getParameter("searchKeyword") != null && request.getParameter("categoryChain")!=null && request.getParameter("categoryAcceptDate")!=null && request.getParameter("categoryStatus")!=null) {
 			String searchType = request.getParameter("searchType"); 
 	    	String searchKeyword = request.getParameter("searchKeyword");
-//	    	String categoryChain = request.getParameter("categoryChain");
+	    	String categoryChain = request.getParameter("categoryChain");
 	    	String categoryAcceptDate = request.getParameter("categoryAcceptDate");
 	    	String categoryStatus = request.getParameter("categoryStatus");
 	    	
 	    	categoryTypeDto.setSearchType(searchType);
 	    	categoryTypeDto.setSearchKeyword(searchKeyword);
-//	    	categoryTypeDto.setCategoryChain(categoryChain);
+	    	categoryTypeDto.setCategoryChain(categoryChain);
 	    	categoryTypeDto.setCategoryAcceptDate(categoryAcceptDate);
 	    	categoryTypeDto.setCategoryStatus(categoryStatus);
 	    	
@@ -258,6 +257,13 @@ public class OverTimeCotroller {
 			measurerMap.put(acceptNo, measurerOfAcceptNo);
 			
 			measureDescriptionOfAcceptNo=this.overTimeService.selectMeasureDescriptionOfAcceptNoService(acceptNo);
+			
+			for(int j=0; j<measureDescriptionOfAcceptNo.size();j++) {
+				String BeforeMeasureDescriptionReplacedStringForMultiLine = measureDescriptionOfAcceptNo.get(j).getMeasureDescription();
+				String AfterMeasureDescriptionReplacedStringForMultiLine= BeforeMeasureDescriptionReplacedStringForMultiLine.replace("\n", "<br>");
+				measureDescriptionOfAcceptNo.get(j).setMeasureDescription(AfterMeasureDescriptionReplacedStringForMultiLine);
+			}
+			
 			measureDescriptionMap.put(acceptNo, measureDescriptionOfAcceptNo);
 			
 			relatedChainOfAcceptNo=this.overTimeService.selectRelatedChainOfAcceptNoService(acceptNo);
@@ -266,7 +272,7 @@ public class OverTimeCotroller {
 		
 		for(int i=0; i<overTime.size(); i++) {
 			String BeforeAcceptDescriptionReplacedStringForMultiLine = overTime.get(i).getAcceptDescription();
-			String AfterAcceptDescriptionReplacedStringForMultiLine=BeforeAcceptDescriptionReplacedStringForMultiLine.replace("\n", "<br>");
+			String AfterAcceptDescriptionReplacedStringForMultiLine = BeforeAcceptDescriptionReplacedStringForMultiLine.replace("\n", "<br>");
 			overTime.get(i).setAcceptDescription(AfterAcceptDescriptionReplacedStringForMultiLine);
 		}
 		
