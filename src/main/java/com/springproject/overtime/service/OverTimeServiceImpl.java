@@ -108,8 +108,8 @@ public class OverTimeServiceImpl implements OverTimeService {
 		OverTimeApprovalDto overTimeApprovalDto=new OverTimeApprovalDto();
 		overTimeApprovalDto.setAcceptNo(acceptNo);
 		overTimeApprovalDto.setDrafter(overtimeDto.getAccepter());
-		overTimeApprovalDto.setApprovalLine("3");
-		overTimeApprovalDto.setApprovalDescription("overTimeApprovalB0");
+		overTimeApprovalDto.setApprovalLine("1");
+		overTimeApprovalDto.setApprovalDescription("overTimeApprovalD0");
 		boolean isInsertOverTimeApprovalForOverTimeRequestSuccess=this.overTimeDao.InsertOverTimeApprovalForOverTimeRequestDao(overTimeApprovalDto)>0;
 		
 		boolean isRequestSuccess=isInsertOverTimeRequestSuccess&isInsertMeasurerSuccess&isInsertMeasureDescriptionSuccess&isInsertOverTimeApprovalForOverTimeRequestSuccess&isInsertRelatedChainSuccess;
@@ -249,8 +249,8 @@ public class OverTimeServiceImpl implements OverTimeService {
 		OverTimeApprovalDto overTimeApprovalDto = this.employeeDao.selectMyOverTimeApprovalOfAcceptNoDao(acceptNo);
 		overTimeApprovalDto.setApprovalLineConfirm(overTimeDto.getAccepter());
 		boolean isDoApprovalingSuccessOfCompleteNowApproval = this.employeeDao.myOverTimeDoApprovalingOfCompleteNowApprovalDao(overTimeApprovalDto) > 0;
-		overTimeApprovalDto.setApprovalLine("3");
-		overTimeApprovalDto.setApprovalDescription("overTimeApprovalB0");
+		overTimeApprovalDto.setApprovalLine("1");
+		overTimeApprovalDto.setApprovalDescription("overTimeApprovalD0");
 		boolean isDoApprovalingSuccessOfNextApproval = this.employeeDao.myOverTimeDoApprovalingOfAddNextApprovalDao(overTimeApprovalDto) > 0;
 		
 		isOverTimeReRequestFinalSuccess = isOverTimeReRequestFinalSuccess && isOverTimeReRequestSuccess && isDeleteMeasurerOfAcceptNoSuccess && isDeleteMeasureDescriptionOfAcceptNoSuccess 

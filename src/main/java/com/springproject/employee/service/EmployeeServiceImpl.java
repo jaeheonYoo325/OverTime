@@ -73,42 +73,20 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public boolean myOverTimeDoApprovalingService(OverTimeApprovalDto overTimeApprovalDto) {
 		boolean isDoApprovalingSuccess = true;
-		boolean isDoApprovalingSuccessOfNextApproval = false;
 		boolean isDoApprovalingSuccessOfCompleteNowApproval = false;
 		boolean isMeasurerOfMeasureTimeAccumulationSuccess = true;
 		
 		isDoApprovalingSuccessOfCompleteNowApproval = this.employeeDao.myOverTimeDoApprovalingOfCompleteNowApprovalDao(overTimeApprovalDto) > 0;
 		
-		if ( overTimeApprovalDto.getApprovalDescription().equals("overTimeApprovalB0") ) {
-			overTimeApprovalDto.setApprovalDescription("overTimeApprovalC0");
-			overTimeApprovalDto.setApprovalLine("2");
-		} else if ( overTimeApprovalDto.getApprovalDescription().equals("overTimeApprovalC0") ) {
-			overTimeApprovalDto.setApprovalDescription("overTimeApprovalD0");
-			overTimeApprovalDto.setApprovalLine("1");
-		} else if ( overTimeApprovalDto.getApprovalDescription().equals("overTimeApprovalD0") ) {
-			overTimeApprovalDto.setApprovalDescription("overTimeApprovalComplete");
-			isDoApprovalingSuccessOfNextApproval = true;
-		}
-		
-		if ( !overTimeApprovalDto.getApprovalDescription().equals("overTimeApprovalComplete") ) {
-			isDoApprovalingSuccessOfNextApproval = this.employeeDao.myOverTimeDoApprovalingOfAddNextApprovalDao(overTimeApprovalDto) > 0;
-		}
-		
 		OverTimeDto overTimeDto = this.overTimeDao.selectOverTimeRequestOfAcceptNoDao(overTimeApprovalDto.getAcceptNo());
 		
 		if ( overTimeDto.getStatusCode().equals("01") ) {
 			overTimeDto.setStatusCode("02");
-		} else if ( overTimeDto.getStatusCode().equals("02") ) {
-			overTimeDto.setStatusCode("03");
-		} else if ( overTimeDto.getStatusCode().equals("03") ) {
-			overTimeDto.setStatusCode("04");
-		}
+			}
 		
 		boolean isChangeOverTimeRequestStatusCodeSuccess = this.employeeDao.changeStatusCodeForOverTimeDoApprovalingDao(overTimeDto) > 0;
 
 		// 최종 결재 승인 시 조치 시간 누적
-		if ( overTimeApprovalDto.getApprovalDescription().equals("overTimeApprovalComplete") ) {
-			
 			Long acceptNo = overTimeApprovalDto.getAcceptNo();
 			List<MeasurerDto> measurerListOfAcceptNo = this.employeeDao.measurerListOfAcceptNoDao(acceptNo);
 			
@@ -118,9 +96,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 				overTimeofEmployeeDto.setSumOfOverTime(overTimeDto.getMeasureTime());
 				isMeasurerOfMeasureTimeAccumulationSuccess =  this.employeeDao.measurerOfMeasureTimeAccumulationDao(overTimeofEmployeeDto) > 0;
 			}			
-		}
 		
-		isDoApprovalingSuccess = isDoApprovalingSuccess && isDoApprovalingSuccessOfCompleteNowApproval && isDoApprovalingSuccessOfNextApproval && isChangeOverTimeRequestStatusCodeSuccess && isMeasurerOfMeasureTimeAccumulationSuccess;
+		isDoApprovalingSuccess = isDoApprovalingSuccess && isDoApprovalingSuccessOfCompleteNowApproval && isChangeOverTimeRequestStatusCodeSuccess && isMeasurerOfMeasureTimeAccumulationSuccess;
 		
 		return isDoApprovalingSuccess;
 	}
@@ -144,7 +121,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		boolean isDoReturningSuccessOfNextApprovalForReturn = this.employeeDao.myDeployDoReturningOfNextApprovalDao(overTimeApprovalDto) > 0;
 		
 		OverTimeDto overTimeRequestDto = this.overTimeDao.selectOverTimeRequestOfAcceptNoDao(overTimeApprovalDto.getAcceptNo());
-		overTimeRequestDto.setStatusCode("05");
+		overTimeRequestDto.setStatusCode("03");
 		boolean isChangeOverTimeRequestStatusCodeSuccess = this.employeeDao.changeStatusCodeForOverTimeDoApprovalingDao(overTimeRequestDto) > 0;
 		
 		isDoReturningSuccess = isDoReturningSuccess && isDoReturningSuccessOfNextApprovalForReturn && isDoReturningSuccessOfNowApprovalForReturn && isChangeOverTimeRequestStatusCodeSuccess;

@@ -3,6 +3,8 @@ package com.springproject.overtime.controller;
 import java.io.IOException;
 
 import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.springproject.common.session.Session;
@@ -37,6 +41,8 @@ import com.springproject.dtos.RelatedChainDto;
 import com.springproject.employee.dto.EmployeeDto;
 import com.springproject.employee.service.EmployeeService;
 import com.springproject.overtime.service.OverTimeService;
+import com.springproject.overtimeAPI.HolidayItemDTO;
+import com.springproject.overtimeAPI.HolidayResponseVo;
 
 @Controller
 public class OverTimeCotroller {
@@ -313,6 +319,37 @@ public class OverTimeCotroller {
 		OverTimeofEmployeeDto overTimeofEmployeeDto=this.overTimeService.selectOverTimeofEmployeeService((EmployeeDto)session.getAttribute(Session.USER));
 		mv.addObject("overTimeofEmployeeDto",overTimeofEmployeeDto);
 		return mv;
+	}
+	
+	@GetMapping("/overTime/APItest")
+	public void APItest() {
+		System.out.println("APItest시작");
+		String serviceKey="%2Bva9e2iMS%2Fl3yD2j60LdkTm1Cf5xuC%2BlIC%2BkPYhaKA88BhrY0qlKWYILDsrvUNCkFNumugquHlDXEQ4bz2P6tw%3D%3D";
+		String holidayURL="http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo";
+		String requestURL=null;
+			String solMonth="09";
+			
+			try {
+				URI requestURI=new URI(holidayURL+"?ServiceKey="+serviceKey+"&solYear=2019&"+"solMonth="+solMonth);
+				RestTemplate restTemplate=new RestTemplate();
+				HolidayResponseVo response=restTemplate.getForObject(requestURI,HolidayResponseVo.class);
+				System.out.println("지금들고온 휴일정보는");
+				List<HolidayItemDTO> items=response.getBody().getItems();
+				
+				for(HolidayItemDTO item : items) {
+					System.out.println(item.toString());
+					System.out.println(item.getIsHoliday());
+					System.out.println(item.getLocdate());
+				}
+			} catch (RestClientException e) {
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+			
+		System.out.println("APItest종료");
+			
+		
 	}
 
 }
