@@ -15,9 +15,12 @@ public class ElementsOfOverTimeForCalculate {
 	private String holidayOvertimeOfExceed8Hours;
 	private String holidayOvertimeOfNotExceed8Hours;
 	
-	public ElementsOfOverTimeForCalculate(String acceptTime) {
-		setThisYearAndMonthAndDay(acceptTime);
+	public ElementsOfOverTimeForCalculate(String acceptDate,String acceptTime,String measureTime) {
+		this.acceptDate=acceptDate;
+		setThisYearAndMonthAndDay(acceptDate);
+		this.acceptTime=acceptTime;
 		this.completeTime=calculateCompleteTime();
+		this.measureTime=measureTime;
 	}
 	
 	public String getExtensionOverTime() {
@@ -88,7 +91,7 @@ public class ElementsOfOverTimeForCalculate {
 		this.completeTime = completeTime;
 	}
 	
-	public void setThisYearAndMonthAndDay(String acceptTime) {
+	public void setThisYearAndMonthAndDay(String acceptDate) {
 		String[] thisDate=acceptDate.split(".");
 		this.thisYear=thisDate[0];
 		this.thisMonth=thisDate[1];
@@ -209,7 +212,7 @@ public class ElementsOfOverTimeForCalculate {
 		}
 		
 		else {
-			String overTime_GapOfStartOfNightTimeBetweenCompleteTime=Double.toString( ((hourOfCompleteTime)+2)+minuteOfCompleteTime );
+			String overTime_GapOfStartOfNightTimeBetweenCompleteTime=Double.toString( ((hourOfCompleteTime)+2)+minuteOfCompleteTime);
 			return overTime_GapOfStartOfNightTimeBetweenCompleteTime;
 		}
 	}
