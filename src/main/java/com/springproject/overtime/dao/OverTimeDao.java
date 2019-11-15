@@ -68,4 +68,10 @@ public interface OverTimeDao {
 
 	public int deleteRelatedChainOfAcceptNoDao(Long acceptNo);
 	
+	public List<InterPhoneDto> selectCallerOfSearchAjaxDao(String caller);
+	
+	public List<EmployeeDto> selectEmployeeOfSearchAjaxDao(String measurer);
+	
+	public List<ChainTableDto> selectChainOfSearchAjaxDao(String relatedChain);
+	
 }

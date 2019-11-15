@@ -136,5 +136,17 @@ public class OverTimeDaoImpl extends SqlSessionDaoSupport implements OverTimeDao
 	public int deleteRelatedChainOfAcceptNoDao(Long acceptNo) {
 		return getSqlSession().delete("overTimeDao.deleteRelatedChainOfAcceptNoDao", acceptNo);
 	}
+	@Override
+	public List<InterPhoneDto> selectCallerOfSearchAjaxDao(String caller) {
+		return getSqlSession().selectList("overTimeDao.selectCallerOfSearchAjaxDao", caller);
+	}
+	@Override
+	public List<EmployeeDto> selectEmployeeOfSearchAjaxDao(String measurer) {
+		return getSqlSession().selectList("overTimeDao.selectEmployeeOfSearchAjaxDao", measurer);
+	}
+	@Override
+	public List<ChainTableDto> selectChainOfSearchAjaxDao(String relatedChain) {
+		return getSqlSession().selectList("overTimeDao.selectChainOfSearchAjaxDao", relatedChain);
+	}
 
 }

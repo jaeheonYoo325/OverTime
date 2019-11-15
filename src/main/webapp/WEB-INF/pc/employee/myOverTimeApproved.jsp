@@ -33,9 +33,9 @@
 		    $(".sidebar").toggleClass("toggled");
 		});	
 	});
-	function showApprovalDetail(thisAcceptNo, overTimeApprovalDetailCode){
-		   var acceptNo = thisAcceptNo;
-		   window.open("/employee/showOverTimeApprovalDetail.do/" + acceptNo + "/" + overTimeApprovalDetailCode, "상세보기", "width=1200, height=300");
+	
+	function showApprovedDetail(acceptNo)	{
+		$("#divToggle" + acceptNo).toggle();
 	}
 </script>
 <body id="page-top">
@@ -77,9 +77,69 @@
 													<td>${overTimeApproved.approvalRequestDate}</td>
 													<td>${overTimeApproved.approvalLineName}</td>
 													<td>${overTimeApproved.approvalDate}</td>
-													<td>${overTimeApproved.approvalLineConfirmName}</td>
-													<td><input type="button" value="상세내역" class="btn btn-primary" onclick="showApprovalDetail(${overTimeApproved.acceptNo},'myOverTime')"></td>
+													<td>${overTimeApproved.approvalLineConfirmName}</td>													
+													<td><input type="button" value="상세내역" class="btn btn-primary" onclick="showApprovedDetail(${overTimeApproved.acceptNo})"></td>
 												</tr>
+												<tr id="divToggle${overTimeApproved.acceptNo}" style="display:none;">
+													<td colspan="9">
+														<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+															<thead>
+									        					<tr>
+									        						<td>접수No</td>
+									        						<td>접수날짜</td>
+									        						<td>접수시각</td>
+									        						<td>접수자</td>
+									        						<td>발신자</td>
+									        						<td>전화번호</td>
+									        						<td>접수내용</td>
+									        						<td>조치자</td>
+									        						<td>조치내용</td>
+									        						<td>조치시간</td>
+									        						<td>원인분석 및 현상파악</td>
+									        						<td>대책</td>
+									        						<td>관련체인</td>
+									        						<td>비고</td>
+									        						<td>처리형태</td>
+									        					</tr>
+									        				</thead>
+									        				<tbody>
+									        					<c:forEach items="${overTimeRequestOfAcceptNo}" var="overTimeRequestOfAcceptNo">
+									        						<c:if test="${overTimeApproved.acceptNo eq overTimeRequestOfAcceptNo.acceptNo}">
+											        					<tr>										      										        						  																        				
+											        						<td>${overTimeRequestOfAcceptNo.acceptNo}</td>
+											        						<td>${overTimeRequestOfAcceptNo.acceptDate}</td>
+											        						<td>${overTimeRequestOfAcceptNo.acceptTime}</td>
+											        						<td>${overTimeRequestOfAcceptNo.employeeName}</td>
+											        						<td>${overTimeRequestOfAcceptNo.caller}</td>
+											        						<td>${overTimeRequestOfAcceptNo.phoneNumber}</td>
+											        						<td>${overTimeRequestOfAcceptNo.acceptDescription}</td>
+											        						<td>
+											        							<c:forEach items="${overTimeMeasurerofAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo]}" varStatus="status">
+																					${overTimeMeasurerofAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].employeeName}<br>
+																	            </c:forEach>
+											        						</td>
+											        						<td>
+											        							<c:forEach items="${overTimeMeasureDescriptionOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo]}" varStatus="status">
+																					${overTimeMeasureDescriptionOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].measureDescription}<br>
+																	            </c:forEach>
+											        						</td>
+											        						<td>${overTimeRequestOfAcceptNo.measureTime}</td>
+											        						<td>${overTimeRequestOfAcceptNo.cause}</td>
+											        						<td>${overTimeRequestOfAcceptNo.measures}</td>
+											        						<td>
+											        							<c:forEach items="${overTimeRelatedChainOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo]}" varStatus="status">
+																					${overTimeRelatedChainOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].relatedChain}<br>
+																	            </c:forEach>
+											        						</td>
+											        						<td>${overTimeRequestOfAcceptNo.remarks}</td>
+											        						<td>${overTimeRequestOfAcceptNo.typeOfProcessing}</td>
+											        					</tr>											        					
+										        					</c:if>
+									        					</c:forEach>
+									        				</tbody>
+														</table>
+													</td>
+												</tr>												
 											</c:forEach>
 										</c:when>
 										<c:otherwise>
@@ -89,7 +149,7 @@
 										</c:otherwise>
 									</c:choose>
 			        			</tbody>
-			        		</table>
+			        		</table>		        			
 			        	</div>
 			        </div>
 				</div>

@@ -17,7 +17,10 @@
   	<link rel="stylesheet" href="<c:url value='/bootstrapUiTemplate/css/sb-admin.css' />">
   	<!-- Page level plugin CSS-->
   	<link rel="stylesheet" href="<c:url value='/bootstrapUiTemplate/vendor/datatables/dataTables.bootstrap4.css' />">
+  	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/jquery/jquery.min.js' />"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/bootstrap/js/bootstrap.bundle.min.js' />"></script>
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/jquery-easing/jquery.easing.min.js' />"></script>
 	<script src="<c:url value='/bootstrapUiTemplate/js/sb-admin.min.js' />"></script>
@@ -30,16 +33,28 @@
         #popupLayer .popupContent {margin:0;padding:0;text-align:center;border:0;}
 		#popupLayer .popupContent iframe {width:1000px;height:800px;border:0;padding:0px;margin:0;z-index:10;}
 	</style>
+	<style>
+       .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: auto;
+            /* prevent horizontal scrollbar */
+            overflow-x: hidden;
+            /* add padding to account for vertical scrollbar */
+            padding-right: 20px;
+        } 
+	</style>
 </head>
 
 <script>
 $(document).ready(function() {
-	
 	var measurerAndMeasureDescriptionSize = 0;
 	var relatedChainSize = 0;
 	var isRelatedChain = true;
+	var searchMeasurerCount = 0;
+	var searchRelatedChainCount = 0;
 	
 	setAcceptDateAndTime();
+	searchCallerAjax();
 	
     $("#overTimeRequestBtn").click(function() {
     	
@@ -146,12 +161,17 @@ $(document).ready(function() {
 		
 	 	i=i+1;
 	 	measurerAndMeasureDescriptionSize = i;
-	 	$('.divMeasurerAndMeasureDescription').append($("<input type='text' name='measurerName"+i+"'id='measurerName"+i+"' placeholder='조치자검색'>"));
-	 	$('.divMeasurerAndMeasureDescription').append($("<input type='hidden' name='measurer"+i+"' id='measurer"+i+"'>"));
-	 	$('.divMeasurerAndMeasureDescription').append($("<input type='button' class='btn btn-primary' value='검색' onclick='openPopup("+i+")'><br>"));
+	 	searchMeasurerCount = measurerAndMeasureDescriptionSize;
+	 	
+	 	$('.divMeasurerAndMeasureDescription').append($("<div class='ui-widget'>"));
+	 	$('.divMeasurerAndMeasureDescription').append($("<input type='text' name='searchMeasurer"+i+"'id='searchMeasurer"+i+"' placeholder='조치자검색'>"));
+	 	$('.divMeasurerAndMeasureDescription').append($("<input type='hidden' name='measurerName"+i+"'id='measurerName"+i+"'>"));
+	 	$('.divMeasurerAndMeasureDescription').append($("<input type='hidden' name='measurer"+i+"' id='measurer"+i+"'>"));	 	
 	 	$('.divMeasurerAndMeasureDescription').append($("<div class='measurerDiv' id='measurerDiv'></div>"));
-	 	$('.divMeasurerAndMeasureDescription').append($("<textarea id='measureDescription"+i+"' name='measureDescription"+i+"'  placeholder='조치내용입력' cols='100' rows='5'></textarea><br>"));
-
+	 	$('.divMeasurerAndMeasureDescription').append($("<textarea id='measureDescription"+i+"' name='measureDescription"+i+"' placeholder='조치내용을 입력하세요.' cols='100' rows='5'></textarea><br>"));
+	 	$('.divMeasurerAndMeasureDescription').append($("</div>"));
+	 	
+	 	searchMeasurerAjax(searchMeasurerCount);
 	});
 	
     var j = -1;   
@@ -163,21 +183,134 @@ $(document).ready(function() {
     
     $('.addRelatedChain').click (function () {
         j=j+1;
-        $('.divRelatedChain').append (           
-              $("<input type='text' name='relatedChain"+j+"' id='relatedChain"+j+"' placeholder='관련체인검색'><br>")
-        );
-        
         relatedChainSize = j;
+        searchRelatedChainCount = relatedChainSize;
+        $('.divRelatedChain').append ($("<div class='ui-widget'>"));
+        $('.divRelatedChain').append ($("<input type='text' name='searchRelatedChain"+j+"' id='searchRelatedChain"+j+"' placeholder='관련체인검색'>"));
+        $('.divRelatedChain').append ($("<input type='text' name='relatedChain"+j+"' id='relatedChain"+j+"'><br>"));
+        $('.divRelatedChain').append ($("</div>"));
+                
         isRelatedChain = false;
         
+        searchRelatedChainAjax(searchRelatedChainCount);
     });
     
-	$("#caller").on("keyup",function() {
-		var caller = $(this).val();
-		console.log(caller);
-	});
+   
+    function searchCallerAjax() {
+    	$("#searchCaller").on("keyup",function() {
+    		var caller = $(this).val();
+    		var searchCallerArray = [];
+    		var i = 0;
+    		
+    		$.post("/overTime/searchCallerAjax.do"
+    				,{
+    					"caller" : caller
+    					
+    				}
+    				, function(response){
+    										
+    					for(i=0; i < response.interPhone.length; i++) {
+    						searchCallerArray.push(response.interPhone[i].partName+"-"+response.interPhone[i].phoneNumber);
+    					}
+    					
+    					$("#searchCaller").autocomplete(
+    							{
+    								source: searchCallerArray,								
+    								max:10, 
+    								scroll:true,
+    								select : function(event, ui) {
+    									
+    									var autoCompleteValue = ui.item.value;
+    									var subStringCallerArray = autoCompleteValue.split("-");
+    									var inputCaller = subStringCallerArray[0];
+    									var inputPhoneNumber = subStringCallerArray[1];
+    									
+    									$("#caller").val(inputCaller);
+    									$("#phoneNumber").val(inputPhoneNumber);
+    								}
+    							}
+    					);
+    					
+    			});
+    				
+    	});
+    }
 	
-	
+    function searchMeasurerAjax(searchMeasurerCount) {
+    	$("#searchMeasurer" + searchMeasurerCount).on("keyup", function() {
+    		var measurer = $(this).val();
+    		var searchMeasurerArray = [];
+    		var i = 0;
+    		
+    		$.post("/overTime/searchMeasurerAjax.do"
+    				,{
+    					"measurer" : measurer
+    					
+    				}
+    				, function(response){
+    										
+    					for(i=0; i < response.searchEmployees.length; i++) {
+    						searchMeasurerArray.push(response.searchEmployees[i].employeeName+"-"+response.searchEmployees[i].employeeNo);
+    					}
+    					
+    					$("#searchMeasurer" + searchMeasurerCount).autocomplete(
+    							{
+    								source: searchMeasurerArray,								
+    								max:10, 
+    								scroll:true,
+    								select : function(event, ui) {
+    									
+    									var autoCompleteValue = ui.item.value;
+    									var subStringMeasurerArray = autoCompleteValue.split("-");
+    									var inputMeasurerName = subStringMeasurerArray[0];
+    									var inputMeasurer = subStringMeasurerArray[1];
+    									
+    									$("#measurerName" + searchMeasurerCount).val(inputMeasurerName);
+    									$("#measurer" + searchMeasurerCount).val(inputMeasurer);
+    								}
+    							}
+    					);
+    			});
+    		
+    	});	
+    }
+    
+    function searchRelatedChainAjax(searchRelatedChainCount) {
+    	$("#searchRelatedChain" + searchRelatedChainCount).on("keyup", function() {
+    		var relatedChain = $(this).val();
+    		var searchRelatedChainArray = [];
+    		var i = 0;
+    		
+    		$.post("/overTime/searchRelatedChainAjax.do"
+    				,{
+    					"relatedChain" : relatedChain
+    				}
+    				, function(response){
+    										
+    					for(i=0; i < response.searchChain.length; i++) {
+    						searchRelatedChainArray.push(response.searchChain[i].chainName+"-"+response.searchChain[i].chainId);
+    					}
+    					
+    					$("#searchRelatedChain" + searchRelatedChainCount).autocomplete(
+    							{
+    								source: searchRelatedChainArray,								
+    								max:10, 
+    								scroll:true,
+    								select : function(event, ui) {
+    									
+    									var autoCompleteValue = ui.item.value;
+    									var subStringRelatedChainArray = autoCompleteValue.split("-");
+    									var inputMeasurerName = subStringRelatedChainArray[0];
+    									var inputRelatedChain = subStringRelatedChainArray[1];
+    									
+    									$("#relatedChain" + searchRelatedChainCount).val(inputRelatedChain);
+    								}
+    							}
+    					);
+    			});    		
+    	});
+    }
+		
     $("#sidebarToggle").on('click', function(e) {
 	    e.preventDefault();
 	    $("body").toggleClass("sidebar-toggled");
@@ -187,10 +320,18 @@ $(document).ready(function() {
   	function setAcceptDateAndTime() {
 		var date = new Date();
 		var nowDate = date.toLocaleDateString();
-		var nowTime = date.toLocaleTimeString();
-		document.getElementById("acceptDate").value = nowDate;
-		document.getElementById("acceptTime").value = nowTime;
+		var subStringYear = nowDate.substring(0,4);
+		var subStringMonth = nowDate.substring(6,8);
+		var subStringDay = nowDate.substring(10,12);
+		nowDate = subStringYear + "." + subStringMonth + "." + subStringDay
+		
+		var nowTime = date.toTimeString();		
+		var subStringNowTime = nowTime.substring(0,5);
+
+		$("#acceptDate").val(nowDate);
+		$("#acceptTime").val(subStringNowTime);
 	}
+  		
  });
 </script>
 <script>
@@ -210,42 +351,42 @@ $(document).ready(function() {
 //   		window.open("/search/searchChain.do","관련체인검색", "width=1000, height=800");
 //   	}
   	
-  	function openPopup(src) {
-  		console.log(typeof src);
-  		var param = "";
-  		var url = "";
-  		if ( typeof src == "string" && src == "accepter" ) {
-  			url = "/search/searchEmployee.do?employeeSearchWhat=";
-  			param = "accepter";
-  		} else if ( typeof src == "string" && src == "caller" ){
-  			url = "/search/searchCaller.do";
-  			param = "";
-  		} else if ( typeof src == "number" ) {
-  			url = "/search/searchMeasurer.do?measurerNo=";
-  			param = src;
-  		}
-  		else if ( typeof src == "string" && src =="chain") {
-  			url = "/search/searchChain.do";
-  			param = "";
-  		}
+//   	function openPopup(src) {
+//   		console.log(typeof src);
+//   		var param = "";
+//   		var url = "";
+//   		if ( typeof src == "string" && src == "accepter" ) {
+//   			url = "/search/searchEmployee.do?employeeSearchWhat=";
+//   			param = "accepter";
+//   		} else if ( typeof src == "string" && src == "caller" ){
+//   			url = "/search/searchCaller.do";
+//   			param = "";
+//   		} else if ( typeof src == "number" ) {
+//   			url = "/search/searchMeasurer.do?measurerNo=";
+//   			param = src;
+//   		}
+//   		else if ( typeof src == "string" && src =="chain") {
+//   			url = "/search/searchChain.do";
+//   			param = "";
+//   		}
   		
-        $("#popupLayer").bPopup({
-        	modalClose: false,
-            content:'iframe',
-            iframeAttr:'frameborder="auto"',
-            iframeAttr:'frameborder="0"',
-            contentContainer:'.popupContent',
-            loadUrl: url + param,            
-            onOpen: function() {
-            	$("#popupLayer").append("<div class='popupContent'></div><div class='b-close'><img src='<c:url value='/images/employee/layerPopupCancel.jpg'/>' width='30' height='30'></div>");            	
-            }, 
-            onClose: function() {
-            	$("#popupLayer").html("");
-            }
-        },
-        function() {
-        });
-    }
+//         $("#popupLayer").bPopup({
+//         	modalClose: false,
+//             content:'iframe',
+//             iframeAttr:'frameborder="auto"',
+//             iframeAttr:'frameborder="0"',
+//             contentContainer:'.popupContent',
+//             loadUrl: url + param,            
+//             onOpen: function() {
+//             	$("#popupLayer").append("<div class='popupContent'></div><div class='b-close'><img src='<c:url value='/images/employee/layerPopupCancel.jpg'/>' width='30' height='30'></div>");            	
+//             }, 
+//             onClose: function() {
+//             	$("#popupLayer").html("");
+//             }
+//         },
+//         function() {
+//         });
+//     }
   	
 </script>
 <body id="page-top">
@@ -259,7 +400,7 @@ $(document).ready(function() {
 			            <i class="fas fa-table"></i>
 			            	근무외시간요청
 			        </div>
-			        <div class="card-body">
+			        <div class="card-body">			        
 						<div class="table-responsive">
 		        			<form:form id="overTimeRequestFrm" modelAttribute="overTimeDto" name="overTimeRequestFrm">
 		        				<div id = "errorsDiv">
@@ -274,7 +415,8 @@ $(document).ready(function() {
 		        					<form:errors id="errorsMeasures" cssStyle="color: red;" path="measures" />
 <%-- 		        					<form:errors id="errorsRelatedChain" cssStyle="color: red;" path="relatedChain" /> --%>
 		        				</div>
-		        				<div id="popupLayer"></div>
+<!-- 		        				<div id="popupLayer"></div> -->
+								
 			        			<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 			        				<thead>
 			        					<tr>
@@ -290,21 +432,27 @@ $(document).ready(function() {
 			        							<input type="hidden" id="accepter" name="accepter" value="${sessionScope._USER_.employeeNo}" readonly="readonly">
 			        						</td>
 			        					</tr>
+			        					<!-- form -->
 			        					<tr>
 			        						<td>발신자</td>
-			        						<td colspan="3"><input type="text" id="caller" name="caller" value="${overtimeDto.caller}" >
-			        							<input type="button" class="btn btn-primary" value="검색" onclick="openPopup('caller')">
+			        						<td colspan="3">
+			        							<div class="ui-widget">
+			        							<input type="text" id="searchCaller" name="searchCaller" value="${overtimeDto.caller}" >
+			        							<input type="hidden" id="caller" name="caller" value="${overtimeDto.caller}">
+			        							<input type="hidden" id="phoneNumber" name="phoneNumber" value="${overtimeDto.phoneNumber}">
+<!-- 			        							<input type="button" class="btn btn-primary" value="검색" onclick="openPopup('caller')"> -->
 <!-- 			        							<input type="button" class="btn btn-primary" value="검색" onclick="searchCaller()"> -->
+												</div>
 			        						</td>
 			        					</tr>
-			        					<tr>
-			        						<td>전화번호</td>
-			        						<td><input type="text" id="phoneNumber" name="phoneNumber" value="${overtimeDto.phoneNumber}" readonly="readonly"></td>
-			        					</tr>
+<!-- 			        					<tr> -->
+<!-- 			        						<td>전화번호</td> -->
+<%-- 			        						<td><input type="text" id="phoneNumber" name="phoneNumber" value="${overtimeDto.phoneNumber}" readonly="readonly"></td> --%>
+<!-- 			        					</tr> -->
 			        					<tr>
 			        						<td>접수내용</td>			        						
-			        						<td colspan="3"><textarea id="acceptDescription" name="acceptDescription" cols="100" rows="5">${overtimeDto.acceptDescription}</textarea></td>
-			        					</tr>
+			        						<td colspan="3"><textarea id="acceptDescription" name="acceptDescription" placeholder="접수 내용을 입력하세요." cols="100" rows="5">${overtimeDto.acceptDescription}</textarea></td>
+			        					</tr>			        					
 			        					<tr>
 			        						<td>조치자 및 조치내용</td>
 			        						<td colspan="3"><input type="button" class="addMeasurerAndMeasureDescription btn btn-info" value="추가"><input type='button' class='removeMeasurerAndMeasureDescription btn btn-danger' id='removeMeasurerAndMeasureDescription' value='전체삭제'>
@@ -312,7 +460,7 @@ $(document).ready(function() {
 			        						    	<c:set var="count" value="0" />
 			        						    	<input type="text" name="measurerName${count}"id="measurer${count}" value="${sessionScope._USER_.employeeName}" readonly="readonly">
 			        						    	<input type="hidden" name="measurer${count}" id="measurer${count}" value="${sessionScope._USER_.employeeNo}" ><br>
-			        						    	<textarea id="measureDescription${count}" name="measureDescription${count}" placeholder='조치내용입력' cols='100' rows='5'></textarea><br>
+			        						    	<textarea id="measureDescription${count}" name="measureDescription${count}" placeholder="조치내용을 입력하세요." cols="100" rows="5"></textarea><br>
 			        						    	<input type="hidden" name="lastMeasurer" id="lastMeasurer" value="${count}">
 													<input type="hidden" name="lastMeasureDescription" id="lastMeasureDescription" value="${count}">
 										        </div>
@@ -324,12 +472,13 @@ $(document).ready(function() {
 			        					</tr>
 			        					<tr>
 			        						<td>원인</td>
-			        						<td colspan="3"><textarea id="cause" name="cause" cols="100" rows="5">${overtimeDto.cause}</textarea></td>
+			        						<td colspan="3"><textarea id="cause" name="cause" placeholder="원인 내용을 입력하세요." cols="100" rows="5">${overtimeDto.cause}</textarea></td>
 			        					</tr>												        					
 			        					<tr>
 			        						<td>대책</td>
-			        						<td colspan="3"><textarea id="measures" name="measures" cols="100" rows="5">${overtimeDto.measures}</textarea></td>
-			        					</tr>			        					
+			        						<td colspan="3"><textarea id="measures" name="measures" placeholder="대책 내용을 입력하세요." cols="100" rows="5">${overtimeDto.measures}</textarea></td>
+			        					</tr>
+			        					<!-- form -->			        					
 			        					<tr>
 			        						<td>관련체인</td>
 			        						<td><input type="button" class="addRelatedChain btn btn-info" value="추가"><input type='button' class='removeRelatedChain btn btn-danger' id='removeRelatedChain' value='전체삭제'>
@@ -339,14 +488,15 @@ $(document).ready(function() {
 			        					</tr>
 			        					<tr>
 			        						<td>비고</td>
-			        						<td colspan="3"><input type="text" id="remarks" name="remarks"></td>
+			        						<td colspan="3"><input type="text" id="remarks" name="remarks" placeholder="비고 내용을 입력하세요."></td>
 			        					</tr>
 			        					<tr>
 			        						<td>처리형태</td>
-			        						<td colspan="3"><input type="text" id="typeOfProcessing" name="typeOfProcessing"></td>
+			        						<td colspan="3"><input type="text" id="typeOfProcessing" name="typeOfProcessing" placeholder="처리형태 내용을 입력하세요."></td>
 			        					<tr>
 			        				</thead>
 			        			</table>
+			        			<input type="button" class="btn btn-success" id="overTimeSaveBtn" value="저장">
 								<input type="button" class="btn btn-primary" id="overTimeRequestBtn" value="요청">
 		        			</form:form>		        		
 		        		</div>
@@ -364,10 +514,10 @@ target.addEventListener('mousewheel',function (e) {
       e.preventDefault();
       var num = Number(this.value);
       if(e.wheelDelta > 0){
-        this.value = num + 0.1 ;
+        this.value = num + 0.5 ;
       }else{
         if(num < 0) return false;
-        this.value = num - 0.1 ;
+        this.value = num - 0.5 ;
       }
 });
 </script>

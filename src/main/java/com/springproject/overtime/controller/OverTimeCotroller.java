@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
@@ -353,5 +354,48 @@ public class OverTimeCotroller {
 	    System.out.println("휴일시간(8시간미만) :"+elementsOfOverTimeForCalculate.getHolidayOvertimeOfNotExceed8Hours());
 	
 	}
+	
+	@RequestMapping("/overTime/searchCallerAjax.do")
+	@ResponseBody
+	public Map<Object, Object> doSearchCallerAjaxAction(@RequestParam String caller) {
+		
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		List<InterPhoneDto> interPhone = this.overTimeService.selectCallerOfSearchAjaxService(caller);
+		
+		
+		if ( interPhone.size() > 0 ) {
+			map.put("interPhone", interPhone);
+		}
+		
+		return map;
+	}
+	
+	@RequestMapping("/overTime/searchMeasurerAjax.do")
+	@ResponseBody
+	public Map<Object, Object> doSearchMeasurerAjaxAction(@RequestParam String measurer) {
+		
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		List<EmployeeDto> searchEmployees = this.overTimeService.selectEmployeeOfSearchAjaxService(measurer);
+		
+		if ( searchEmployees.size() > 0 ) {
+			map.put("searchEmployees", searchEmployees);
+		}
+		
+		return map;
+	}
+	
+	@RequestMapping("/overTime/searchRelatedChainAjax.do")
+	@ResponseBody
+	public Map<Object, Object> doSearchRelatedChainAjaxAction(@RequestParam String relatedChain) {
+		
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		List<ChainTableDto> searchChain = this.overTimeService.selectChainOfSearchAjaxService(relatedChain);
+		
+		if ( searchChain.size() > 0) {
+			map.put("searchChain", searchChain);
+		}
+
+		return map;
+	}	
 
 }

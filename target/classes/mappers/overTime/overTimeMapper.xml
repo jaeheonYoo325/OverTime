@@ -334,4 +334,27 @@
   	  FROM	RELATEDCHAIN
   	  WHERE	acceptNo = #{acceptNo}
   	</delete>
+  	
+	<select id="selectCallerOfSearchAjaxDao" parameterType="string" resultType="InterPhoneDto">
+  		SELECT companyType,
+  			   teamName,
+  			   partName,
+  			   phoneNumber
+  	    FROM INTERPHONE
+  	    WHERE partName LIKE CONCAT('%',#{caller},'%') || phoneNumber LIKE CONCAT('%',#{caller},'%')
+  	</select>
+  	
+  	<select id="selectEmployeeOfSearchAjaxDao" parameterType="string" resultType="EmployeeDto">
+  		SELECT employeeNo,
+  			   employeeName
+  	    FROM EMPLOYEE
+  	    WHERE employeeName LIKE CONCAT('%',#{measurer},'%') || employeeNo LIKE CONCAT('%',#{measurer},'%') 
+  	</select>
+  	
+  	<select id="selectChainOfSearchAjaxDao" parameterType="string" resultType="ChainTableDto">
+   		SELECT chainId,
+  			   chainName
+  	    FROM CHAINTABLE
+  	    WHERE chainName LIKE CONCAT('%',#{relatedChain},'%') || chainId LIKE CONCAT('%',#{relatedChain},'%')
+  	</select>   	
   </mapper>

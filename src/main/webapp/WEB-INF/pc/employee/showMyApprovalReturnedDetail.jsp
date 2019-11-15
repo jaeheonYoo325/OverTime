@@ -18,7 +18,10 @@
   	<link rel="stylesheet" href="<c:url value='/bootstrapUiTemplate/css/sb-admin.css' />">
   	<!-- Page level plugin CSS-->
   	<link rel="stylesheet" href="<c:url value='/bootstrapUiTemplate/vendor/datatables/dataTables.bootstrap4.css' />">
+  	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  	
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/jquery/jquery.min.js' />"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/bootstrap/js/bootstrap.bundle.min.js' />"></script>
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/jquery-easing/jquery.easing.min.js' />"></script>
 	<script src="<c:url value='/bootstrapUiTemplate/js/sb-admin.min.js' />"></script>
@@ -30,13 +33,28 @@
         #popupLayer .b-close {position:absolute;top:10px;right:25px;color:#f37a20;font-weight:bold;cursor:hand;}
         #popupLayer .popupContent {margin:0;padding:0;text-align:center;border:0;}
 		#popupLayer .popupContent iframe {width:1000px;height:800px;border:0;padding:0px;margin:0;z-index:10;}
-	</style>	
+	</style>
+	<style>
+       .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: auto;
+            /* prevent horizontal scrollbar */
+            overflow-x: hidden;
+            /* add padding to account for vertical scrollbar */
+            padding-right: 20px;
+        } 
+	</style>		
 </head>
 <script>
 $(document).ready(function() {
 	
-	var isMeasurerAndMeasureDescription = false;
 	var measurerAndMeasureDescriptionSize = $("#measurerAndMeasureDescriptionSize").val();
+	var relatedChainSize = 0;
+	var isRelatedChain = true;
+	var searchMeasurerCount = 0;
+	var searchRelatedChainCount = 0;
+	
+	searchCallerAjax();
 	
     $("#overTimeRequestUpdateBtn").click(function() {
     	
@@ -83,10 +101,6 @@ $(document).ready(function() {
     		}
     	}    	
     	
-    	if ( isMeasurerAndMeasureDescription == true ) {
-    		alert("조치자 및 조치 내용은 필수 입력 값입니다.");
-    		return;
-    	}    	
     	
     	if ( measureTime == "" || measureTime == 0) {
     		alert("조치시간을 입력해주세요.");
@@ -100,9 +114,17 @@ $(document).ready(function() {
     		alert("대책 내용을 입력해주세요.");
     		return;
     	}
-    	if ( relatedChain == "") {
-    		alert("관련 체인을 조회해서 선택해주세요.");
+
+    	if ( isRelatedChain == true ) {
+    		alert("관련체인은 필수 입력 값입니다. 추가 버튼 클릭해서 관련 체인을 조회해주세요.");
     		return;
+    	}
+    	
+    	for (k = 0; k <= relatedChainSize; k++) {
+    		if ( $("#relatedChain" + k).val() == "") {
+    			alert((k+1) + "번째 관련체인를 검색해서 사용해주세요.");
+    			return;
+    		}
     	}
     	
 	     $("#overTimeRequestDailFrm").attr({
@@ -124,21 +146,32 @@ $(document).ready(function() {
 		i*=1;
 	}
 	
-	$('.removeMeasurerAndMeasureDescription').on('click', function () {     	  
+	$(".removeMeasurerAndMeasureDescription").on('click', function () {     	  
 		$(".divMeasurerAndMeasureDescription").html("");
-
-        isMeasurerAndMeasureDescription = true;
-		i = -1;
+		$('.divMeasurerAndMeasureDescription').append($("<c:set var='count' value='0' />"));
+		$('.divMeasurerAndMeasureDescription').append($("<input type='text' name='measurerName${count}'id='measurer${count}' value='${sessionScope._USER_.employeeName}' readonly='readonly'>"));
+		$('.divMeasurerAndMeasureDescription').append($("<input type='hidden' name='measurer${count}' id='measurer${count}' value='${sessionScope._USER_.employeeNo}' ><br>"));
+		$('.divMeasurerAndMeasureDescription').append($("<textarea id='measureDescription${count}' name='measureDescription${count}' placeholder='조치내용입력' cols='100' rows='5'></textarea><br>"));
+		$('.divMeasurerAndMeasureDescription').append($("<input type='hidden' name='lastMeasurer' id='lastMeasurer' value='${count}'>"));
+		$('.divMeasurerAndMeasureDescription').append($("<input type='hidden' name='lastMeasureDescription' id='lastMeasureDescription' value='${count}'>"));
+		i = 0;
 	});
 
-	$('.addMeasurerAndMeasureDescription').click (function () {
+	$(".addMeasurerAndMeasureDescription").click (function () {
 		
 	 	i=i+1;
 	 	measurerAndMeasureDescriptionSize = i;
-	 	isMeasurerAndMeasureDescription = false;
-	 	$('.divMeasurerAndMeasureDescription').append (           
-			$("<input type='text' name='measurerName"+i+"'id='measurerName"+i+"' placeholder='조치자검색' readonly='readonly'><input type='hidden' name='measurer"+i+"' id='measurer"+i+"'><input type='button' class='btn btn-primary' value='검색' onclick='openPopup("+i+")'><input type='text' name='measureDescription"+i+"' id='measureDescription"+i+"' placeholder='조치내용입력' style='width:800px;'><br>")
-	    );
+	 	searchMeasurerCount = measurerAndMeasureDescriptionSize;
+	 	
+	 	$('.divMeasurerAndMeasureDescription').append($("<div class='ui-widget'>"));
+	 	$('.divMeasurerAndMeasureDescription').append($("<input type='text' name='searchMeasurer"+i+"'id='searchMeasurer"+i+"' placeholder='조치자검색'>"));
+	 	$('.divMeasurerAndMeasureDescription').append($("<input type='hidden' name='measurerName"+i+"'id='measurerName"+i+"'>"));
+	 	$('.divMeasurerAndMeasureDescription').append($("<input type='hidden' name='measurer"+i+"' id='measurer"+i+"'>"));	 	
+	 	$('.divMeasurerAndMeasureDescription').append($("<div class='measurerDiv' id='measurerDiv'></div>"));
+	 	$('.divMeasurerAndMeasureDescription').append($("<textarea id='measureDescription"+i+"' name='measureDescription"+i+"' placeholder='조치내용을 입력하세요.' cols='100' rows='5'></textarea><br>"));
+	 	$('.divMeasurerAndMeasureDescription').append($("</div>"));
+	 	
+	 	searchMeasurerAjax(searchMeasurerCount);
 	});
 	
 	
@@ -156,20 +189,141 @@ $(document).ready(function() {
 	
 	$('.removeRelatedChain').on('click', function () {     	  
 		$(".divRelatedChain").html("");
+		isRelatedChain = true;
 		j = -1;
 	});
 
 	$('.addRelatedChain').click (function () {
 		
 	 	j=j+1;
-	 	$('.divRelatedChain').append (           
-	 		$("<input type='text' name='relatedChain"+j+"' id='relatedChain"+j+"' placeholder='관련체인검색'><br>")
-	    );
+	 	relatedChainSize = j;
+	 	searchRelatedChainCount = relatedChainSize;
+	 	
+        $(".divRelatedChain").append ($("<div class='ui-widget'>"));
+        $(".divRelatedChain").append ($("<input type='text' name='searchRelatedChain"+j+"' id='searchRelatedChain"+j+"' placeholder='관련체인검색'>"));
+        $(".divRelatedChain").append ($("<input type='hidden' name='relatedChain"+j+"' id='relatedChain"+j+"'><br>"));
+        $(".divRelatedChain").append ($("</div>"));
+	 	
+	 	isRelatedChain = false;
+	 	searchRelatedChainAjax(searchRelatedChainCount);
 	});
 	
 	
+    function searchCallerAjax() {
+    	$("#searchCaller").on("keyup",function() {
+    		var caller = $(this).val();
+    		var searchCallerArray = [];
+    		var i = 0;
+    		
+    		$.post("/overTime/searchCallerAjax.do"
+    				,{
+    					"caller" : caller
+    					
+    				}
+    				, function(response){
+    										
+    					for(i=0; i < response.interPhone.length; i++) {
+    						searchCallerArray.push(response.interPhone[i].partName+"-"+response.interPhone[i].phoneNumber);
+    					}
+    					
+    					$("#searchCaller").autocomplete(
+    							{
+    								source: searchCallerArray,								
+    								max:10, 
+    								scroll:true,
+    								select : function(event, ui) {
+    									
+    									var autoCompleteValue = ui.item.value;
+    									var subStringCallerArray = autoCompleteValue.split("-");
+    									var inputCaller = subStringCallerArray[0];
+    									var inputPhoneNumber = subStringCallerArray[1];
+    									
+    									$("#caller").val(inputCaller);
+    									$("#phoneNumber").val(inputPhoneNumber);
+    								}
+    							}
+    					);
+    					
+    			});
+    				
+    	});
+    }	
 	
-	
+    function searchMeasurerAjax(searchMeasurerCount) {
+    	$("#searchMeasurer" + searchMeasurerCount).on("keyup", function() {
+    		var measurer = $(this).val();
+    		var searchMeasurerArray = [];
+    		var i = 0;
+    		
+    		$.post("/overTime/searchMeasurerAjax.do"
+    				,{
+    					"measurer" : measurer
+    					
+    				}
+    				, function(response){
+    										
+    					for(i=0; i < response.searchEmployees.length; i++) {
+    						searchMeasurerArray.push(response.searchEmployees[i].employeeName+"-"+response.searchEmployees[i].employeeNo);
+    					}
+    					
+    					$("#searchMeasurer" + searchMeasurerCount).autocomplete(
+    							{
+    								source: searchMeasurerArray,								
+    								max:10, 
+    								scroll:true,
+    								select : function(event, ui) {
+    									
+    									var autoCompleteValue = ui.item.value;
+    									var subStringMeasurerArray = autoCompleteValue.split("-");
+    									var inputMeasurerName = subStringMeasurerArray[0];
+    									var inputMeasurer = subStringMeasurerArray[1];
+    									
+    									$("#measurerName" + searchMeasurerCount).val(inputMeasurerName);
+    									$("#measurer" + searchMeasurerCount).val(inputMeasurer);
+    								}
+    							}
+    					);
+    			});
+    		
+    	});	
+    }
+    
+    function searchRelatedChainAjax(searchRelatedChainCount) {
+    	$("#searchRelatedChain" + searchRelatedChainCount).on("keyup", function() {
+    		var relatedChain = $(this).val();
+    		var searchRelatedChainArray = [];
+    		var i = 0;
+    		
+    		$.post("/overTime/searchRelatedChainAjax.do"
+    				,{
+    					"relatedChain" : relatedChain
+    				}
+    				, function(response){
+    										
+    					for(i=0; i < response.searchChain.length; i++) {
+    						searchRelatedChainArray.push(response.searchChain[i].chainName+"-"+response.searchChain[i].chainId);
+    					}
+    					
+    					$("#searchRelatedChain" + searchRelatedChainCount).autocomplete(
+    							{
+    								source: searchRelatedChainArray,								
+    								max:10, 
+    								scroll:true,
+    								select : function(event, ui) {
+    									
+    									var autoCompleteValue = ui.item.value;
+    									var subStringRelatedChainArray = autoCompleteValue.split("-");
+    									var inputMeasurerName = subStringRelatedChainArray[0];
+    									var inputRelatedChain = subStringRelatedChainArray[1];
+    									
+    									$("#relatedChain" + searchRelatedChainCount).val(inputRelatedChain);
+    								}
+    							}
+    					);
+    			});    		
+    	});
+    }    
+    
     $("#sidebarToggle").on('click', function(e) {
 	    e.preventDefault();
 	    $("body").toggleClass("sidebar-toggled");
@@ -178,21 +332,23 @@ $(document).ready(function() {
  });
 </script>
 <script>
-//   	function searchEmployee(employeeSearchWhat){
-// 	   window.open("/search/searchEmployee.do?employeeSearchWhat="+employeeSearchWhat,"임직원검색", "width=1000, height=800");
-//  	}
-  	
-//     function searchMeasurer(measurerNo){
-//     	window.open("/search/searchMeasurer.do?measurerNo="+measurerNo,"임직원검색", "width=1000, height=800");
-//     }
-  	
-//   	function searchCaller(){
-//  	   window.open("/search/searchCaller.do","발신자검색", "width=1000, height=800");
-//   	}
-  	
-//   	function searchChain(){
-//   		window.open("/search/searchChain.do","관련체인검색", "width=1000, height=800");
-//   	}
+//function searchEmployee(employeeSearchWhat){
+// window.open("/search/searchEmployee.do?employeeSearchWhat="+employeeSearchWhat,"임직원검색", "width=1000, height=800");
+//}
+
+//function searchMeasurer(measurerNo){
+//	window.open("/search/searchMeasurer.do?measurerNo="+measurerNo,"임직원검색", "width=1000, height=800");
+//}
+
+//function searchCaller(){
+//  window.open("/search/searchCaller.do","발신자검색", "width=1000, height=800");
+//}
+
+//function searchChain(){
+//	window.open("/search/searchChain.do","관련체인검색", "width=1000, height=800");
+//}
+
+
 
   	function openPopup(src) {
   		console.log(typeof src);
@@ -264,42 +420,40 @@ $(document).ready(function() {
 			        					</tr>
 			        					<tr>
 			        						<td>일자</td>
-			        						<td><input type="Date" id="acceptDate" name="acceptDate" value="${overTimeRequestOfAcceptNo.acceptDate}"></td>
-			        					</tr>
-			        					<tr>
+			        						<td><input type="text" id="acceptDate" name="acceptDate" value="${overTimeRequestOfAcceptNo.acceptDate}" readonly="readonly"></td>
 			        						<td>접수시각</td>
-			        						<td><input type="time" id="acceptTime" name="acceptTime" value="${overTimeRequestOfAcceptNo.acceptTime}"></td>
+			        						<td><input type="text" id="acceptTime" name="acceptTime" value="${overTimeRequestOfAcceptNo.acceptTime}" readonly="readonly"></td>
 			        					</tr>
 			        					<tr>
 			        						<td>접수자</td>
-			        						<td><input type="text" id="employeeName" name="employeeName" value="${overTimeRequestOfAcceptNo.employeeName}" readonly="readonly">
+			        						<td colspan="3"><input type="text" id="employeeName" name="employeeName" value="${overTimeRequestOfAcceptNo.employeeName}" readonly="readonly">
 			        							<input type="hidden" id="accepter" name="accepter" value="${overTimeRequestOfAcceptNo.accepter}">
-			        						    <input type="button" class="btn btn-primary" value="검색" onclick="openPopup('accepter')">
+<!-- 			        						    <input type="button" class="btn btn-primary" value="검색" onclick="openPopup('accepter')"> -->
 			        						</td>
 			        					</tr>
 			        					<tr>
 			        						<td>발신자</td>
-			        						<td><input type="text" id="caller" name="caller" value="${overTimeRequestOfAcceptNo.caller}" readonly="readonly">
-			        							<input type="button" class="btn btn-primary" value="검색" onclick="openPopup('caller')">
+			        						<td colspan="3">
+			        							<div class="ui-widget">
+			        								<input type="text" id="searchCaller" name="searchCaller" value="${overTimeRequestOfAcceptNo.caller}">
+			        								<input type="hidden" id="caller" name="caller" value="${overTimeRequestOfAcceptNo.caller}">
+			        								<input type="hidden" id="phoneNumber" name="phoneNumber" value="${overTimeRequestOfAcceptNo.phoneNumber}">
+<!-- 			        							<input type="button" class="btn btn-primary" value="검색" onclick="openPopup('caller')"> -->
+												</div>
 			        						</td>
 			        					</tr>
 			        					<tr>
-			        						<td>전화번호</td>
-			        						<td><input type="text" id="phoneNumber" name="phoneNumber" value="${overTimeRequestOfAcceptNo.phoneNumber}" readonly="readonly" ></td>
-			        					</tr>
-			        					<tr>
 			        						<td>접수내용</td>			        						
-			        						<td><textarea id="acceptDescription" name="acceptDescription" cols="100" rows="5">${overTimeRequestOfAcceptNo.acceptDescription}</textarea></td>
+			        						<td colspan="3"><textarea id="acceptDescription" name="acceptDescription" cols="100" rows="5">${overTimeRequestOfAcceptNo.acceptDescription}</textarea></td>
 			        					</tr>
 			        					<tr>
 			        						<td>조치자 및 조치내용</td>
-			        						<td><input type="button" class="addMeasurerAndMeasureDescription btn btn-info" value="추가"><input type='button' class='removeMeasurerAndMeasureDescription btn btn-danger' id='removeMeasurerAndMeasureDescription' value='전체삭제'>
+			        						<td colspan="3"><input type="button" class="addMeasurerAndMeasureDescription btn btn-info" value="추가"><input type='button' class='removeMeasurerAndMeasureDescription btn btn-danger' id='removeMeasurerAndMeasureDescription' value='전체삭제'>
 			        						    <div class="divMeasurerAndMeasureDescription">
 			        						    	<c:forEach items="${overTimeMeasurerOfAcceptNo}" varStatus="status">
 														<input type="text" name="measurerName${status.index}" id="measurerName${status.index}" value="<c:out value="${overTimeMeasurerOfAcceptNo[status.index].employeeName}" />" readonly="readonly">
-														<input type="hidden" name="measurer${status.index}" id="measurer${status.index}" value="<c:out value="${overTimeMeasurerOfAcceptNo[status.index].measurer}" />" readonly="readonly">
-														<input type="button" class="btn btn-primary" value="검색" onclick="openPopup(${status.index})">
-														<input type="text" name="measureDescription${status.index}" id="measureDescription${status.index}" value="<c:out value="${overTimeMeasureDescriptionOfAcceptNo[status.index].measureDescription}" />" style="width:800px;"><br>							
+														<input type="hidden" name="measurer${status.index}" id="measurer${status.index}" value="<c:out value="${overTimeMeasurerOfAcceptNo[status.index].measurer}" />" readonly="readonly"><br>
+														<textarea id="measureDescription${status.index}" name="measureDescription${status.index}" placeholder="조치내용을 입력하세요." cols="100" rows="5"><c:out value="${overTimeMeasureDescriptionOfAcceptNo[status.index].measureDescription}" /></textarea><br>							
 													</c:forEach>
 													<input type="hidden" name="lastMeasurer" id="lastMeasurer" value="${fn:length(overTimeMeasurerOfAcceptNo)-1}">
 													<input type="hidden" name="lastMeasureDescription" id="lastMeasureDescription" value="${fn:length(overTimeMeasureDescriptionOfAcceptNo)-1}">
@@ -309,22 +463,23 @@ $(document).ready(function() {
 			        					</tr>
 			        					<tr>
 			        						<td>조치시간</td>
-			        						<td><input type="number" min="0" step="0.1" id="measureTime" name="measureTime" value="${overTimeRequestOfAcceptNo.measureTime}">Hr</td>
+			        						<td colspan="3"><input type="number" min="0" step="0.1" id="measureTime" name="measureTime" value="${overTimeRequestOfAcceptNo.measureTime}">Hr</td>
 			        					</tr>
 			        					<tr>
 			        						<td>원인</td>			        						
-			        						<td><textarea id="cause" name="cause" cols="100" rows="5">${overTimeRequestOfAcceptNo.cause}</textarea></td>
+			        						<td colspan="3"><textarea id="cause" name="cause" cols="100" rows="5">${overTimeRequestOfAcceptNo.cause}</textarea></td>
 			        					</tr>
 			        					<tr>
 			        						<td>대책</td>			        						
-			        						<td><textarea id="measures" name="measures" cols="100" rows="5">${overTimeRequestOfAcceptNo.measures}</textarea></td>
+			        						<td colspan="3"><textarea id="measures" name="measures" cols="100" rows="5">${overTimeRequestOfAcceptNo.measures}</textarea></td>
 			        					</tr>
 			        					<tr>
 			        						<td>관련체인</td>
-			        						<td><input type="button" class="addRelatedChain btn btn-info" value="추가"><input type='button' class='removeRelatedChain btn btn-danger' id='removeRelatedChain' value='전체삭제'>
+			        						<td colspan="3"><input type="button" class="addRelatedChain btn btn-info" value="추가"><input type='button' class='removeRelatedChain btn btn-danger' id='removeRelatedChain' value='전체삭제'>
 			        						    <div class="divRelatedChain">
 			        						   		<c:forEach items="${overTimeRelatedChainOfAcceptNo}" varStatus="status">
-			        						   			<input type="text" name="relatedChain${status.index}" id="relatedChain${status.index}" value="<c:out value="${overTimeRelatedChainOfAcceptNo[status.index].relatedChain}"/>"><br>
+			        						   			<input type="text" name="relatedChainName${status.index}" id="relatedChainName${status.index}" value="<c:out value="${overTimeRelatedChainOfAcceptNo[status.index].chainName}"/>">
+			        						   			<input type="hidden" name="relatedChain${status.index}" id="relatedChain${status.index}" value="<c:out value="${overTimeRelatedChainOfAcceptNo[status.index].relatedChain}"/>"><br>
 								            		</c:forEach>
 								            		<input type="hidden" name=lastRelatedChain id="lastRelatedChain" value="${fn:length(overTimeRelatedChainOfAcceptNo)-1}">
 										        </div>
@@ -333,11 +488,11 @@ $(document).ready(function() {
 			        					</tr>
 			        					<tr>
 			        						<td>비고</td>
-			        						<td><input type="text" id="remarks" name="remarks" value="${overTimeRequestOfAcceptNo.remarks}"></td>
+			        						<td colspan="3"><input type="text" id="remarks" name="remarks" value="${overTimeRequestOfAcceptNo.remarks}"></td>
 			        					</tr>
 			        					<tr>
 			        						<td>처리형태</td>
-			        						<td><input type="text" id="typeOfProcessing" name="typeOfProcessing" value="${overTimeRequestOfAcceptNo.typeOfProcessing}"></td>
+			        						<td colspan="3"><input type="text" id="typeOfProcessing" name="typeOfProcessing" value="${overTimeRequestOfAcceptNo.typeOfProcessing}"></td>
 			        					<tr>
 			        				</thead>
 			        			</table>

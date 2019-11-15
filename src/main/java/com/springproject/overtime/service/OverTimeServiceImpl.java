@@ -263,4 +263,19 @@ public class OverTimeServiceImpl implements OverTimeService {
 		return this.overTimeDao.selectRelatedChainOfAcceptNoDao(acceptNo);
 	}
 
+	@Override
+	public List<InterPhoneDto> selectCallerOfSearchAjaxService(String caller) {
+		return this.overTimeDao.selectCallerOfSearchAjaxDao(caller);
+	}
+
+	@Override
+	public List<EmployeeDto> selectEmployeeOfSearchAjaxService(String measurer) {
+		return this.overTimeDao.selectEmployeeOfSearchAjaxDao(measurer);
+	}
+
+	@Override
+	public List<ChainTableDto> selectChainOfSearchAjaxService(String relatedChain) {
+		return this.overTimeDao.selectChainOfSearchAjaxDao(relatedChain);
+	}
+
 }

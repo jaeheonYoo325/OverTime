@@ -85,7 +85,7 @@ public class EmployeeController {
 				out = response.getWriter();
 				out.println("<script>");
 				out.println("alert('로그인 성공하였습니다.')");
-				out.println("window.location.href = 'http://localhost:8080/main/main.do';");
+				out.println("window.location.href = '/main/main.do';");
 				out.println("</script>");
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -185,8 +185,40 @@ public class EmployeeController {
 		
 		ModelAndView mv = new ModelAndView(HttpRequestHelper.getJspPath());
 		List<OverTimeApprovalDto> overTimeApproval = this.employeeService.selectMyOverTimeApprovalService((EmployeeDto)session.getAttribute(Session.USER));
-		mv.addObject("overTimeApproval", overTimeApproval);			
-
+		Map<Long, List<MeasurerDto>> overTimeMeasurerofAcceptNoMap = new HashMap<Long, List<MeasurerDto>>();		
+		List<MeasurerDto> overTimeMeasurerOfAcceptNo = new ArrayList<MeasurerDto>();
+		
+		Map<Long, List<MeasureDescriptionDto>> overTimeMeasureDescriptionOfAcceptNoMap = new HashMap<Long, List<MeasureDescriptionDto>>();
+		List<MeasureDescriptionDto> overTimeMeasureDescriptionOfAcceptNo =  new ArrayList<MeasureDescriptionDto>();
+		
+		Map<Long, List<RelatedChainDto>> overTimeRelatedChainOfAcceptNoMap = new HashMap<Long, List<RelatedChainDto>>();
+		List<RelatedChainDto> overTimeRelatedChainOfAcceptNo = new ArrayList<RelatedChainDto>();
+		List<OverTimeDto> overTimeRequestOfAcceptNo = new ArrayList<OverTimeDto>();
+		
+		Long acceptNo = 0L;
+		
+		for(int i = 0; i < overTimeApproval.size(); i++) {
+			
+			acceptNo = overTimeApproval.get(i).getAcceptNo();
+			overTimeRequestOfAcceptNo.add(this.overTimeService.selectOverTimeRequestOfAcceptNoService(acceptNo));
+			
+			overTimeMeasurerOfAcceptNo = this.overTimeService.selectMeasurerOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
+			overTimeMeasurerofAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeMeasurerOfAcceptNo);
+			
+			overTimeMeasureDescriptionOfAcceptNo = this.overTimeService.selectMeasureDescriptionOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
+			overTimeMeasureDescriptionOfAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeMeasureDescriptionOfAcceptNo);
+			
+			overTimeRelatedChainOfAcceptNo = this.overTimeService.selectRelatedChainOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
+			overTimeRelatedChainOfAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeRelatedChainOfAcceptNo);
+			
+		}
+		
+		mv.addObject("overTimeApproval", overTimeApproval);
+		mv.addObject("overTimeRequestOfAcceptNo", overTimeRequestOfAcceptNo);
+		mv.addObject("overTimeMeasurerofAcceptNoMap", overTimeMeasurerofAcceptNoMap);
+		mv.addObject("overTimeMeasureDescriptionOfAcceptNoMap", overTimeMeasureDescriptionOfAcceptNoMap);
+		mv.addObject("overTimeRelatedChainOfAcceptNoMap", overTimeRelatedChainOfAcceptNoMap);
+		
 		return mv;
 	}	
 
@@ -225,8 +257,7 @@ public class EmployeeController {
 				out = response.getWriter();
 				out.println("<script>");
 				out.println("alert('결제완료')");
-				out.println("window.opener.location.reload()");
-				out.println("window.close()");
+				out.println("window.location.href='/employee/myOverTimeWillApproval.do'");	
 				out.println("</script>");
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -246,25 +277,84 @@ public class EmployeeController {
 	
 	@GetMapping("/employee/myOverTimeApproved.do")
 	public ModelAndView viewMyOverTimeApprovedPage(HttpSession session) {
-		List<OverTimeApprovalDto> overTimeApproved = this.employeeService.selectMyOverTimeApprovedService((EmployeeDto)session.getAttribute(Session.USER));
-		ModelAndView mv = new ModelAndView(HttpRequestHelper.getJspPath());
 		
-		if ( overTimeApproved.size() > 0 ) {
-			mv.addObject("overTimeApproved", overTimeApproved);
+		ModelAndView mv = new ModelAndView(HttpRequestHelper.getJspPath());
+		List<OverTimeApprovalDto> overTimeApproved = this.employeeService.selectMyOverTimeApprovedService((EmployeeDto)session.getAttribute(Session.USER));
+		
+		Map<Long, List<MeasurerDto>> overTimeMeasurerofAcceptNoMap = new HashMap<Long, List<MeasurerDto>>();		
+		List<MeasurerDto> overTimeMeasurerOfAcceptNo = new ArrayList<MeasurerDto>();
+		
+		Map<Long, List<MeasureDescriptionDto>> overTimeMeasureDescriptionOfAcceptNoMap = new HashMap<Long, List<MeasureDescriptionDto>>();
+		List<MeasureDescriptionDto> overTimeMeasureDescriptionOfAcceptNo =  new ArrayList<MeasureDescriptionDto>();
+		
+		Map<Long, List<RelatedChainDto>> overTimeRelatedChainOfAcceptNoMap = new HashMap<Long, List<RelatedChainDto>>();
+		List<RelatedChainDto> overTimeRelatedChainOfAcceptNo = new ArrayList<RelatedChainDto>();
+		List<OverTimeDto> overTimeRequestOfAcceptNo = new ArrayList<OverTimeDto>();
+		
+		Long acceptNo = 0L;
+		
+		for(int i = 0 ; i < overTimeApproved.size(); i++) {
+			acceptNo = overTimeApproved.get(i).getAcceptNo();
+			overTimeRequestOfAcceptNo.add(this.overTimeService.selectOverTimeRequestOfAcceptNoService(acceptNo));
+			
+			overTimeMeasurerOfAcceptNo = this.overTimeService.selectMeasurerOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
+			overTimeMeasurerofAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeMeasurerOfAcceptNo);
+			
+			overTimeMeasureDescriptionOfAcceptNo = this.overTimeService.selectMeasureDescriptionOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
+			overTimeMeasureDescriptionOfAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeMeasureDescriptionOfAcceptNo);
+			
+			overTimeRelatedChainOfAcceptNo = this.overTimeService.selectRelatedChainOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
+			overTimeRelatedChainOfAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeRelatedChainOfAcceptNo);
 		}
+		
+		mv.addObject("overTimeApproved", overTimeApproved);
+		mv.addObject("overTimeRequestOfAcceptNo", overTimeRequestOfAcceptNo);
+		mv.addObject("overTimeMeasurerofAcceptNoMap", overTimeMeasurerofAcceptNoMap);
+		mv.addObject("overTimeMeasureDescriptionOfAcceptNoMap", overTimeMeasureDescriptionOfAcceptNoMap);
+		mv.addObject("overTimeRelatedChainOfAcceptNoMap", overTimeRelatedChainOfAcceptNoMap);
 		
 		return mv;
 	}
 	
+	
 	@GetMapping("/employee/myOverTimeCompleted.do")
 	public ModelAndView viewMyOverTimeCompletedPage(HttpSession session) {
-		List<OverTimeApprovalDto> overTimeCompleted = this.employeeService.selectMyOverTimeCompletedService((EmployeeDto)session.getAttribute(Session.USER));
-		ModelAndView mv = new ModelAndView(HttpRequestHelper.getJspPath());
 		
-		if ( overTimeCompleted.size() > 0 ) {
-			mv.addObject("overTimeCompleted",overTimeCompleted);
+		ModelAndView mv = new ModelAndView(HttpRequestHelper.getJspPath());
+		List<OverTimeApprovalDto> overTimeCompleted = this.employeeService.selectMyOverTimeCompletedService((EmployeeDto)session.getAttribute(Session.USER));
+		
+		Map<Long, List<MeasurerDto>> overTimeMeasurerofAcceptNoMap = new HashMap<Long, List<MeasurerDto>>();		
+		List<MeasurerDto> overTimeMeasurerOfAcceptNo = new ArrayList<MeasurerDto>();
+		
+		Map<Long, List<MeasureDescriptionDto>> overTimeMeasureDescriptionOfAcceptNoMap = new HashMap<Long, List<MeasureDescriptionDto>>();
+		List<MeasureDescriptionDto> overTimeMeasureDescriptionOfAcceptNo =  new ArrayList<MeasureDescriptionDto>();
+		
+		Map<Long, List<RelatedChainDto>> overTimeRelatedChainOfAcceptNoMap = new HashMap<Long, List<RelatedChainDto>>();
+		List<RelatedChainDto> overTimeRelatedChainOfAcceptNo = new ArrayList<RelatedChainDto>();
+		List<OverTimeDto> overTimeRequestOfAcceptNo = new ArrayList<OverTimeDto>();
+		
+		Long acceptNo = 0L;
+		
+		for(int i = 0; i < overTimeCompleted.size(); i++) {
+			acceptNo = overTimeCompleted.get(i).getAcceptNo();
+			overTimeRequestOfAcceptNo.add(this.overTimeService.selectOverTimeRequestOfAcceptNoService(acceptNo));
+			
+			overTimeMeasurerOfAcceptNo = this.overTimeService.selectMeasurerOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
+			overTimeMeasurerofAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeMeasurerOfAcceptNo);
+			
+			overTimeMeasureDescriptionOfAcceptNo = this.overTimeService.selectMeasureDescriptionOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
+			overTimeMeasureDescriptionOfAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeMeasureDescriptionOfAcceptNo);
+			
+			overTimeRelatedChainOfAcceptNo = this.overTimeService.selectRelatedChainOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
+			overTimeRelatedChainOfAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeRelatedChainOfAcceptNo);
 		}
 	    
+		mv.addObject("overTimeCompleted", overTimeCompleted);
+		mv.addObject("overTimeRequestOfAcceptNo", overTimeRequestOfAcceptNo);
+		mv.addObject("overTimeMeasurerofAcceptNoMap", overTimeMeasurerofAcceptNoMap);
+		mv.addObject("overTimeMeasureDescriptionOfAcceptNoMap", overTimeMeasureDescriptionOfAcceptNoMap);
+		mv.addObject("overTimeRelatedChainOfAcceptNoMap", overTimeRelatedChainOfAcceptNoMap);
+		
 	    return mv;
 	}
 	
@@ -284,7 +374,7 @@ public class EmployeeController {
 				out = response.getWriter();
 				out.println("<script>");
 				out.println("alert('반려완료')");
-				out.println("window.opener.location.reload()");
+				out.println("window.location.href='/employee/myOverTimeWillApproval.do'");
 				out.println("window.close()");
 				out.println("</script>");
 			} catch (IOException e) {

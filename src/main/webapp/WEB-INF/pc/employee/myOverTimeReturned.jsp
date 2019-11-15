@@ -18,12 +18,21 @@
   	<link rel="stylesheet" href="<c:url value='/bootstrapUiTemplate/css/sb-admin.css' />">
   	<!-- Page level plugin CSS-->
   	<link rel="stylesheet" href="<c:url value='/bootstrapUiTemplate/vendor/datatables/dataTables.bootstrap4.css' />">
+  	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  	
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/jquery/jquery.min.js' />"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/bootstrap/js/bootstrap.bundle.min.js' />"></script>
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/jquery-easing/jquery.easing.min.js' />"></script>
 	<script src="<c:url value='/bootstrapUiTemplate/js/sb-admin.min.js' />"></script>
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/datatables/jquery.dataTables.js' />"></script>
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/datatables/dataTables.bootstrap4.js' />"></script>
+	<style type="text/css">
+		#popupLayer {display:none;border:5px solid #cccccc;margin:0;padding:5px;background-color:#ffffff;z-index:5;}
+        #popupLayer .b-close {position:absolute;top:10px;right:25px;color:#f37a20;font-weight:bold;cursor:hand;}
+        #popupLayer .popupContent {margin:0;padding:0;text-align:center;border:0;}
+		#popupLayer .popupContent iframe {width:1000px;height:800px;border:0;padding:0px;margin:0;z-index:10;}
+	</style>
 </head>
 <script>
 	$(document).ready(function() {
@@ -37,6 +46,33 @@
 	   var acceptNo = thisAcceptNo;
 	   window.open("/employee/showMyApprovalReturnedDetail.do/" + acceptNo, "상세보기", "width=1200, height=800");
 	}
+	
+//   	function openPopup(src) {
+//   		console.log(src);
+//   		var param = src;
+//   		var url = "/employee/showMyApprovalReturnedDetail.do/";  		
+
+//   		console.log(url + param);
+//         $("#popupLayer").bPopup({
+//         	modalClose: false,
+//             content:'iframe',
+//             iframeAttr:'frameborder="auto"',
+//             iframeAttr:'frameborder="0"',
+//             contentContainer:'.popupContent',
+//             loadUrl: url + param,            
+//             onOpen: function() {
+//             	$("#popupLayer").append("<div class='popupContent'></div><div class='b-close'><img src='<c:url value='/images/employee/layerPopupCancel.jpg'/>' width='30' height='30'></div>");            	
+//             }, 
+//             onClose: function() {
+//             	$("#popupLayer").html("");
+//             }
+//         },
+//         function() {
+//         });
+//     }
+</script>
+<script type="text/javascript">
+	
 </script>
 <body id="page-top">
 	<jsp:include page="/WEB-INF/pc/common/header.jsp" />
@@ -51,6 +87,7 @@
 			        </div>
 			        <div class="card-body">
 			        	<div class="table-responsive">
+			        		<div id="popupLayer"></div>
 			        		<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 			        			<thead>
 			        				<tr>
@@ -74,6 +111,7 @@
 													<td>${overTimeReturned.codeName}</td>
 													<td>${overTimeReturned.approvalRequestDate}</td>
 													<td>${overTimeReturned.approvalLineName}</td>
+<%-- 													<td><input type="button" value="상세내역&재요청" class="btn btn-primary" onclick="openPopup(${overTimeReturned.acceptNo})"></td> --%>
 													<td><input type="button" value="상세내역&재요청" class="btn btn-primary" onclick="showMyApprovalReturnedDetail(${overTimeReturned.acceptNo})"></td>
 												</tr>
 											</c:forEach>

@@ -52,4 +52,10 @@ public interface OverTimeService {
 	public boolean overTimeReRequestService(OverTimeDto overTimeDto, ArrayList<String> measurer, ArrayList<String> measureDescription, ArrayList<String> relatedChain);
 
 	public List<RelatedChainDto> selectRelatedChainOfAcceptNoService(Long acceptNo);
+	
+	public List<InterPhoneDto> selectCallerOfSearchAjaxService(String caller);
+	
+	public List<EmployeeDto> selectEmployeeOfSearchAjaxService(String measurer);
+	
+	public List<ChainTableDto> selectChainOfSearchAjaxService(String relatedChain);
 }
