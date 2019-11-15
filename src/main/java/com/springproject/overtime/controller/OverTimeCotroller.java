@@ -41,8 +41,10 @@ import com.springproject.dtos.RelatedChainDto;
 import com.springproject.employee.dto.EmployeeDto;
 import com.springproject.employee.service.EmployeeService;
 import com.springproject.overtime.service.OverTimeService;
+import com.springproject.overtimeAPI.ElementsOfOverTimeForCalculate;
 import com.springproject.overtimeAPI.HolidayItemDTO;
 import com.springproject.overtimeAPI.HolidayResponseVo;
+import com.springproject.overtimeAPI.OverTimeCalculater;
 
 @Controller
 public class OverTimeCotroller {
@@ -329,33 +331,27 @@ public class OverTimeCotroller {
 	
 	@GetMapping("/overTime/APItest")
 	public void APItest() {
-		System.out.println("APItest시작");
-		String serviceKey="%2Bva9e2iMS%2Fl3yD2j60LdkTm1Cf5xuC%2BlIC%2BkPYhaKA88BhrY0qlKWYILDsrvUNCkFNumugquHlDXEQ4bz2P6tw%3D%3D";
-		String holidayURL="http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo";
-		String requestURL=null;
-			String solMonth="09";
-			
-			try {
-				URI requestURI=new URI(holidayURL+"?ServiceKey="+serviceKey+"&solYear=2019&"+"solMonth="+solMonth);
-				RestTemplate restTemplate=new RestTemplate();
-				HolidayResponseVo response=restTemplate.getForObject(requestURI,HolidayResponseVo.class);
-				System.out.println("지금들고온 휴일정보는");
-				List<HolidayItemDTO> items=response.getBody().getItems();
-				
-				for(HolidayItemDTO item : items) {
-					System.out.println(item.toString());
-					System.out.println(item.getIsHoliday());
-					System.out.println(item.getLocdate());
-				}
-			} catch (RestClientException e) {
-				e.printStackTrace();
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
-			}
-			
-		System.out.println("APItest종료");
-			
+		String acceptDate="2019.11.17";
+		String acceptTime="01:00";
+		String measureTime="9.5";
 		
+		
+		
+		ElementsOfOverTimeForCalculate elementsOfOverTimeForCalculate=new ElementsOfOverTimeForCalculate(acceptDate, acceptTime, measureTime);
+		System.out.println("======================================================================");
+		System.out.println("thisYear"+elementsOfOverTimeForCalculate.getThisYear());
+		System.out.println("thisMonth"+elementsOfOverTimeForCalculate.getThisMonth());
+		System.out.println("thisDay"+elementsOfOverTimeForCalculate.getThisDay());
+		System.out.println("completeTime"+elementsOfOverTimeForCalculate.getCompleteTime());
+		System.out.println("======================================================================");
+		
+		OverTimeCalculater overTimeCalculater=OverTimeCalculater.getInstance();
+		overTimeCalculater.calculateOverTime(elementsOfOverTimeForCalculate);
+	    System.out.println("연장시간 : "+elementsOfOverTimeForCalculate.getExtensionOverTime());
+	    System.out.println("야간시간 : "+elementsOfOverTimeForCalculate.getNightTimeOvertime());
+	    System.out.println("휴일시간(8시간이상) :"+elementsOfOverTimeForCalculate.getHolidayOvertimeOfExceed8Hours());
+	    System.out.println("휴일시간(8시간미만) :"+elementsOfOverTimeForCalculate.getHolidayOvertimeOfNotExceed8Hours());
+	
 	}
 
 }

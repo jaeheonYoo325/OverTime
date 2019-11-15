@@ -33,3 +33,29 @@ public class ApiTest2 {
 	}
 
 }
+
+//System.out.println("APItest시작");
+//String serviceKey="%2Bva9e2iMS%2Fl3yD2j60LdkTm1Cf5xuC%2BlIC%2BkPYhaKA88BhrY0qlKWYILDsrvUNCkFNumugquHlDXEQ4bz2P6tw%3D%3D";
+//String holidayURL="http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo";
+//String requestURL=null;
+//	String solMonth="09";
+//	
+//	try {
+//		URI requestURI=new URI(holidayURL+"?ServiceKey="+serviceKey+"&solYear=2019&"+"solMonth="+solMonth);
+//		RestTemplate restTemplate=new RestTemplate();
+//		HolidayResponseVo response=restTemplate.getForObject(requestURI,HolidayResponseVo.class);
+//		System.out.println("지금들고온 휴일정보는");
+//		List<HolidayItemDTO> items=response.getBody().getItems();
+//		
+//		for(HolidayItemDTO item : items) {
+//			System.out.println(item.toString());
+//			System.out.println(item.getIsHoliday());
+//			System.out.println(item.getLocdate());
+//		}
+//	} catch (RestClientException e) {
+//		e.printStackTrace();
+//	} catch (URISyntaxException e) {
+//		e.printStackTrace();
+//	}
+//	
+//System.out.println("APItest종료");

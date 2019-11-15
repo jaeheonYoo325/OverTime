@@ -19,8 +19,8 @@ public class ElementsOfOverTimeForCalculate {
 		this.acceptDate=acceptDate;
 		setThisYearAndMonthAndDay(acceptDate);
 		this.acceptTime=acceptTime;
-		this.completeTime=calculateCompleteTime();
 		this.measureTime=measureTime;
+		this.completeTime=calculateCompleteTime();
 	}
 	
 	public String getExtensionOverTime() {
@@ -92,7 +92,7 @@ public class ElementsOfOverTimeForCalculate {
 	}
 	
 	public void setThisYearAndMonthAndDay(String acceptDate) {
-		String[] thisDate=acceptDate.split(".");
+		String[] thisDate=acceptDate.split("\\.");
 		this.thisYear=thisDate[0];
 		this.thisMonth=thisDate[1];
 		this.thisDay=thisDate[2];
@@ -100,16 +100,17 @@ public class ElementsOfOverTimeForCalculate {
 	
 	public String calculateCompleteTime() {
 		String[] acceptTimeSplitedForCalculate=(this.acceptTime).split(":");
-		Double hourOfAcceptTimeForCalculate=Double.parseDouble(acceptTimeSplitedForCalculate[0]);
-		Double minuteOfAcceptTimeForCalculate=Double.parseDouble(acceptTimeSplitedForCalculate[1]);
-		
+		int hourOfAcceptTimeForCalculate=Integer.parseInt(acceptTimeSplitedForCalculate[0]);
+		int minuteOfAcceptTimeForCalculate=Integer.parseInt(acceptTimeSplitedForCalculate[1]);
+
 		String measureTimeParsedToTimeString = parseMeasureTimeToTimeStirng();
+		
 		String[] measureTimeSplitedForCalculate=measureTimeParsedToTimeString.split(":");
-		Double hourOfmeasureTimeForCalculate=Double.parseDouble(measureTimeSplitedForCalculate[0]);
-		Double minuteOfmeasureTimeForCalculate=Double.parseDouble(measureTimeSplitedForCalculate[1]);
-			
-		Double hourOfCompleteTime=hourOfAcceptTimeForCalculate+hourOfmeasureTimeForCalculate;
-		Double minuteOfCompleteTime=minuteOfAcceptTimeForCalculate+minuteOfmeasureTimeForCalculate;
+		int hourOfmeasureTimeForCalculate=Integer.parseInt(measureTimeSplitedForCalculate[0]);
+		int minuteOfmeasureTimeForCalculate=Integer.parseInt(measureTimeSplitedForCalculate[1]);
+		
+		int hourOfCompleteTime=hourOfAcceptTimeForCalculate+hourOfmeasureTimeForCalculate;
+		int minuteOfCompleteTime=minuteOfAcceptTimeForCalculate+minuteOfmeasureTimeForCalculate;
 		
 		if(minuteOfCompleteTime>=60) {
 			minuteOfCompleteTime-=60;
@@ -120,25 +121,27 @@ public class ElementsOfOverTimeForCalculate {
 			hourOfCompleteTime-=24;
 		}
 		
-		String hourOfCompleteTimeToString=hourOfCompleteTime.toString();
+		String hourOfCompleteTimeToString=Integer.toString(hourOfCompleteTime);
 		if(hourOfCompleteTimeToString.length()==1) {
 			hourOfCompleteTimeToString="0"+hourOfCompleteTimeToString;
 		}
-		String minuteOfCompleteTimeToString=minuteOfCompleteTime.toString();
+		String minuteOfCompleteTimeToString=Integer.toString(minuteOfCompleteTime);
 		String completeTime=hourOfCompleteTimeToString+":"+minuteOfCompleteTimeToString;
 		
 		return completeTime;
 	}
 	
 	public String parseMeasureTimeToTimeStirng() {
-		String[] measureTimeSplited=(this.measureTime).split(".");
-		String hourOfMeasureTime=measureTimeSplited[0];
-		String minuteOfMeasureTime=measureTimeSplited[1];
+		double measureTime=Double.parseDouble(this.measureTime);
+		int integerOfmeasureTime=Integer.parseInt( ((this.measureTime).split("\\."))[0] );
 		
-		double hourOfmeasureTimeParseDouble=Double.parseDouble(hourOfMeasureTime);
-		double minuteOfmeasureTimeParseDouble=(Double.parseDouble(minuteOfMeasureTime))*60;
+		double decimalOfmeasureTime=measureTime-integerOfmeasureTime;
+		double minuteOfmeasureTimeDouble=(decimalOfmeasureTime)*60;
+		String minuteOfmeasureTimeDoubleToString=Double.toString(minuteOfmeasureTimeDouble);
 		
-		String measureTimeParsedToTimeString=Double.toString(hourOfmeasureTimeParseDouble)+":"+Double.toString(minuteOfmeasureTimeParseDouble);
+		int minuteOfmeasureTimeInteger=Integer.parseInt( ((minuteOfmeasureTimeDoubleToString).split("\\."))[0] );
+		
+		String measureTimeParsedToTimeString=Integer.toString(integerOfmeasureTime)+":"+Integer.toString(minuteOfmeasureTimeInteger);
 		
 		return measureTimeParsedToTimeString;
 	}
@@ -200,19 +203,20 @@ public class ElementsOfOverTimeForCalculate {
 	public String GapOfStartOfNightTimeBetweenCompleteTime() {
 		String[] completeTimeSplited=(this.completeTime).split(":");
 		Double hourOfCompleteTime=Double.parseDouble(completeTimeSplited[0]);
+		
 		Double minuteOfCompleteTime=(Double.parseDouble(completeTimeSplited[1]))/60;
 		
 		String[] startOfNightTimeSplited=("22:00").split(":");
 		Double hourOfstartOfNightTime=Double.parseDouble(startOfNightTimeSplited[0]);
 		
-		if(hourOfCompleteTime>22 && hourOfCompleteTime<24) {
+		if(hourOfCompleteTime>=22 && hourOfCompleteTime<24) {
 			Double hour_GapOfStartOfNightTimeBetweenCompleteTime=hourOfCompleteTime-hourOfstartOfNightTime;
 			String overTime_GapOfStartOfNightTimeBetweenCompleteTime=Double.toString(hour_GapOfStartOfNightTimeBetweenCompleteTime+minuteOfCompleteTime);
 			return overTime_GapOfStartOfNightTimeBetweenCompleteTime;
 		}
 		
 		else {
-			String overTime_GapOfStartOfNightTimeBetweenCompleteTime=Double.toString( ((hourOfCompleteTime)+2)+minuteOfCompleteTime);
+			String overTime_GapOfStartOfNightTimeBetweenCompleteTime=Double.toString( ((hourOfCompleteTime)+2)+minuteOfCompleteTime );
 			return overTime_GapOfStartOfNightTimeBetweenCompleteTime;
 		}
 	}

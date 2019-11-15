@@ -62,6 +62,7 @@ public class OverTimeCalculater {
 				e.printStackTrace();
 			}
 			
+			
 		return isThisDayHoliday;
 	}
 	
@@ -82,7 +83,6 @@ public class OverTimeCalculater {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			
 			return isThisDaySunDay;
 	}
 	
