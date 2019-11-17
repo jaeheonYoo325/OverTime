@@ -248,7 +248,10 @@
   				o.employeeNo,
   				e.employeeName,
   				o.sumOfOverTime,
-  				FLOOR(sumOfOverTime/8) AS amountOfAnnualVacation
+  				o.extensionOverTime,
+  				o.nightTimeOvertime,
+  				o.holidayOvertimeOfExceed8Hours,
+  				o.holidayOvertimeOfNotExceed8Hours
   		FROM    OVERTIMEOFEMPLOYEE o
   		JOIN    EMPLOYEE e
   		ON		(o.employeeNo=e.employeeNo)

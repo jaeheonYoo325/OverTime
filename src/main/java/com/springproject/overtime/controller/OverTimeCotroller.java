@@ -330,31 +330,6 @@ public class OverTimeCotroller {
 		return mv;
 	}
 	
-	@GetMapping("/overTime/APItest")
-	public void APItest() {
-		String acceptDate="2019.11.17";
-		String acceptTime="01:00";
-		String measureTime="9.5";
-		
-		
-		
-		ElementsOfOverTimeForCalculate elementsOfOverTimeForCalculate=new ElementsOfOverTimeForCalculate(acceptDate, acceptTime, measureTime);
-		System.out.println("======================================================================");
-		System.out.println("thisYear"+elementsOfOverTimeForCalculate.getThisYear());
-		System.out.println("thisMonth"+elementsOfOverTimeForCalculate.getThisMonth());
-		System.out.println("thisDay"+elementsOfOverTimeForCalculate.getThisDay());
-		System.out.println("completeTime"+elementsOfOverTimeForCalculate.getCompleteTime());
-		System.out.println("======================================================================");
-		
-		OverTimeCalculater overTimeCalculater=OverTimeCalculater.getInstance();
-		overTimeCalculater.calculateOverTime(elementsOfOverTimeForCalculate);
-	    System.out.println("연장시간 : "+elementsOfOverTimeForCalculate.getExtensionOverTime());
-	    System.out.println("야간시간 : "+elementsOfOverTimeForCalculate.getNightTimeOvertime());
-	    System.out.println("휴일시간(8시간이상) :"+elementsOfOverTimeForCalculate.getHolidayOvertimeOfExceed8Hours());
-	    System.out.println("휴일시간(8시간미만) :"+elementsOfOverTimeForCalculate.getHolidayOvertimeOfNotExceed8Hours());
-	
-	}
-	
 	@RequestMapping("/overTime/searchCallerAjax.do")
 	@ResponseBody
 	public Map<Object, Object> doSearchCallerAjaxAction(@RequestParam String caller) {

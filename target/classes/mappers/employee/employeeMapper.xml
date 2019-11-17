@@ -77,10 +77,18 @@
   	<insert id="isInsertOneOvertimeOfEmployeeDao" parameterType="EmployeeDto">
   		INSERT INTO OVERTIMEOFEMPLOYEE(
   										employeeNo,
-  										sumOfOverTime
+  										sumOfOverTime,
+  										extensionOverTime,
+  										nightTimeOvertime,
+  										holidayOvertimeOfExceed8Hours,
+  										holidayOvertimeOfNotExceed8Hours
   		                              )
   		                       VALUES (
   		                       			#{employeeNo},
+  		                       			"0",
+  		                       			"0",
+  		                       			"0",
+  		                       			"0",
   		                       			"0"
   		                       		  )
   		
@@ -255,9 +263,13 @@
 		WHERE	acceptNo = #{acceptNo}
   	</select>  	 
   	
-  	<update id="measurerOfMeasureTimeAccumulationDao" parameterType="OverTimeofEmployeeDto">
+  	<update id="measurerOfMeasureTimeAccumulationDao" parameterType="ElementsOfOverTimeForCalculate">
   		UPDATE	OVERTIMEOFEMPLOYEE
-  		SET		sumOfOverTime = sumOfOverTime + #{sumOfOverTime}
+  		SET		sumOfOverTime = sumOfOverTime + #{measureTime}
+  		,     extensionOverTime=extensionOverTime + #{extensionOverTime}
+  		,		nightTimeOvertime=nightTimeOvertime + #{nightTimeOvertime}
+  		,     holidayOvertimeOfExceed8Hours=holidayOvertimeOfExceed8Hours + #{holidayOvertimeOfExceed8Hours}
+  		,     holidayOvertimeOfNotExceed8Hours=holidayOvertimeOfNotExceed8Hours + #{holidayOvertimeOfNotExceed8Hours}
   		WHERE	employeeNo = #{employeeNo}
   	</update>
   	

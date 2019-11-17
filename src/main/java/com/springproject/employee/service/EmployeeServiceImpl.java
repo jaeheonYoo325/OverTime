@@ -2,6 +2,7 @@ package com.springproject.employee.service;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +11,11 @@ import com.springproject.dtos.AuthorityDto;
 import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeApprovalDto;
 import com.springproject.dtos.OverTimeDto;
-import com.springproject.dtos.OverTimeofEmployeeDto;
 import com.springproject.employee.dao.EmployeeDao;
 import com.springproject.employee.dto.EmployeeDto;
 import com.springproject.overtime.dao.OverTimeDao;
+import com.springproject.overtimeAPI.ElementsOfOverTimeForCalculate;
+import com.springproject.overtimeAPI.OverTimeCalculater;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -90,12 +92,29 @@ public class EmployeeServiceImpl implements EmployeeService {
 			Long acceptNo = overTimeApprovalDto.getAcceptNo();
 			List<MeasurerDto> measurerListOfAcceptNo = this.employeeDao.measurerListOfAcceptNoDao(acceptNo);
 			
+//			for ( int i = 0; i < measurerListOfAcceptNo.size(); i++) {
+//				OverTimeofEmployeeDto overTimeofEmployeeDto = new OverTimeofEmployeeDto();
+//				overTimeofEmployeeDto.setEmployeeNo(measurerListOfAcceptNo.get(i).getMeasurer());
+//				overTimeofEmployeeDto.setSumOfOverTime(overTimeDto.getMeasureTime());
+//				isMeasurerOfMeasureTimeAccumulationSuccess =  this.employeeDao.measurerOfMeasureTimeAccumulationDao(overTimeofEmployeeDto) > 0;
+//			}
+			
 			for ( int i = 0; i < measurerListOfAcceptNo.size(); i++) {
-				OverTimeofEmployeeDto overTimeofEmployeeDto = new OverTimeofEmployeeDto();
-				overTimeofEmployeeDto.setEmployeeNo(measurerListOfAcceptNo.get(i).getMeasurer());
-				overTimeofEmployeeDto.setSumOfOverTime(overTimeDto.getMeasureTime());
-				isMeasurerOfMeasureTimeAccumulationSuccess =  this.employeeDao.measurerOfMeasureTimeAccumulationDao(overTimeofEmployeeDto) > 0;
-			}			
+				String employeeNo=measurerListOfAcceptNo.get(i).getMeasurer();
+				String acceptDate=overTimeDto.getAcceptDate();
+				String acceptTime=overTimeDto.getAcceptTime();
+				String measureTime=overTimeDto.getMeasureTime();
+				
+				ElementsOfOverTimeForCalculate elementsOfOverTimeForCalculate=new ElementsOfOverTimeForCalculate(employeeNo, acceptDate, acceptTime, measureTime);
+				OverTimeCalculater overTimeCalculater=OverTimeCalculater.getInstance();
+				overTimeCalculater.calculateOverTime(elementsOfOverTimeForCalculate);
+			    System.out.println("연장시간 : "+elementsOfOverTimeForCalculate.getExtensionOverTime());
+			    System.out.println("야간시간 : "+elementsOfOverTimeForCalculate.getNightTimeOvertime());
+			    System.out.println("휴일시간(8시간이상) :"+elementsOfOverTimeForCalculate.getHolidayOvertimeOfExceed8Hours());
+			    System.out.println("휴일시간(8시간미만) :"+elementsOfOverTimeForCalculate.getHolidayOvertimeOfNotExceed8Hours());
+				
+				isMeasurerOfMeasureTimeAccumulationSuccess =  this.employeeDao.measurerOfMeasureTimeAccumulationDao(elementsOfOverTimeForCalculate) > 0;
+			}	
 		
 		isDoApprovalingSuccess = isDoApprovalingSuccess && isDoApprovalingSuccessOfCompleteNowApproval && isChangeOverTimeRequestStatusCodeSuccess && isMeasurerOfMeasureTimeAccumulationSuccess;
 		

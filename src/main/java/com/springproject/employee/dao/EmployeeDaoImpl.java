@@ -2,6 +2,7 @@ package com.springproject.employee.dao;
 
 import java.util.List;
 
+
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import com.springproject.dtos.OverTimeApprovalDto;
 import com.springproject.dtos.OverTimeDto;
 import com.springproject.dtos.OverTimeofEmployeeDto;
 import com.springproject.employee.dto.EmployeeDto;
+import com.springproject.overtimeAPI.ElementsOfOverTimeForCalculate;
 
 @Repository
 public class EmployeeDaoImpl extends SqlSessionDaoSupport implements EmployeeDao {
@@ -104,8 +106,8 @@ public class EmployeeDaoImpl extends SqlSessionDaoSupport implements EmployeeDao
 	}
 
 	@Override
-	public int measurerOfMeasureTimeAccumulationDao(OverTimeofEmployeeDto overTimeofEmployeeDto) {
-		return this.getSqlSession().update("EmployeeDao.measurerOfMeasureTimeAccumulationDao", overTimeofEmployeeDto);
+	public int measurerOfMeasureTimeAccumulationDao(ElementsOfOverTimeForCalculate elementsOfOverTimeForCalculate) {
+		return this.getSqlSession().update("EmployeeDao.measurerOfMeasureTimeAccumulationDao", elementsOfOverTimeForCalculate);
 	}
 
 	@Override

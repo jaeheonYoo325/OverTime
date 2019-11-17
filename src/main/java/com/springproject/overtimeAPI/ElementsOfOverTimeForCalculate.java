@@ -1,6 +1,7 @@
 package com.springproject.overtimeAPI;
 
 public class ElementsOfOverTimeForCalculate {
+	private String employeeNo;
 	private String acceptDate;
 	private String acceptTime;
 	private String measureTime;
@@ -15,12 +16,25 @@ public class ElementsOfOverTimeForCalculate {
 	private String holidayOvertimeOfExceed8Hours;
 	private String holidayOvertimeOfNotExceed8Hours;
 	
-	public ElementsOfOverTimeForCalculate(String acceptDate,String acceptTime,String measureTime) {
+	public ElementsOfOverTimeForCalculate(String employeeNo, String acceptDate,String acceptTime,String measureTime) {
+		this.employeeNo=employeeNo;
 		this.acceptDate=acceptDate;
 		setThisYearAndMonthAndDay(acceptDate);
 		this.acceptTime=acceptTime;
 		this.measureTime=measureTime;
 		this.completeTime=calculateCompleteTime();
+		this.extensionOverTime="0";
+		this.nightTimeOvertime="0";
+		this.holidayOvertimeOfExceed8Hours="0";
+		this.holidayOvertimeOfNotExceed8Hours="0";
+	}
+	
+	public String getEmployeeNo() {
+		return employeeNo;
+	}
+
+	public void setEmployeeNo(String employeeNo) {
+		this.employeeNo = employeeNo;
 	}
 	
 	public String getExtensionOverTime() {

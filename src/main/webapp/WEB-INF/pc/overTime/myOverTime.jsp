@@ -42,14 +42,20 @@
 			        					<tr>
 			        						<td>임직원번호</td>
 			        						<td>임직원이름</td>
-			        						<td>누적시간</td>
-			        						<td>사용가능연차개수</td>
+			        						<td>총누적근로시간</td>
+			        						<td>연장근로시간</td>
+			        						<td>야간근로시간</td>
+			        						<td>휴일근로시간(8시간이상)</td>
+			        						<td>휴일근로시간(8시간미만)</td>
 			        					</tr>
 			        					<tr>
 			        						<td>${overTimeofEmployeeDto.employeeNo}</td>
 			        						<td>${overTimeofEmployeeDto.employeeName}</td>
 			        						<td>${overTimeofEmployeeDto.sumOfOverTime}(Hr)</td>
-			        						<td>${overTimeofEmployeeDto.amountOfAnnualVacation}(개)</td>
+			        						<td>${overTimeofEmployeeDto.extensionOverTime}(Hr)</td>
+			        						<td>${overTimeofEmployeeDto.nightTimeOvertime}(Hr)</td>
+			        						<td>${overTimeofEmployeeDto.holidayOvertimeOfExceed8Hours}(Hr)</td>
+			        						<td>${overTimeofEmployeeDto.holidayOvertimeOfNotExceed8Hours}(Hr)</td>
 			        					</tr>	
 			        				</thead>
 			        			</table>

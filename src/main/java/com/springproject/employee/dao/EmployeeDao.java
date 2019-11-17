@@ -2,12 +2,14 @@ package com.springproject.employee.dao;
 
 import java.util.List;
 
+
 import com.springproject.dtos.AuthorityDto;
 import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeApprovalDto;
 import com.springproject.dtos.OverTimeDto;
 import com.springproject.dtos.OverTimeofEmployeeDto;
 import com.springproject.employee.dto.EmployeeDto;
+import com.springproject.overtimeAPI.ElementsOfOverTimeForCalculate;
 
 public interface EmployeeDao {
 
@@ -43,7 +45,7 @@ public interface EmployeeDao {
 	
 	public List<MeasurerDto> measurerListOfAcceptNoDao(Long acceptNo);
 	
-	public int measurerOfMeasureTimeAccumulationDao(OverTimeofEmployeeDto overTimeofEmployeeDto);
+	public int measurerOfMeasureTimeAccumulationDao(ElementsOfOverTimeForCalculate elementsOfOverTimeForCalculate);
 
 	public List<AuthorityDto> checkIsThisUserHaveRequestOfOverTimeAuthorityDao(EmployeeDto employeeDto);
 
