@@ -279,4 +279,48 @@ public class OverTimeServiceImpl implements OverTimeService {
 		return this.overTimeDao.selectChainOfSearchAjaxDao(relatedChain);
 	}
 
+	@Override
+	public boolean insertOverTimeSaveService(OverTimeDto overTimeDto, ArrayList<String> measurer, ArrayList<String> measureDescription, ArrayList<String> relatedChain) {
+		boolean isInsertMeasurerSuccess = true;
+		boolean isInsertMeasureDescriptionSuccess = true;
+		boolean isInsertRelatedChainSuccess = true;
+		
+		// XSS 방어로직 구현
+		XssFilter xssFilter = XssFilter.getInstance("xssfilter/lucy-xss-superset.xml", true);
+		overTimeDto.setAcceptDescription(xssFilter.doFilter(overTimeDto.getAcceptDescription()));		
+		overTimeDto.setCause(xssFilter.doFilter(overTimeDto.getCause()));
+		overTimeDto.setMeasures(xssFilter.doFilter(overTimeDto.getMeasures()));
+		overTimeDto.setRemarks(xssFilter.doFilter(overTimeDto.getRemarks()));
+		overTimeDto.setTypeOfProcessing(xssFilter.doFilter(overTimeDto.getTypeOfProcessing()));
+		
+		boolean isInsertOverTimeRequestSuccess = this.overTimeDao.insertOverTimeSaveDao(overTimeDto) > 0;
+
+		
+		Long acceptNo = this.overTimeDao.selectMaxAcceptNoDao();
+		
+		for(int i=0; i<measurer.size();i++) {
+			MeasurerDto measurerDto=new MeasurerDto();
+			measurerDto.setAcceptNo(acceptNo);
+			measurerDto.setMeasurer(measurer.get(i).toString());
+			isInsertMeasurerSuccess = isInsertMeasurerSuccess & this.overTimeDao.insertMeasurerDao(measurerDto)>0;
+		}
+		
+		for(int i=0; i<measureDescription.size(); i++) {
+			MeasureDescriptionDto measureDescriptionDto=new MeasureDescriptionDto();
+			measureDescriptionDto.setAcceptNo(acceptNo);
+			measureDescriptionDto.setMeasureDescription(xssFilter.doFilter(measureDescription.get(i).toString()));
+			isInsertMeasureDescriptionSuccess = isInsertMeasureDescriptionSuccess & this.overTimeDao.insertMeasureDescriptionDao(measureDescriptionDto)>0;
+		}
+		
+		for(int i=0; i<relatedChain.size(); i++) {
+			RelatedChainDto relatedChainDto = new RelatedChainDto();
+			relatedChainDto.setAcceptNo(acceptNo);
+			relatedChainDto.setRelatedChain(relatedChain.get(i).toString());
+			isInsertRelatedChainSuccess = isInsertRelatedChainSuccess && this.overTimeDao.insertRelatedChainDao(relatedChainDto)>0;
+		}
+		
+		boolean isSaveSuccess = isInsertOverTimeRequestSuccess & isInsertMeasurerSuccess & isInsertMeasureDescriptionSuccess & isInsertRelatedChainSuccess;
+		return isSaveSuccess;
+	}
+
 }

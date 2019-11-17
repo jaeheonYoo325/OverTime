@@ -130,6 +130,82 @@ $(document).ready(function() {
 			method:"post",                                         
 			action:"/overTime/overTimeRequest.do"
 		}).submit();
+    });
+    
+    $("#overTimeSaveBtn").click(function() {
+    	
+    	var acceptDate = $("#acceptDate").val();
+    	var acceptTime = $("#acceptTime").val();
+    	var employeeName = $("#employeeName").val();
+    	var caller = $("#caller").val();
+    	var acceptDescription = $("#acceptDescription").val();
+    	var measureTime = $("#measureTime").val();
+    	var cause = $("#cause").val();
+    	var measures = $("#measures").val();
+    	var relatedChain = $("#relatedChain").val();
+    	
+    	if ( acceptDate == "") {
+    		alert("접수 날짜를 입력해주세요.");
+    		return;
+    	}
+    	if ( acceptTime == "") {
+    		alert("접수 시간을 입력해주세요.");
+    		return;
+    	}
+    	if ( employeeName == "") {
+    		alert("접수자를 조회해서 선택해주세요.");
+    		return;
+    	}
+    	if ( caller == "") {
+    		alert("발신자를 조회해서 선택해주세요.");
+    		return;
+    	}
+    	if ( acceptDescription == "") {
+    		alert("접수내용을 입력해주세요.");
+    		return;
+    	}
+    	
+    	var k = 0;
+    	for (k = 0; k <= measurerAndMeasureDescriptionSize; k++) {
+    		if ( $("#measurer" + k).val() == "") {
+    			alert((k+1) + "번째 조치자를 검색해서 사용해주세요.");
+    			return;
+    		}
+    		if ( $("#measureDescription" + k).val() == "") {
+    			alert((k+1) + "번째 조치 내용을 입력해주세요.");
+    			return;
+    		}
+    	}
+    	
+    	if ( measureTime == "" || measureTime == 0) {
+    		alert("조치시간을 입력해주세요.");
+    		return;
+    	}
+    	if ( cause == "") {
+    		alert("원인 내용을 입력해주세요.");
+    		return;
+    	}
+    	if ( measures == "") {
+    		alert("대책 내용을 입력해주세요.");
+    		return;
+    	}
+    	
+    	if ( isRelatedChain == true ) {
+    		alert("관련체인은 필수 입력 값입니다. 추가 버튼 클릭해서 관련 체인을 조회해주세요.");
+    		return;
+    	}
+    	
+    	for (k = 0; k <= relatedChainSize; k++) {
+    		if ( $("#relatedChain" + k).val() == "") {
+    			alert((k+1) + "번째 관련체인를 검색해서 사용해주세요.");
+    			return;
+    		}
+    	}
+    	
+		$("#overTimeRequestFrm").attr({
+			method:"post",                                         
+			action:"/overTime/overTimeSave.do"
+		}).submit();
     });  
 
 	var lastMeasurer = $("#lastMeasurer").val();

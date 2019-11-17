@@ -371,6 +371,71 @@ public class OverTimeCotroller {
 		}
 
 		return map;
+	}
+	
+	@PostMapping("/overTime/overTimeSave.do")
+	public ModelAndView doOverTimeSaveAction(@Valid @ModelAttribute OverTimeDto overtimeDto, Errors errors, HttpServletResponse response, HttpServletRequest request) {
+		response.setCharacterEncoding("UTF-8"); 
+		response.setContentType("text/html; charset=UTF-8"); 
+		
+		ModelAndView mv = null;
+		ArrayList<String> measurer= new ArrayList<String>();
+		ArrayList<String> measureDescription= new ArrayList<String>();
+		ArrayList<String> relatedChain= new ArrayList<String>();
+		
+		if ( errors.hasErrors() ) {
+			mv = new ModelAndView(HttpRequestHelper.getJspPath());
+			mv.addObject("overtimeDto", overtimeDto);
+			return mv;
+		}
+		for(int i=0;;i++) {
+			if(request.getParameter("measurer"+i)==null) {
+				break;
+			}
+			measurer.add(request.getParameter("measurer"+i));
+		}
+		
+		for(int i=0;;i++) {
+			if(request.getParameter("measureDescription"+i)==null) {
+				break;
+			}
+			measureDescription.add(request.getParameter("measureDescription"+i));
+		}
+		
+		for(int i=0;;i++) {
+			if(request.getParameter("relatedChain"+i)==null) {
+				break;
+			}
+			relatedChain.add(request.getParameter("relatedChain"+i));
+		}
+		
+		boolean isOverTimeRequestSuccess=this.overTimeService.insertOverTimeSaveService(overtimeDto, measurer, measureDescription, relatedChain);
+		
+		PrintWriter out;
+		if (isOverTimeRequestSuccess) {
+			try {
+				out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('저장완료')");
+				out.println("window.location.href = '/overTime/overTimeList.do';");
+				out.println("window.close()");
+				out.println("</script>");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return mv;
+		} else {
+			try {
+				out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('요청실패')");
+				out.println("history.back()");
+				out.println("</script>");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return mv;
+		}
 	}	
 
 }

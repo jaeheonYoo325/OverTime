@@ -59,4 +59,6 @@ public interface OverTimeService {
 	public List<EmployeeDto> selectEmployeeOfSearchAjaxService(String measurer);
 	
 	public List<ChainTableDto> selectChainOfSearchAjaxService(String relatedChain);
+	
+	public boolean insertOverTimeSaveService(OverTimeDto overTimeDto, ArrayList<String> measurer, ArrayList<String> measureDescription, ArrayList<String> relatedChain);
 }

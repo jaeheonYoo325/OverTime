@@ -149,5 +149,9 @@ public class OverTimeDaoImpl extends SqlSessionDaoSupport implements OverTimeDao
 	public List<ChainTableDto> selectChainOfSearchAjaxDao(String relatedChain) {
 		return getSqlSession().selectList("overTimeDao.selectChainOfSearchAjaxDao", relatedChain);
 	}
+	@Override
+	public int insertOverTimeSaveDao(OverTimeDto overtimeDto) {
+		return getSqlSession().insert("overTimeDao.insertOverTimeSaveDao", overtimeDto);
+	}
 
 }

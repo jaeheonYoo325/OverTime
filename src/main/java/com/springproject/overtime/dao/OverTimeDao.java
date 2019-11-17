@@ -75,4 +75,6 @@ public interface OverTimeDao {
 	
 	public List<ChainTableDto> selectChainOfSearchAjaxDao(String relatedChain);
 	
+	public int insertOverTimeSaveDao(OverTimeDto overtimeDto);
+	
 }

@@ -359,5 +359,36 @@
   			   chainName
   	    FROM CHAINTABLE
   	    WHERE chainName LIKE CONCAT('%',#{relatedChain},'%') || chainId LIKE CONCAT('%',#{relatedChain},'%')
-  	</select>   	
+  	</select>
+  	
+  	<insert id="insertOverTimeSaveDao" parameterType="OverTimeDto">
+ 		INSERT INTO OVERTIME (
+ 								acceptDate,
+ 								acceptTime,
+ 								accepter,
+ 								caller,
+ 								phoneNumber,
+ 								acceptDescription,
+ 								measureTime,
+ 								cause,
+ 								measures,
+ 								remarks,
+ 								typeOfProcessing,
+ 								statusCode
+                     		 )
+    	  			VALUES   (
+    	  						#{acceptDate},
+    	  						#{acceptTime},
+    	  						#{accepter},
+    	  						#{caller},
+    	  						#{phoneNumber},
+    	  						#{acceptDescription},
+    	  						#{measureTime},
+    	  						#{cause},
+    	  						#{measures},
+    	  						#{remarks},
+    	  						#{typeOfProcessing},
+    	  						"04"
+                             )   
+  	</insert>  	   	
   </mapper>
