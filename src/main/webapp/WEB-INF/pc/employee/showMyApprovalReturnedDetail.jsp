@@ -50,7 +50,7 @@ $(document).ready(function() {
 	
 	var measurerAndMeasureDescriptionSize = $("#measurerAndMeasureDescriptionSize").val();
 	var relatedChainSize = 0;
-	var isRelatedChain = true;
+	var isRelatedChain = false;
 	var searchMeasurerCount = 0;
 	var searchRelatedChainCount = 0;
 	
@@ -131,6 +131,7 @@ $(document).ready(function() {
 	          method:"post",                                         
 	            action:"/employee/showMyApprovalReturnedDetail.do"
 	     }).submit();
+	     
     });  
 
 	var lastMeasurer = $("#lastMeasurer").val();
@@ -354,37 +355,37 @@ $(document).ready(function() {
   		console.log(typeof src);
   		var param = "";
   		var url = "";
-  		if ( typeof src == "string" && src == "accepter" ) {
-  			url = "/search/searchEmployee.do?employeeSearchWhat=";
-  			param = "accepter";
-  		} else if ( typeof src == "string" && src == "caller" ){
-  			url = "/search/searchCaller.do";
-  			param = "";
-  		} else if ( typeof src == "number" ) {
-  			url = "/search/searchMeasurer.do?measurerNo=";
-  			param = src;
-  		}
-  		else if ( typeof src == "string" && src =="chain") {
-  			url = "/search/searchChain.do";
-  			param = "";
-  		}
+//   		if ( typeof src == "string" && src == "accepter" ) {
+//   			url = "/search/searchEmployee.do?employeeSearchWhat=";
+//   			param = "accepter";
+//   		} else if ( typeof src == "string" && src == "caller" ){
+//   			url = "/search/searchCaller.do";
+//   			param = "";
+//   		} else if ( typeof src == "number" ) {
+//   			url = "/search/searchMeasurer.do?measurerNo=";
+//   			param = src;
+//   		}
+//   		else if ( typeof src == "string" && src =="chain") {
+//   			url = "/search/searchChain.do";
+//   			param = "";
+//   		}
   		
-        $("#popupLayer").bPopup({
-        	modalClose: false,
-            content:'iframe',
-            iframeAttr:'frameborder="auto"',
-            iframeAttr:'frameborder="0"',
-            contentContainer:'.popupContent',
-            loadUrl: url + param,            
-            onOpen: function() {
-            	$("#popupLayer").append("<div class='popupContent'></div><div class='b-close'><img src='<c:url value='/images/employee/layerPopupCancel.jpg'/>' width='30' height='30'></div>");            	
-            }, 
-            onClose: function() {
-            	$("#popupLayer").html("");
-            }
-        },
-        function() {
-        });
+//         $("#popupLayer").bPopup({
+//         	modalClose: false,
+//             content:'iframe',
+//             iframeAttr:'frameborder="auto"',
+//             iframeAttr:'frameborder="0"',
+//             contentContainer:'.popupContent',
+//             loadUrl: url + param,            
+//             onOpen: function() {
+//             	$("#popupLayer").append("<div class='popupContent'></div><div class='b-close'><img src='<c:url value='/images/employee/layerPopupCancel.jpg'/>' width='30' height='30'></div>");            	
+//             }, 
+//             onClose: function() {
+//             	$("#popupLayer").html("");
+//             }
+//         },
+//         function() {
+//         });
     }
 </script>
 <body id="page-top">

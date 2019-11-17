@@ -187,7 +187,7 @@ $(document).ready(function() {
         searchRelatedChainCount = relatedChainSize;
         $('.divRelatedChain').append ($("<div class='ui-widget'>"));
         $('.divRelatedChain').append ($("<input type='text' name='searchRelatedChain"+j+"' id='searchRelatedChain"+j+"' placeholder='관련체인검색'>"));
-        $('.divRelatedChain').append ($("<input type='text' name='relatedChain"+j+"' id='relatedChain"+j+"'><br>"));
+        $('.divRelatedChain').append ($("<input type='hidden' name='relatedChain"+j+"' id='relatedChain"+j+"'><br>"));
         $('.divRelatedChain').append ($("</div>"));
                 
         isRelatedChain = false;

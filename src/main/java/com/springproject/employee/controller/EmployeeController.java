@@ -256,7 +256,7 @@ public class EmployeeController {
 			try {
 				out = response.getWriter();
 				out.println("<script>");
-				out.println("alert('결제완료')");
+				out.println("alert('결재완료')");
 				out.println("window.location.href='/employee/myOverTimeWillApproval.do'");	
 				out.println("</script>");
 			} catch (IOException e) {
@@ -479,9 +479,11 @@ public class EmployeeController {
 				out = response.getWriter();
 				out.println("<script>");
 				out.println("alert('수정완료')");
-				out.println("window.opener.location.reload()");
-				out.println("window.close()");
+				out.println("parent.location.reload();");
+				out.println("parent.$('#popupLayer').bPopup().close();");
+				out.println("parent.$('#popupLayer').html('');");
 				out.println("</script>");
+				
 		   } catch (IOException e) {
 			   e.printStackTrace();
 		   }

@@ -80,65 +80,66 @@
 												</tr>
 												<tr id="divToggle${overTimeApproval.acceptNo}" style="display:none;">
 													<td colspan="7">
-														<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-															<thead>
-									        					<tr>
-									        						<td>접수No</td>
-									        						<td>접수날짜</td>
-									        						<td>접수시각</td>
-									        						<td>접수자</td>
-									        						<td>발신자</td>
-									        						<td>전화번호</td>
-									        						<td>접수내용</td>
-									        						<td>조치자</td>
-									        						<td>조치내용</td>
-									        						<td>조치시간</td>
-									        						<td>원인분석 및 현상파악</td>
-									        						<td>대책</td>
-									        						<td>관련체인</td>
-									        						<td>비고</td>
-									        						<td>처리형태</td>
-									        					</tr>
-									        				</thead>
-									        				<tbody>
-									        					<c:forEach items="${overTimeRequestOfAcceptNo}" var="overTimeRequestOfAcceptNo">
-									        						<c:if test="${overTimeApproval.acceptNo eq overTimeRequestOfAcceptNo.acceptNo}">
-											        					<tr>										      										        						  																        				
-											        						<td>${overTimeRequestOfAcceptNo.acceptNo}</td>
-											        						<td>${overTimeRequestOfAcceptNo.acceptDate}</td>
-											        						<td>${overTimeRequestOfAcceptNo.acceptTime}</td>
-											        						<td>${overTimeRequestOfAcceptNo.employeeName}</td>
-											        						<td>${overTimeRequestOfAcceptNo.caller}</td>
-											        						<td>${overTimeRequestOfAcceptNo.phoneNumber}</td>
-											        						<td>${overTimeRequestOfAcceptNo.acceptDescription}</td>
-											        						<td>
-											        							<c:forEach items="${overTimeMeasurerofAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo]}" varStatus="status">
-																					${overTimeMeasurerofAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].employeeName}<br>
-																	            </c:forEach>
-											        						</td>
-											        						<td>
-											        							<c:forEach items="${overTimeMeasureDescriptionOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo]}" varStatus="status">
-																					${overTimeMeasureDescriptionOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].measureDescription}<br>
-																	            </c:forEach>
-											        						</td>
-											        						<td>${overTimeRequestOfAcceptNo.measureTime}</td>
-											        						<td>${overTimeRequestOfAcceptNo.cause}</td>
-											        						<td>${overTimeRequestOfAcceptNo.measures}</td>
-											        						<td>
-											        							<c:forEach items="${overTimeRelatedChainOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo]}" varStatus="status">
-																					${overTimeRelatedChainOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].relatedChain}<br>
-																	            </c:forEach>
-											        						</td>
-											        						<td>${overTimeRequestOfAcceptNo.remarks}</td>
-											        						<td>${overTimeRequestOfAcceptNo.typeOfProcessing}</td>
-											        					</tr>
-											        					<input type="button" value="결재하기" class="btn btn-primary" onclick="location.href='/employee/myOverTimeDoApprovaling.do/${overTimeRequestOfAcceptNo.acceptNo}'">
-																		<input type="button" value="반려하기" class="btn btn-danger" onclick="location.href='/employee/MyOverTimeDoReturning.do/${overTimeRequestOfAcceptNo.acceptNo}'">
-										        					</c:if>
-									        					</c:forEach>
-									        				</tbody>
-									        				
-														</table>
+													<c:forEach items="${overTimeRequestOfAcceptNo}" var="overTimeRequestOfAcceptNo">
+														<c:if test="${overTimeApproval.acceptNo eq overTimeRequestOfAcceptNo.acceptNo}">
+															<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+																<thead>
+										        					<tr>
+										        						<td>접수No</td>
+										        						<td>접수날짜</td>
+										        						<td>접수시각</td>
+										        						<td>접수자</td>
+										        						<td>발신자</td>
+										        						<td>전화번호</td>
+										        						<td>접수내용</td>
+										        						<td>조치자</td>
+										        						<td>조치내용</td>
+										        						<td>조치시간</td>
+										        						<td>원인분석 및 현상파악</td>
+										        						<td>대책</td>
+										        						<td>관련체인</td>
+										        						<td>비고</td>
+										        						<td>처리형태</td>
+										        					</tr>
+										        				</thead>
+										        				<tbody>
+										        					
+												        					<tr>										      										        						  																        				
+												        						<td>${overTimeRequestOfAcceptNo.acceptNo}</td>
+												        						<td>${overTimeRequestOfAcceptNo.acceptDate}</td>
+												        						<td>${overTimeRequestOfAcceptNo.acceptTime}</td>
+												        						<td>${overTimeRequestOfAcceptNo.employeeName}</td>
+												        						<td>${overTimeRequestOfAcceptNo.caller}</td>
+												        						<td>${overTimeRequestOfAcceptNo.phoneNumber}</td>
+												        						<td>${overTimeRequestOfAcceptNo.acceptDescription}</td>
+												        						<td>
+												        							<c:forEach items="${overTimeMeasurerofAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo]}" varStatus="status">
+																						${overTimeMeasurerofAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].employeeName}<br>
+																		            </c:forEach>
+												        						</td>
+												        						<td>
+												        							<c:forEach items="${overTimeMeasureDescriptionOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo]}" varStatus="status">
+																						${overTimeMeasureDescriptionOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].measureDescription}<br>
+																		            </c:forEach>
+												        						</td>
+												        						<td>${overTimeRequestOfAcceptNo.measureTime}</td>
+												        						<td>${overTimeRequestOfAcceptNo.cause}</td>
+												        						<td>${overTimeRequestOfAcceptNo.measures}</td>
+												        						<td>
+												        							<c:forEach items="${overTimeRelatedChainOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo]}" varStatus="status">
+																						${overTimeRelatedChainOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].relatedChain}<br>
+																		            </c:forEach>
+												        						</td>
+												        						<td>${overTimeRequestOfAcceptNo.remarks}</td>
+												        						<td>${overTimeRequestOfAcceptNo.typeOfProcessing}</td>
+												        					</tr>
+											        					
+										        				</tbody>
+															</table>
+															<input type="button" value="결재하기" class="btn btn-primary" onclick="location.href='/employee/myOverTimeDoApprovaling.do/${overTimeRequestOfAcceptNo.acceptNo}'">
+															<input type="button" value="반려하기" class="btn btn-danger" onclick="location.href='/employee/MyOverTimeDoReturning.do/${overTimeRequestOfAcceptNo.acceptNo}'">
+														</c:if>
+									        		</c:forEach>
 													</td>
 												</tr>																								
 											</c:forEach>

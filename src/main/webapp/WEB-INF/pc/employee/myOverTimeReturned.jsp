@@ -27,6 +27,7 @@
 	<script src="<c:url value='/bootstrapUiTemplate/js/sb-admin.min.js' />"></script>
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/datatables/jquery.dataTables.js' />"></script>
 	<script src="<c:url value='/bootstrapUiTemplate/vendor/datatables/dataTables.bootstrap4.js' />"></script>
+	<script src="<c:url value='/js/common/jquery.bpopup.min.js' />"></script>
 	<style type="text/css">
 		#popupLayer {display:none;border:5px solid #cccccc;margin:0;padding:5px;background-color:#ffffff;z-index:5;}
         #popupLayer .b-close {position:absolute;top:10px;right:25px;color:#f37a20;font-weight:bold;cursor:hand;}
@@ -42,34 +43,35 @@
 		    $(".sidebar").toggleClass("toggled");
 		});	
 	});
-	function showMyApprovalReturnedDetail(thisAcceptNo){
-	   var acceptNo = thisAcceptNo;
-	   window.open("/employee/showMyApprovalReturnedDetail.do/" + acceptNo, "상세보기", "width=1200, height=800");
-	}
 	
-//   	function openPopup(src) {
-//   		console.log(src);
-//   		var param = src;
-//   		var url = "/employee/showMyApprovalReturnedDetail.do/";  		
+// 	function showMyApprovalReturnedDetail(thisAcceptNo){
+// 	   var acceptNo = thisAcceptNo;
+// 	   window.open("/employee/showMyApprovalReturnedDetail.do/" + acceptNo, "상세보기", "width=1200, height=800");
+// 	}
+	
+  	function openPopup(src) {
+  		console.log(src);
+  		var param = src;
+  		var url = "/employee/showMyApprovalReturnedDetail.do/";  		
 
-//   		console.log(url + param);
-//         $("#popupLayer").bPopup({
-//         	modalClose: false,
-//             content:'iframe',
-//             iframeAttr:'frameborder="auto"',
-//             iframeAttr:'frameborder="0"',
-//             contentContainer:'.popupContent',
-//             loadUrl: url + param,            
-//             onOpen: function() {
-//             	$("#popupLayer").append("<div class='popupContent'></div><div class='b-close'><img src='<c:url value='/images/employee/layerPopupCancel.jpg'/>' width='30' height='30'></div>");            	
-//             }, 
-//             onClose: function() {
-//             	$("#popupLayer").html("");
-//             }
-//         },
-//         function() {
-//         });
-//     }
+  		console.log(url + param);
+        $("#popupLayer").bPopup({
+        	modalClose: false,
+            content:'iframe',
+            iframeAttr:'frameborder="auto"',
+            iframeAttr:'frameborder="0"',
+            contentContainer:'.popupContent',
+            loadUrl: url + param,            
+            onOpen: function() {
+            	$("#popupLayer").append("<div class='popupContent'></div><div class='b-close'><img src='<c:url value='/images/employee/layerPopupCancel.jpg'/>' width='30' height='30'></div>");            	
+            }, 
+            onClose: function() {
+            	$("#popupLayer").html("");
+            }
+        },
+        function() {
+        });
+    }
 </script>
 <script type="text/javascript">
 	
@@ -111,8 +113,8 @@
 													<td>${overTimeReturned.codeName}</td>
 													<td>${overTimeReturned.approvalRequestDate}</td>
 													<td>${overTimeReturned.approvalLineName}</td>
-<%-- 													<td><input type="button" value="상세내역&재요청" class="btn btn-primary" onclick="openPopup(${overTimeReturned.acceptNo})"></td> --%>
-													<td><input type="button" value="상세내역&재요청" class="btn btn-primary" onclick="showMyApprovalReturnedDetail(${overTimeReturned.acceptNo})"></td>
+													<td><input type="button" value="상세내역&재요청" class="btn btn-primary" onclick="openPopup(${overTimeReturned.acceptNo})"></td>
+<%-- 													<td><input type="button" value="상세내역&재요청" class="btn btn-primary" onclick="showMyApprovalReturnedDetail(${overTimeReturned.acceptNo})"></td> --%>
 												</tr>
 											</c:forEach>
 										</c:when>
