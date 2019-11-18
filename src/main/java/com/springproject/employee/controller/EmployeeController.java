@@ -200,8 +200,14 @@ public class EmployeeController {
 		for(int i = 0; i < overTimeApproval.size(); i++) {
 			
 			acceptNo = overTimeApproval.get(i).getAcceptNo();
-			overTimeRequestOfAcceptNo.add(this.overTimeService.selectOverTimeRequestOfAcceptNoService(acceptNo));
+			OverTimeDto overTimeRequestOfAcceptNoBeforeMultiLine=this.overTimeService.selectOverTimeRequestOfAcceptNoService(acceptNo);
 			
+			overTimeRequestOfAcceptNoBeforeMultiLine.setAcceptDescription( (overTimeRequestOfAcceptNoBeforeMultiLine.getAcceptDescription()).replace("\n", "<br>"));
+			overTimeRequestOfAcceptNoBeforeMultiLine.setCause( (overTimeRequestOfAcceptNoBeforeMultiLine.getCause()).replace("\n", "<br>") );
+			overTimeRequestOfAcceptNoBeforeMultiLine.setMeasures( (overTimeRequestOfAcceptNoBeforeMultiLine.getMeasures()).replace("\n", "<br>") );
+			
+			overTimeRequestOfAcceptNo.add(overTimeRequestOfAcceptNoBeforeMultiLine);
+	
 			overTimeMeasurerOfAcceptNo = this.overTimeService.selectMeasurerOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
 			overTimeMeasurerofAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeMeasurerOfAcceptNo);
 			
@@ -295,7 +301,14 @@ public class EmployeeController {
 		
 		for(int i = 0 ; i < overTimeApproved.size(); i++) {
 			acceptNo = overTimeApproved.get(i).getAcceptNo();
-			overTimeRequestOfAcceptNo.add(this.overTimeService.selectOverTimeRequestOfAcceptNoService(acceptNo));
+			
+			OverTimeDto overTimeRequestOfAcceptNoBeforeMultiLine=this.overTimeService.selectOverTimeRequestOfAcceptNoService(acceptNo);
+			
+			overTimeRequestOfAcceptNoBeforeMultiLine.setAcceptDescription( (overTimeRequestOfAcceptNoBeforeMultiLine.getAcceptDescription()).replace("\n", "<br>"));
+			overTimeRequestOfAcceptNoBeforeMultiLine.setCause( (overTimeRequestOfAcceptNoBeforeMultiLine.getCause()).replace("\n", "<br>") );
+			overTimeRequestOfAcceptNoBeforeMultiLine.setMeasures( (overTimeRequestOfAcceptNoBeforeMultiLine.getMeasures()).replace("\n", "<br>") );
+			
+			overTimeRequestOfAcceptNo.add(overTimeRequestOfAcceptNoBeforeMultiLine);
 			
 			overTimeMeasurerOfAcceptNo = this.overTimeService.selectMeasurerOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
 			overTimeMeasurerofAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeMeasurerOfAcceptNo);
@@ -336,8 +349,14 @@ public class EmployeeController {
 		Long acceptNo = 0L;
 		
 		for(int i = 0; i < overTimeCompleted.size(); i++) {
-			acceptNo = overTimeCompleted.get(i).getAcceptNo();
-			overTimeRequestOfAcceptNo.add(this.overTimeService.selectOverTimeRequestOfAcceptNoService(acceptNo));
+			acceptNo = overTimeCompleted.get(i).getAcceptNo();			
+			OverTimeDto overTimeRequestOfAcceptNoBeforeMultiLine=this.overTimeService.selectOverTimeRequestOfAcceptNoService(acceptNo);
+			
+			overTimeRequestOfAcceptNoBeforeMultiLine.setAcceptDescription( (overTimeRequestOfAcceptNoBeforeMultiLine.getAcceptDescription()).replace("\n", "<br>"));
+			overTimeRequestOfAcceptNoBeforeMultiLine.setCause( (overTimeRequestOfAcceptNoBeforeMultiLine.getCause()).replace("\n", "<br>") );
+			overTimeRequestOfAcceptNoBeforeMultiLine.setMeasures( (overTimeRequestOfAcceptNoBeforeMultiLine.getMeasures()).replace("\n", "<br>") );
+			
+			overTimeRequestOfAcceptNo.add(overTimeRequestOfAcceptNoBeforeMultiLine);
 			
 			overTimeMeasurerOfAcceptNo = this.overTimeService.selectMeasurerOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
 			overTimeMeasurerofAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeMeasurerOfAcceptNo);

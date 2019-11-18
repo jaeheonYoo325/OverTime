@@ -187,10 +187,12 @@
 		    	, (select employeeName from employee where employeeNo = o.approvalLineConfirm) as approvalLineConfirmName
 	   	FROM	OVERTIMEAPPROVAL o
 	    JOIN	MASTERTABLE	m
+	    JOIN 	MEASURER me
   		ON		o.approvalDescription = m.codeValue
+  		AND		o.acceptNo=me.acceptNo
 	    WHERE	o.approvalDescription = "overTimeApprovalD0"
 	    AND o.approvalDate is NOT NULL
-	    AND o.drafter = #{employeeNo} 
+	    AND me.measurer = #{employeeNo} 
 	    
   	</select>
   	
@@ -210,10 +212,12 @@
 		    	, (select employeeName from employee where employeeNo = o.approvalLineConfirm) as approvalLineConfirmName
 	   	FROM	OVERTIMEAPPROVAL o
 	    JOIN	MASTERTABLE	m
+	    JOIN    MEASURER me
   		ON		o.approvalDescription = m.codeValue
+  		AND		o.acceptNo=me.acceptNo
 	    WHERE	o.approvalDescription = "overTimeApprovalA1"
 	    AND o.approvalDate is NULL
-	    AND o.drafter = #{employeeNo} 
+	    AND me.measurer = #{employeeNo} 
 	    
   	</select>
   	
