@@ -115,8 +115,7 @@
 											<td>발신자</td>
 											<td>전화번호</td>
 											<td>접수내용</td>
-											<td>조치자</td>
-											<td>조치내용</td>
+											<td>조치자 및 조치내용</td>
 											<td>조치시간</td>
 											<td>원인</td>
 											<td>대책</td>
@@ -147,14 +146,18 @@
 												<td>${overTime.phoneNumber}</td>
 												<td>${overTime.acceptDescription}</td>
 												<td>
-													<c:forEach items="${measurerMap[overTime.acceptNo]}" varStatus="status">
-														<c:out value="${measurerMap[overTime.acceptNo][status.index].employeeName}"></c:out><br>
-													</c:forEach>
-												</td>
-												<td>
-													<c:forEach items="${measureDescriptionMap[overTime.acceptNo]}" varStatus="status">
-															${measureDescriptionMap[overTime.acceptNo][status.index].measureDescription}<br>
-													</c:forEach>
+													<table border="0">
+															<c:forEach items="${measurerMap[overTime.acceptNo]}" varStatus="status">
+															<tr>
+															<td>
+																${measurerMap[overTime.acceptNo][status.index].employeeName}
+															</td>
+															<td>
+																${measureDescriptionMap[overTime.acceptNo][status.index].measureDescription}
+															</td>
+															</tr>
+															</c:forEach>
+													</table>
 												</td>
 												<td>${overTime.measureTime}</td>
 												<td>${overTime.cause}</td>

@@ -92,8 +92,7 @@
 									        						<td>발신자</td>
 									        						<td>전화번호</td>
 									        						<td>접수내용</td>
-									        						<td>조치자</td>
-									        						<td>조치내용</td>
+									        						<td>조치자 및 조치내용</td>
 									        						<td>조치시간</td>
 									        						<td>원인분석 및 현상파악</td>
 									        						<td>대책</td>
@@ -113,16 +112,20 @@
 											        						<td>${overTimeRequestOfAcceptNo.caller}</td>
 											        						<td>${overTimeRequestOfAcceptNo.phoneNumber}</td>
 											        						<td>${overTimeRequestOfAcceptNo.acceptDescription}</td>
-											        						<td>
-											        							<c:forEach items="${overTimeMeasurerofAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo]}" varStatus="status">
-																					${overTimeMeasurerofAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].employeeName}<br>
-																	            </c:forEach>
-											        						</td>
-											        						<td>
-											        							<c:forEach items="${overTimeMeasureDescriptionOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo]}" varStatus="status">
-																					${overTimeMeasureDescriptionOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].measureDescription}<br>
-																	            </c:forEach>
-											        						</td>
+											        					    <td>
+																				<table border="0">
+																				<c:forEach items="${overTimeMeasurerofAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo]}" varStatus="status">
+																					<tr>
+																						<td>
+																							${overTimeMeasurerofAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].employeeName}
+																						</td>
+																						<td>
+																							${overTimeMeasureDescriptionOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].measureDescription}
+																						</td>
+																					</tr>
+																				</c:forEach>
+																				</table>
+																			</td>
 											        						<td>${overTimeRequestOfAcceptNo.measureTime}</td>
 											        						<td>${overTimeRequestOfAcceptNo.cause}</td>
 											        						<td>${overTimeRequestOfAcceptNo.measures}</td>

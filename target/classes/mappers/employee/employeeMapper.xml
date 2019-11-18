@@ -132,8 +132,7 @@
   	<update id="myOverTimeDoApprovalingOfCompleteNowApprovalDao" parameterType="OverTimeApprovalDto">
 		UPDATE    OVERTIMEAPPROVAL
 		SET     
-				approvalDate = now(),
-				approvalLineConfirm = #{approvalLineConfirm}
+				approvalDescription = #{approvalDescription}
 		WHERE   acceptNo = #{acceptNo} 
 		AND 	approvalDate is null
   	</update>
@@ -288,5 +287,14 @@
     	FROM authority
     	WHERE employeeNo=#{employeeNo} AND roleCode="EmployeeRegist"
   	</select>
+  	
+  	<update id="myOverTimeDoApprovaling" parameterType="OverTimeApprovalDto">
+  		UPDATE    OVERTIMEAPPROVAL
+		SET     
+				approvalDate = now(),
+				approvalLineConfirm = #{approvalLineConfirm}
+		WHERE   acceptNo = #{acceptNo} 
+		AND 	approvalDate is null
+  	</update>
 
   </mapper>

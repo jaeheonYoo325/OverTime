@@ -50,5 +50,7 @@ public interface EmployeeDao {
 	public List<AuthorityDto> checkIsThisUserHaveRequestOfOverTimeAuthorityDao(EmployeeDto employeeDto);
 
 	public List<AuthorityDto> checkisThisUserHaveAuthorityOfEmployeeRegistDao(EmployeeDto employeeDto);
+
+	public int myOverTimeDoApprovaling(OverTimeApprovalDto overTimeApprovalDto);
 	
 }

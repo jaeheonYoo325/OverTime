@@ -236,7 +236,6 @@ public class OverTimeServiceImpl implements OverTimeService {
 			MeasureDescriptionDto measureDescriptionDto = new MeasureDescriptionDto();
 			measureDescriptionDto.setAcceptNo(acceptNo);
 			measureDescriptionDto.setMeasureDescription(xssFilter.doFilter(measureDescription.get(i).toString()));
-//			measureDescriptionDto.setMeasureDescription(measureDescription.get(i).toString());
 			insertMeasureDescriptionSuccess = insertMeasureDescriptionSuccess && ( this.overTimeDao.insertMeasureDescriptionDao(measureDescriptionDto) > 0);
 		}
 		
@@ -248,14 +247,10 @@ public class OverTimeServiceImpl implements OverTimeService {
 		}
 		
 		OverTimeApprovalDto overTimeApprovalDto = this.employeeDao.selectMyOverTimeApprovalOfAcceptNoDao(acceptNo);
-		overTimeApprovalDto.setApprovalLineConfirm(overTimeDto.getAccepter());
-		boolean isDoApprovalingSuccessOfCompleteNowApproval = this.employeeDao.myOverTimeDoApprovalingOfCompleteNowApprovalDao(overTimeApprovalDto) > 0;
-		overTimeApprovalDto.setApprovalLine("1");
 		overTimeApprovalDto.setApprovalDescription("overTimeApprovalD0");
-		boolean isDoApprovalingSuccessOfNextApproval = this.employeeDao.myOverTimeDoApprovalingOfAddNextApprovalDao(overTimeApprovalDto) > 0;
-		
+		boolean isDoApprovalingSuccessOfCompleteNowApproval = this.employeeDao.myOverTimeDoApprovalingOfCompleteNowApprovalDao(overTimeApprovalDto) > 0;
 		isOverTimeReRequestFinalSuccess = isOverTimeReRequestFinalSuccess && isOverTimeReRequestSuccess && isDeleteMeasurerOfAcceptNoSuccess && isDeleteMeasureDescriptionOfAcceptNoSuccess 
-				&& insertMeasurerSuccess && insertMeasureDescriptionSuccess && isDoApprovalingSuccessOfCompleteNowApproval && isDoApprovalingSuccessOfNextApproval&&insertRelatedChainSuccess&&isDeleteRelatedChainOfAcceptNoSuccess;
+				&& insertMeasurerSuccess && insertMeasureDescriptionSuccess && isDoApprovalingSuccessOfCompleteNowApproval && insertRelatedChainSuccess&&isDeleteRelatedChainOfAcceptNoSuccess;
 		return isOverTimeReRequestFinalSuccess;
 	}
 

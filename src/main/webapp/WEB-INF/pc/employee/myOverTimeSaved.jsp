@@ -92,8 +92,7 @@
 											<td>발신자</td>
 											<td>전화번호</td>
 											<td>접수내용</td>
-											<td>조치자</td>
-											<td>조치내용</td>
+											<td>조치자 및 조치내용</td>
 											<td>조치시간</td>
 											<td>원인</td>
 											<td>대책</td>
@@ -116,14 +115,18 @@
 												<td>${overTimeSavedOfAcceptNo.phoneNumber}</td>
 												<td>${overTimeSavedOfAcceptNo.acceptDescription}</td>
 												<td>
-													<c:forEach items="${overTimeMeasurerofAcceptNoMap[overTimeSavedOfAcceptNo.acceptNo]}" varStatus="status">
-														<c:out value="${overTimeMeasurerofAcceptNoMap[overTimeSavedOfAcceptNo.acceptNo][status.index].employeeName}"></c:out><br>
-													</c:forEach>
-												</td>
-												<td>
-													<c:forEach items="${overTimeMeasureDescriptionOfAcceptNoMap[overTimeSavedOfAcceptNo.acceptNo]}" varStatus="status">
-															${overTimeMeasureDescriptionOfAcceptNoMap[overTimeSavedOfAcceptNo.acceptNo][status.index].measureDescription}<br>
-													</c:forEach>
+													<table border="0">
+														<c:forEach items="${overTimeMeasurerofAcceptNoMap[overTimeSavedOfAcceptNo.acceptNo]}" varStatus="status">
+															<tr>
+																<td>
+																	${overTimeMeasurerofAcceptNoMap[overTimeSavedOfAcceptNo.acceptNo][status.index].employeeName}
+																</td>
+																<td>
+																	${overTimeMeasureDescriptionOfAcceptNoMap[overTimeSavedOfAcceptNo.acceptNo][status.index].measureDescription}
+																</td>
+																</tr>
+														</c:forEach>
+													</table>
 												</td>
 												<td>${overTimeSavedOfAcceptNo.measureTime}</td>
 												<td>${overTimeSavedOfAcceptNo.cause}</td>

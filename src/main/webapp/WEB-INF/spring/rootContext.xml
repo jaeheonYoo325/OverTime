@@ -18,11 +18,10 @@
 <!-- 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> -->
 <!-- 		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" /> -->
 <!-- 		<property name="url" value="jdbc:mysql://127.0.0.1:3306/overtime?useSSL=false&amp;serverTimezone=UTC" /> -->
-<!-- 		<property name="username" value="root" /> -->
 <!-- 		<property name="password" value="root" /> -->
 <!-- 	</bean> -->
 	
-	<util:properties id="database" location="file:////E:/DKUNC/properties/overtimedb.properties" />
+	<util:properties id="database" location="file:////C:/Users/umnt/Desktop/overtimedb/overtimedb.properties" />
 	
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="#{database['jdbc.driver']}" />

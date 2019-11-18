@@ -78,7 +78,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		boolean isDoApprovalingSuccessOfCompleteNowApproval = false;
 		boolean isMeasurerOfMeasureTimeAccumulationSuccess = true;
 		
-		isDoApprovalingSuccessOfCompleteNowApproval = this.employeeDao.myOverTimeDoApprovalingOfCompleteNowApprovalDao(overTimeApprovalDto) > 0;
+		isDoApprovalingSuccessOfCompleteNowApproval = this.employeeDao.myOverTimeDoApprovaling(overTimeApprovalDto) > 0;
 		
 		OverTimeDto overTimeDto = this.overTimeDao.selectOverTimeRequestOfAcceptNoDao(overTimeApprovalDto.getAcceptNo());
 		
@@ -92,13 +92,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 			Long acceptNo = overTimeApprovalDto.getAcceptNo();
 			List<MeasurerDto> measurerListOfAcceptNo = this.employeeDao.measurerListOfAcceptNoDao(acceptNo);
 			
-//			for ( int i = 0; i < measurerListOfAcceptNo.size(); i++) {
-//				OverTimeofEmployeeDto overTimeofEmployeeDto = new OverTimeofEmployeeDto();
-//				overTimeofEmployeeDto.setEmployeeNo(measurerListOfAcceptNo.get(i).getMeasurer());
-//				overTimeofEmployeeDto.setSumOfOverTime(overTimeDto.getMeasureTime());
-//				isMeasurerOfMeasureTimeAccumulationSuccess =  this.employeeDao.measurerOfMeasureTimeAccumulationDao(overTimeofEmployeeDto) > 0;
-//			}
-			
 			for ( int i = 0; i < measurerListOfAcceptNo.size(); i++) {
 				String employeeNo=measurerListOfAcceptNo.get(i).getMeasurer();
 				String acceptDate=overTimeDto.getAcceptDate();
@@ -107,11 +100,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 				
 				ElementsOfOverTimeForCalculate elementsOfOverTimeForCalculate=new ElementsOfOverTimeForCalculate(employeeNo, acceptDate, acceptTime, measureTime);
 				OverTimeCalculater overTimeCalculater=OverTimeCalculater.getInstance();
-				overTimeCalculater.calculateOverTime(elementsOfOverTimeForCalculate);
-			    System.out.println("연장시간 : "+elementsOfOverTimeForCalculate.getExtensionOverTime());
-			    System.out.println("야간시간 : "+elementsOfOverTimeForCalculate.getNightTimeOvertime());
-			    System.out.println("휴일시간(8시간이상) :"+elementsOfOverTimeForCalculate.getHolidayOvertimeOfExceed8Hours());
-			    System.out.println("휴일시간(8시간미만) :"+elementsOfOverTimeForCalculate.getHolidayOvertimeOfNotExceed8Hours());
+				overTimeCalculater.calculateOverTime(elementsOfOverTimeForCalculate);;
 				
 				isMeasurerOfMeasureTimeAccumulationSuccess =  this.employeeDao.measurerOfMeasureTimeAccumulationDao(elementsOfOverTimeForCalculate) > 0;
 			}	
@@ -135,16 +124,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public boolean myOverTimeDoReturningService(OverTimeApprovalDto overTimeApprovalDto) {
 		
 		boolean isDoReturningSuccess = true;
-		boolean isDoReturningSuccessOfNowApprovalForReturn = this.employeeDao.myOverTimeDoApprovalingOfCompleteNowApprovalDao(overTimeApprovalDto) > 0;
 		overTimeApprovalDto.setApprovalDescription("overTimeApprovalA1");
-		boolean isDoReturningSuccessOfNextApprovalForReturn = this.employeeDao.myDeployDoReturningOfNextApprovalDao(overTimeApprovalDto) > 0;
+		boolean isDoReturningSuccessOfNowApprovalForReturn = this.employeeDao.myOverTimeDoApprovalingOfCompleteNowApprovalDao(overTimeApprovalDto) > 0;
+		
 		
 		OverTimeDto overTimeRequestDto = this.overTimeDao.selectOverTimeRequestOfAcceptNoDao(overTimeApprovalDto.getAcceptNo());
 		overTimeRequestDto.setStatusCode("03");
 		boolean isChangeOverTimeRequestStatusCodeSuccess = this.employeeDao.changeStatusCodeForOverTimeDoApprovalingDao(overTimeRequestDto) > 0;
 		
-		isDoReturningSuccess = isDoReturningSuccess && isDoReturningSuccessOfNextApprovalForReturn && isDoReturningSuccessOfNowApprovalForReturn && isChangeOverTimeRequestStatusCodeSuccess;
-		
+		isDoReturningSuccess = isDoReturningSuccess && isDoReturningSuccessOfNowApprovalForReturn && isChangeOverTimeRequestStatusCodeSuccess;
 		return isDoReturningSuccess;
 	}
 

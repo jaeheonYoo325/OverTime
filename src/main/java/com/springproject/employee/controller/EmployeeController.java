@@ -364,7 +364,6 @@ public class EmployeeController {
 		response.setContentType("text/html; charset=UTF-8");
 		
 		OverTimeApprovalDto overTimeApprovalDto = this.employeeService.selectMyOverTimeApprovalOfAcceptNoService(acceptNo);
-		overTimeApprovalDto.setApprovalLineConfirm(((EmployeeDto)session.getAttribute(Session.USER)).getEmployeeNo());
 		
 		boolean isDoReturningSuccess = this.employeeService.myOverTimeDoReturningService(overTimeApprovalDto);
 		

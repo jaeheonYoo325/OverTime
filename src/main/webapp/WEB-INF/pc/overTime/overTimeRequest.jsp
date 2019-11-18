@@ -513,9 +513,9 @@ $(document).ready(function() {
 			        						<td>발신자</td>
 			        						<td colspan="3">
 			        							<div class="ui-widget">
-			        							<input type="text" id="searchCaller" name="searchCaller" value="${overtimeDto.caller}" >
-			        							<input type="hidden" id="caller" name="caller" value="${overtimeDto.caller}">
-			        							<input type="hidden" id="phoneNumber" name="phoneNumber" value="${overtimeDto.phoneNumber}">
+			        							내선번호조회 : <input type="text" id="searchCaller" name="searchCaller" placeholder="내선번호조회" value="${overtimeDto.caller}" ><br>
+			        							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;발신자 : <input type="text" id="caller" name="caller" value="${overtimeDto.caller}"><br>
+			        							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;전화번호 : <input type="text" id="phoneNumber" name="phoneNumber" value="${overtimeDto.phoneNumber}">
 <!-- 			        							<input type="button" class="btn btn-primary" value="검색" onclick="openPopup('caller')"> -->
 <!-- 			        							<input type="button" class="btn btn-primary" value="검색" onclick="searchCaller()"> -->
 												</div>
