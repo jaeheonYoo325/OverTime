@@ -66,11 +66,6 @@ public class EmployeeDaoImpl extends SqlSessionDaoSupport implements EmployeeDao
 	}
 
 	@Override
-	public int myOverTimeDoApprovalingOfAddNextApprovalDao(OverTimeApprovalDto overTimeApprovalDto) {
-		return this.getSqlSession().insert("EmployeeDao.myOverTimeDoApprovalingOfAddNextApprovalDao", overTimeApprovalDto);
-	}
-
-	@Override
 	public int changeStatusCodeForOverTimeDoApprovalingDao(OverTimeDto overTimeDto) {
 		return this.getSqlSession().update("EmployeeDao.changeStatusCodeForOverTimeDoApprovalingDao", overTimeDto);
 	}
@@ -88,11 +83,6 @@ public class EmployeeDaoImpl extends SqlSessionDaoSupport implements EmployeeDao
 	@Override
 	public List<OverTimeApprovalDto> selectMyOverTimeCompletedDao(EmployeeDto employeeDto) {
 		return this.getSqlSession().selectList("EmployeeDao.selectMyOverTimeCompletedDao", employeeDto);
-	}
-
-	@Override
-	public int myDeployDoReturningOfNextApprovalDao(OverTimeApprovalDto overTimeApprovalDto) {
-		return this.getSqlSession().insert("EmployeeDao.myDeployDoReturningOfNextApprovalDao", overTimeApprovalDto);
 	}
 
 	@Override

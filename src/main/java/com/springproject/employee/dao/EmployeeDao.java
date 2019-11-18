@@ -28,9 +28,7 @@ public interface EmployeeDao {
 	public OverTimeApprovalDto selectMyOverTimeApprovalOfAcceptNoDao(Long acceptNo);
 	
 	public int myOverTimeDoApprovalingOfCompleteNowApprovalDao(OverTimeApprovalDto overTimeApprovalDto);
-	
-	public int myOverTimeDoApprovalingOfAddNextApprovalDao(OverTimeApprovalDto overTimeApprovalDto);
-	
+		
 	public int changeStatusCodeForOverTimeDoApprovalingDao(OverTimeDto overTimeDto);
 	
 	public List<OverTimeApprovalDto> selectMyOverTimeApprovedDao(EmployeeDto employeeDto);
@@ -38,8 +36,6 @@ public interface EmployeeDao {
 	public OverTimeofEmployeeDto selectOverTimeOfEmployeeNoDao(String employeeNo);
 	
 	public List<OverTimeApprovalDto> selectMyOverTimeCompletedDao(EmployeeDto employeeDto);
-	
-	public int myDeployDoReturningOfNextApprovalDao(OverTimeApprovalDto overTimeApprovalDto);
 	
 	public List<OverTimeApprovalDto> selectMyOverTimeReturnedDao(EmployeeDto employeeDto);
 	

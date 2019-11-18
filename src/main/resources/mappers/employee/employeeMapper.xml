@@ -137,25 +137,6 @@
 		AND 	approvalDate is null
   	</update>
   	
-	<insert id="myOverTimeDoApprovalingOfAddNextApprovalDao" parameterType="OverTimeApprovalDto">
-	    INSERT INTO OVERTIMEAPPROVAL	(
-									       acceptNo
-									       , drafter
-									       , draftDate
-									       , approvalRequestDate
-									       , approvalLine
-									       , approvalDescription
-									    ) 
-	    VALUES							(
-									       #{acceptNo}
-									       , #{drafter}
-									       , #{draftDate}
-									       , now()
-									       , #{approvalLine}
-									       , #{approvalDescription}
-									    )
-	</insert>
-	
     <update id="changeStatusCodeForOverTimeDoApprovalingDao" parameterType="OverTimeDto">
 	    UPDATE OVERTIME
 	    SET statusCode = #{statusCode}
@@ -212,25 +193,6 @@
 	    AND o.drafter = #{employeeNo} 
 	    
   	</select>
-  	
-  	<insert id="myDeployDoReturningOfNextApprovalDao" parameterType="OverTimeApprovalDto">
-  		INSERT INTO OVERTIMEAPPROVAL	(
-  											acceptNo
-  											, drafter
-  											, draftDate
-										    , approvalRequestDate
-										    , approvalLine
-										    , approvalDescription
-  										)
-		VALUES							(
-											#{acceptNo}
-  											, #{drafter}
-  											, #{draftDate}
-										    , now()
-										    , #{approvalLineConfirm}
-										    , #{approvalDescription}
-										)  										
-  	</insert>
   	
   	<select id="selectMyOverTimeReturnedDao" parameterType="EmployeeDto" resultType="OverTimeApprovalDto">
   		 SELECT 
