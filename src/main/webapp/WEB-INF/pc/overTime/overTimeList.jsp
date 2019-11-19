@@ -16,7 +16,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="description" content="">
 	<meta name="author" content="">	
-	<title>OverTime 요청 현황 페이지</title>
+	<title>연장근로실적조회</title>
 	<!-- Custom fonts for this template-->
 	<link rel="stylesheet" href="<c:url value='/bootstrapUiTemplate/vendor/fontawesome-free/css/all.min.css' />">
   	<!-- Custom styles for this template-->
@@ -86,7 +86,7 @@
 				 <div class="card mb-3">
 					<div class="card-header">
 			            <i class="fas fa-table"></i>
-			            	OverTime 요청 현황
+			            	연장근로실적조회
 			        </div>
 			       <div style="white-space:nowrap; overflow:auto; height: 800px; width: 100%">
 			        <div class="card-body">
@@ -136,48 +136,57 @@
 										</tr>
 				        			</thead>
 				        			<tbody>
-										<c:forEach items="${overTime}" var="overTime">
-											<tr>
-												<td>${overTime.acceptNo}</td>	
-												<td>${overTime.acceptDate}</td>
-												<td>${overTime.acceptTime}</td>
-												<td>${overTime.employeeName}</td>
-												<td>${overTime.caller}</td>
-												<td>${overTime.phoneNumber}</td>
-												<td>${overTime.acceptDescription}</td>
-												<td>
-													<table border="0">
-															<c:forEach items="${measurerMap[overTime.acceptNo]}" varStatus="status">
-															<tr>
-															<td>
-																${measurerMap[overTime.acceptNo][status.index].employeeName}
-															</td>
-															<td>
-																${measureDescriptionMap[overTime.acceptNo][status.index].measureDescription}
-															</td>
-															</tr>
+				        				<c:choose>
+				        					<c:when test="${not empty overTime}">
+												<c:forEach items="${overTime}" var="overTime">
+													<tr>
+														<td>${overTime.acceptNo}</td>	
+														<td>${overTime.acceptDate}</td>
+														<td>${overTime.acceptTime}</td>
+														<td>${overTime.employeeName}</td>
+														<td>${overTime.caller}</td>
+														<td>${overTime.phoneNumber}</td>
+														<td>${overTime.acceptDescription}</td>
+														<td>
+															<table border="0">
+																	<c:forEach items="${measurerMap[overTime.acceptNo]}" varStatus="status">
+																	<tr>
+																	<td>
+																		${measurerMap[overTime.acceptNo][status.index].employeeName}
+																	</td>
+																	<td>
+																		${measureDescriptionMap[overTime.acceptNo][status.index].measureDescription}
+																	</td>
+																	</tr>
+																	</c:forEach>
+															</table>
+														</td>
+														<td>${overTime.measureTime}</td>
+														<td>${overTime.cause}</td>
+														<td>${overTime.measures}</td>
+														<td>
+															<c:forEach items="${relatedChainMap[overTime.acceptNo]}" varStatus="status">
+																<c:out value="${relatedChainMap[overTime.acceptNo][status.index].relatedChain}"></c:out>(<c:out value="${relatedChainMap[overTime.acceptNo][status.index].chainName}"></c:out>)<br>
 															</c:forEach>
-													</table>
-												</td>
-												<td>${overTime.measureTime}</td>
-												<td>${overTime.cause}</td>
-												<td>${overTime.measures}</td>
-												<td>
-													<c:forEach items="${relatedChainMap[overTime.acceptNo]}" varStatus="status">
-														<c:out value="${relatedChainMap[overTime.acceptNo][status.index].relatedChain}"></c:out>(<c:out value="${relatedChainMap[overTime.acceptNo][status.index].chainName}"></c:out>)<br>
-													</c:forEach>
-												</td>
-												<td>${overTime.remarks}</td>
-												<td>${overTime.typeOfProcessing}</td>
-												<td>
-													<c:forEach items="${categoryMasterCodesOfCodeTypeMap[categoryTypeDto.cateStatusString]}" begin="1" varStatus="status">
-														<input type="radio" name="statusCode${overTime.acceptNo}"  <c:if test="${overTime.statusCode eq categoryMasterCodesOfCodeTypeMap[categoryTypeDto.cateStatusString][status.index].codeValue}">checked="checked"</c:if>disabled="disabled">
-                                          				<c:if test="${overTime.statusCode eq categoryMasterCodesOfCodeTypeMap[categoryTypeDto.cateStatusString][status.index].codeValue}"><font color="red">${categoryMasterCodesOfCodeTypeMap[categoryTypeDto.cateStatusString][status.index].codeName}</font></c:if>
-                                          				<c:if test="${overTime.statusCode ne categoryMasterCodesOfCodeTypeMap[categoryTypeDto.cateStatusString][status.index].codeValue}">${categoryMasterCodesOfCodeTypeMap[categoryTypeDto.cateStatusString][status.index].codeName}</c:if>
-													</c:forEach>		
-												</td>
-											</tr>
-										</c:forEach>				        			
+														</td>
+														<td>${overTime.remarks}</td>
+														<td>${overTime.typeOfProcessing}</td>
+														<td>
+															<c:forEach items="${categoryMasterCodesOfCodeTypeMap[categoryTypeDto.cateStatusString]}" begin="1" varStatus="status">
+																<input type="radio" name="statusCode${overTime.acceptNo}"  <c:if test="${overTime.statusCode eq categoryMasterCodesOfCodeTypeMap[categoryTypeDto.cateStatusString][status.index].codeValue}">checked="checked"</c:if>disabled="disabled">
+		                                          				<c:if test="${overTime.statusCode eq categoryMasterCodesOfCodeTypeMap[categoryTypeDto.cateStatusString][status.index].codeValue}"><font color="red">${categoryMasterCodesOfCodeTypeMap[categoryTypeDto.cateStatusString][status.index].codeName}</font></c:if>
+		                                          				<c:if test="${overTime.statusCode ne categoryMasterCodesOfCodeTypeMap[categoryTypeDto.cateStatusString][status.index].codeValue}">${categoryMasterCodesOfCodeTypeMap[categoryTypeDto.cateStatusString][status.index].codeName}</c:if>
+															</c:forEach>		
+														</td>
+													</tr>
+												</c:forEach>				        						
+				        					</c:when>	
+				        					<c:otherwise>
+				        						<tr>
+													<td colspan="15">내역이 없습니다</td>
+												</tr>
+				        					</c:otherwise>
+				        				</c:choose>
 				        			</tbody>
 				        		</table>
 				        	</div>

@@ -11,7 +11,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="description" content="">
 	<meta name="author" content="">	
-	<title>결재 내역 페이지</title>
+	<title>결재 내역</title>
 	<!-- Custom fonts for this template-->
 	<link rel="stylesheet" href="<c:url value='/bootstrapUiTemplate/vendor/fontawesome-free/css/all.min.css' />">
   	<!-- Custom styles for this template-->
