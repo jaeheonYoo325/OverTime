@@ -130,7 +130,7 @@
 																						</c:forEach>
 																					</table>
 																				</td>
-												        						<td><input type="number" min="0" step="0.1" id="measureTime" name="measureTime" value="${overTimeRequestOfAcceptNo.measureTime}" >Hr</td>
+												        						<td><input type="number" min="0" step="0.5" id="measureTime" name="measureTime" value="${overTimeRequestOfAcceptNo.measureTime}" >Hr</td>
 												        						<td>${overTimeRequestOfAcceptNo.cause}</td>
 												        						<td>${overTimeRequestOfAcceptNo.measures}</td>
 												        						<td>

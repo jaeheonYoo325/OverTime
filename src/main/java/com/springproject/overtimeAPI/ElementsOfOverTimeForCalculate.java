@@ -206,11 +206,18 @@ public class ElementsOfOverTimeForCalculate {
 		
 		String[] startOfNightTimeSplited=("22:00").split(":");
 		Double hourOfstartOfNightTime=Double.parseDouble(startOfNightTimeSplited[0]);
+		Double hour_GapOfAcceptTimeBetweenStartOfNightTime = 0d; 
+		Double minute_GapOfAcceptTimeBetweenStartOfNightTime = 0d;
 		
-		Double hour_GapOfAcceptTimeBetweenStartOfNightTime=hourOfstartOfNightTime-hourOfAcceptTime-1;
-		Double minute_GapOfAcceptTimeBetweenStartOfNightTime=(60-minuteOfAcceptTime)/60;
-		String overTime_GapOfAcceptTimeBetweenStartOfNightTime=Double.toString(hour_GapOfAcceptTimeBetweenStartOfNightTime+minute_GapOfAcceptTimeBetweenStartOfNightTime);
+		if (minuteOfAcceptTime == 00 ) {
+			hour_GapOfAcceptTimeBetweenStartOfNightTime = hourOfstartOfNightTime-hourOfAcceptTime;
+			minute_GapOfAcceptTimeBetweenStartOfNightTime = 0d;
+		} else {
+			hour_GapOfAcceptTimeBetweenStartOfNightTime = hourOfstartOfNightTime-hourOfAcceptTime-1;
+			minute_GapOfAcceptTimeBetweenStartOfNightTime = (60-minuteOfAcceptTime)/60;
+		}
 		
+		String overTime_GapOfAcceptTimeBetweenStartOfNightTime = Double.toString(hour_GapOfAcceptTimeBetweenStartOfNightTime+minute_GapOfAcceptTimeBetweenStartOfNightTime);
 		return overTime_GapOfAcceptTimeBetweenStartOfNightTime;
 	}
 	

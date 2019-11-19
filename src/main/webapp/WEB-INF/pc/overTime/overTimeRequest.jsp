@@ -550,7 +550,7 @@ $(document).ready(function() {
 			        					</tr>
 			        					<tr>
 			        						<td>조치시간</td>
-			        						<td colspan="3"><input type="number" min="0" step="0.1" id="measureTime" name="measureTime" value="${overtimeDto.measureTime}" >Hr</td>
+			        						<td colspan="3"><input type="number" min="0" step="0.5" id="measureTime" name="measureTime" value="${overtimeDto.measureTime}" >Hr</td>
 			        					</tr>
 			        					<tr>
 			        						<td>원인</td>
