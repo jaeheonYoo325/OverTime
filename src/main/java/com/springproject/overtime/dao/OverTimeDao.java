@@ -77,4 +77,14 @@ public interface OverTimeDao {
 	
 	public int insertOverTimeSaveDao(OverTimeDto overtimeDto);
 	
+	public OverTimeDto selectOverTimeSavedDao(Long acceptNo);
+	
+	public OverTimeDto selectOverTimeUpdateOfAcceptNoDao(Long acceptNo);
+	
+	public OverTimeDto selectOverTimeUpdateOfAcceptNoForAccessEmployeeNameDao(Long acceptNo);
+	
+	public int overTimeUpdateOfIsAccessLockDao(OverTimeDto overTimeDto);
+	
+	public int overTimeUpdateDao(OverTimeDto overTimeDto);
+	
 }

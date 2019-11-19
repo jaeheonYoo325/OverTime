@@ -44,29 +44,29 @@
 		});	
 	});
 	
-  	function openPopup(src) {
-  		console.log(src);
-  		var param = src;
-  		var url = "/employee/showMyApprovalReturnedDetail.do/";  		
+//   	function openPopup(src) {
+//   		console.log(src);
+//   		var param = src;
+//   		var url = "/employee/showMyApprovalReturnedDetail.do/";  		
 
-  		console.log(url + param);
-        $("#popupLayer").bPopup({
-        	modalClose: false,
-            content:'iframe',
-            iframeAttr:'frameborder="auto"',
-            iframeAttr:'frameborder="0"',
-            contentContainer:'.popupContent',
-            loadUrl: url + param,            
-            onOpen: function() {
-            	$("#popupLayer").append("<div class='popupContent'></div><div class='b-close'><img src='<c:url value='/images/employee/layerPopupCancel.jpg'/>' width='30' height='30'></div>");            	
-            }, 
-            onClose: function() {
-            	$("#popupLayer").html("");
-            }
-        },
-        function() {
-        });
-    }
+//   		console.log(url + param);
+//         $("#popupLayer").bPopup({
+//         	modalClose: false,
+//             content:'iframe',
+//             iframeAttr:'frameborder="auto"',
+//             iframeAttr:'frameborder="0"',
+//             contentContainer:'.popupContent',
+//             loadUrl: url + param,            
+//             onOpen: function() {
+//             	$("#popupLayer").append("<div class='popupContent'></div><div class='b-close'><img src='<c:url value='/images/employee/layerPopupCancel.jpg'/>' width='30' height='30'></div>");            	
+//             }, 
+//             onClose: function() {
+//             	$("#popupLayer").html("");
+//             }
+//         },
+//         function() {
+//         });
+//     }
 </script>
 <body id="page-top">
 	<jsp:include page="/WEB-INF/pc/common/header.jsp" />
@@ -92,7 +92,8 @@
 											<td>발신자</td>
 											<td>전화번호</td>
 											<td>접수내용</td>
-											<td>조치자 및 조치내용</td>
+											<td>조치자 및 조치 내용</td>
+<!-- 											<td>조치내용</td> -->
 											<td>조치시간</td>
 											<td>원인</td>
 											<td>대책</td>
@@ -114,20 +115,30 @@
 												<td>${overTimeSavedOfAcceptNo.caller}</td>
 												<td>${overTimeSavedOfAcceptNo.phoneNumber}</td>
 												<td>${overTimeSavedOfAcceptNo.acceptDescription}</td>
-												<td>
+				        						<td>
 													<table border="0">
 														<c:forEach items="${overTimeMeasurerofAcceptNoMap[overTimeSavedOfAcceptNo.acceptNo]}" varStatus="status">
-															<tr>
-																<td>
-																	${overTimeMeasurerofAcceptNoMap[overTimeSavedOfAcceptNo.acceptNo][status.index].employeeName}
-																</td>
-																<td>
-																	${overTimeMeasureDescriptionOfAcceptNoMap[overTimeSavedOfAcceptNo.acceptNo][status.index].measureDescription}
-																</td>
-																</tr>
+														<tr>
+															<td>
+																${overTimeMeasurerofAcceptNoMap[overTimeSavedOfAcceptNo.acceptNo][status.index].employeeName}
+															</td>
+															<td>
+																${overTimeMeasureDescriptionOfAcceptNoMap[overTimeSavedOfAcceptNo.acceptNo][status.index].measureDescription}
+															</td>
+														</tr>
 														</c:forEach>
 													</table>
-												</td>
+												</td>												
+<!-- 												<td> -->
+<%-- 													<c:forEach items="${overTimeMeasurerofAcceptNoMap[overTimeSavedOfAcceptNo.acceptNo]}" varStatus="status"> --%>
+<%-- 														<c:out value="${overTimeMeasurerofAcceptNoMap[overTimeSavedOfAcceptNo.acceptNo][status.index].employeeName}"></c:out><br> --%>
+<%-- 													</c:forEach> --%>
+<!-- 												</td> -->
+<!-- 												<td> -->
+<%-- 													<c:forEach items="${overTimeMeasureDescriptionOfAcceptNoMap[overTimeSavedOfAcceptNo.acceptNo]}" varStatus="status"> --%>
+<%-- 															${overTimeMeasureDescriptionOfAcceptNoMap[overTimeSavedOfAcceptNo.acceptNo][status.index].measureDescription}<br> --%>
+<%-- 													</c:forEach> --%>
+<!-- 												</td> -->
 												<td>${overTimeSavedOfAcceptNo.measureTime}</td>
 												<td>${overTimeSavedOfAcceptNo.cause}</td>
 												<td>${overTimeSavedOfAcceptNo.measures}</td>
@@ -139,7 +150,8 @@
 												<td>${overTimeSavedOfAcceptNo.remarks}</td>
 												<td>${overTimeSavedOfAcceptNo.typeOfProcessing}</td>
 												<td>
-													<input type="button" value="상세내역" class="btn btn-primary" onclick="openPopup(${overTimeSavedOfAcceptNo.acceptNo})">
+													<a href="<c:url value='/overTime/overTimeUpdate.do/${overTimeSavedOfAcceptNo.acceptNo}' />"  class="btn btn-primary">수정 페이지</a>
+<%-- 													<input type="button" value="상세내역" class="btn btn-primary" onclick="openPopup(${overTimeSavedOfAcceptNo.acceptNo})"> --%>
 												</td>		
 												
 											</tr>

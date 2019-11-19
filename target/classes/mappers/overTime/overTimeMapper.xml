@@ -63,7 +63,11 @@
  								measures,
  								remarks,
  								typeOfProcessing,
- 								statusCode
+ 								statusCode, 
+ 								isAccessLock,
+ 								accessEmployeeNo,
+ 								accessTime
+ 								
                      		 )
     	  			VALUES   (
     	  						#{acceptDate},
@@ -77,7 +81,10 @@
     	  						#{measures},
     	  						#{remarks},
     	  						#{typeOfProcessing},
-    	  						"01"
+    	  						"01",
+    	  						"Y",
+    	  						null,
+    	  						null    	  				 
                              )   
   	</insert>
   	
@@ -274,6 +281,9 @@
 		        , o.remarks
 		        , o.typeOfProcessing
 		        , o.statusCode
+		        , o.isAccessLock
+		        , o.accessEmployeeNo
+		        , o.accessTime		        
 		FROM	OVERTIME o
 		JOIN	EMPLOYEE e
 		ON		o.accepter = e.employeeNo
@@ -295,6 +305,9 @@
 				, remarks = #{remarks}
 				, typeOfProcessing = #{typeOfProcessing}
 				, statusCode = #{statusCode}
+				, isAccessLock = "Y"
+				, accessEmployeeNo = null
+				, accessTime = null
 		WHERE	acceptNo = #{acceptNo}
 	</update>
   	
@@ -374,7 +387,10 @@
  								measures,
  								remarks,
  								typeOfProcessing,
- 								statusCode
+ 								statusCode,
+ 								isAccessLock,
+ 								accessEmployeeNo,
+ 								accessTime
                      		 )
     	  			VALUES   (
     	  						#{acceptDate},
@@ -388,7 +404,115 @@
     	  						#{measures},
     	  						#{remarks},
     	  						#{typeOfProcessing},
-    	  						"04"
+    	  						"04",
+    	  						"Y",
+    	  						null,
+    	  						null
                              )   
-  	</insert>  	   	
+  	</insert>
+  	
+  	<select id="selectOverTimeSavedDao" resultType="OverTimeDto" parameterType="Long">
+  		SELECT
+	  			O.acceptNo,
+	  			O.acceptDate,
+	  			O.acceptTime,
+	  			O.accepter,
+	  			E.employeeName,
+	  			O.caller,
+	  			O.phoneNumber,
+	  			O.acceptDescription,
+	  			O.measureTime,
+	  			O.cause,
+	  			O.measures,
+	  			O.remarks,
+	  			O.typeOfProcessing,
+	  			O.statusCode
+	  	FROM OVERTIME O
+	  	JOIN EMPLOYEE E
+	  	ON (O.accepter = E.employeeNo)
+        WHERE O.statusCode = '04'
+        AND	O.acceptNo = #{acceptNo}     
+  	</select>
+  	
+	<select id="selectOverTimeUpdateOfAcceptNoDao" parameterType="Long" resultType="OverTimeDto">
+		SELECT
+				o.acceptNo
+		        , o.acceptDate
+		        , o.acceptTime
+		        , o.accepter
+		        , e.employeeName        
+				, o.caller
+		        , o.phoneNumber
+		        , o.acceptDescription
+		        , o.measureTime
+		        , o.cause
+		        , o.measures
+		        , o.remarks
+		        , o.typeOfProcessing
+		        , o.statusCode
+		        , o.isAccessLock
+		        , o.accessEmployeeNo
+		        , o.accessTime		        
+		FROM	OVERTIME o
+		JOIN	EMPLOYEE e
+		ON		o.accepter = e.employeeNo						
+		WHERE	o.acceptNo = #{acceptNo}
+	</select>
+			  	  	  	   	
+	<select id="selectOverTimeUpdateOfAcceptNoForAccessEmployeeNameDao" parameterType="Long" resultType="OverTimeDto">
+		SELECT
+				o.acceptNo
+		        , o.acceptDate
+		        , o.acceptTime
+		        , o.accepter
+		        , e.employeeName        
+				, o.caller
+		        , o.phoneNumber
+		        , o.acceptDescription
+		        , o.measureTime
+		        , o.cause
+		        , o.measures
+		        , o.remarks
+		        , o.typeOfProcessing
+		        , o.statusCode
+		        , o.isAccessLock
+		        , o.accessEmployeeNo
+		        , e2.employeeName AS accessEmployeeName		        
+		FROM	OVERTIME o
+		JOIN	EMPLOYEE e
+		JOIN    EMPLOYEE e2
+		ON		o.accepter = e.employeeNo
+		AND		o.accessEmployeeNo = e2.employeeNo						
+		WHERE	o.acceptNo = #{acceptNo}
+	</select>
+	
+	<update id="overTimeUpdateOfIsAccessLockDao" parameterType="OverTimeDto">
+		UPDATE	OVERTIME
+		SET		isAccessLock = #{isAccessLock}
+				, accessEmployeeNo = #{accessEmployeeNo}
+				, accessTime=now()
+		WHERE	acceptNo = #{acceptNo}
+	</update>
+	
+	<update id="overTimeUpdateDao" parameterType="OverTimeDto">
+		UPDATE	OVERTIME
+		SET		
+				acceptDate = #{acceptDate}
+				, acceptTime = #{acceptTime}
+				, accepter = #{accepter}
+				, caller = #{caller}
+				, phoneNumber = #{phoneNumber}
+				, acceptDescription = #{acceptDescription}
+				, measureTime = #{measureTime}
+				, cause = #{cause}
+				, measures = #{measures}
+				, remarks = #{remarks}
+				, typeOfProcessing = #{typeOfProcessing}
+				, statusCode = #{statusCode}
+				, isAccessLock = #{isAccessLock}
+				, accessEmployeeNo = null
+				, accessTime = null
+		WHERE	acceptNo = #{acceptNo}
+		AND     isAccessLock="N"
+	</update>		  	  	  	   	
   </mapper>

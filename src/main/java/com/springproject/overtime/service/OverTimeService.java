@@ -61,4 +61,16 @@ public interface OverTimeService {
 	public List<ChainTableDto> selectChainOfSearchAjaxService(String relatedChain);
 	
 	public boolean insertOverTimeSaveService(OverTimeDto overTimeDto, ArrayList<String> measurer, ArrayList<String> measureDescription, ArrayList<String> relatedChain);
+	
+	public OverTimeDto selectOverTimeSavedService(Long acceptNo);
+	
+	public OverTimeDto selectOverTimeUpdateOfAcceptNoService(Long acceptNo);
+	
+	public OverTimeDto selectOverTimeUpdateOfAcceptNoForAccessEmployeeNameService(Long acceptNo);
+	
+	public boolean overTimeUpdateOfIsAccessLockService(OverTimeDto overTimeDto);
+	
+	public boolean overTimeUpdateServive(OverTimeDto overTimeDto, ArrayList<String> measurer, ArrayList<String> measureDescription, ArrayList<String> relatedChain);
+	
+	public boolean overTimeFinalRequestService(OverTimeDto overTimeDto, ArrayList<String> measurer, ArrayList<String> measureDescription, ArrayList<String> relatedChain);
 }

@@ -39,6 +39,11 @@
 	function showApprovalDetail(acceptNo)	{
 		$("#divToggle" + acceptNo).toggle();
 	}
+	
+	function doApproval(acceptNo){
+	    var measureTimeForApproval=document.getElementById("measureTime").value;
+	    location.href="/employee/myOverTimeDoApprovaling.do/" + acceptNo+"/" + measureTimeForApproval;
+	}
 </script>
 <body id="page-top">
 	<jsp:include page="/WEB-INF/pc/common/header.jsp" />
@@ -112,20 +117,20 @@
 												        						<td>${overTimeRequestOfAcceptNo.phoneNumber}</td>
 												        						<td>${overTimeRequestOfAcceptNo.acceptDescription}</td>
 												        						<td>
-																				<table border="0">
-																					<c:forEach items="${overTimeMeasurerofAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo]}" varStatus="status">
-																					<tr>
-																						<td>
-																							${overTimeMeasurerofAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].employeeName}
-																						</td>
-																						<td>
-																							${overTimeMeasureDescriptionOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].measureDescription}
-																						</td>
-																					</tr>
-																					</c:forEach>
-																				</table>
-																			</td>
-												        						<td>${overTimeRequestOfAcceptNo.measureTime}</td>
+																					<table border="0">
+																						<c:forEach items="${overTimeMeasurerofAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo]}" varStatus="status">
+																						<tr>
+																							<td>
+																								${overTimeMeasurerofAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].employeeName}
+																							</td>
+																							<td>
+																								${overTimeMeasureDescriptionOfAcceptNoMap[overTimeRequestOfAcceptNo.acceptNo][status.index].measureDescription}
+																							</td>
+																						</tr>
+																						</c:forEach>
+																					</table>
+																				</td>
+												        						<td><input type="number" min="0" step="0.1" id="measureTime" name="measureTime" value="${overTimeRequestOfAcceptNo.measureTime}" >Hr</td>
 												        						<td>${overTimeRequestOfAcceptNo.cause}</td>
 												        						<td>${overTimeRequestOfAcceptNo.measures}</td>
 												        						<td>
@@ -139,7 +144,8 @@
 											        					
 										        				</tbody>
 															</table>
-															<input type="button" value="결재하기" class="btn btn-primary" onclick="location.href='/employee/myOverTimeDoApprovaling.do/${overTimeRequestOfAcceptNo.acceptNo}'">
+															<input type="button" value="결재하기" class="btn btn-primary" onclick="doApproval(${overTimeRequestOfAcceptNo.acceptNo})">
+<%-- 															<input type="button" value="결재하기" class="btn btn-primary" onclick="location.href='/employee/myOverTimeDoApprovaling.do/${overTimeRequestOfAcceptNo.acceptNo}'"> --%>
 															<input type="button" value="반려하기" class="btn btn-danger" onclick="location.href='/employee/MyOverTimeDoReturning.do/${overTimeRequestOfAcceptNo.acceptNo}'">
 														</c:if>
 									        		</c:forEach>
@@ -163,4 +169,18 @@
 	</div>
 	<jsp:include page="/WEB-INF/pc/common/footer.jsp" />
 </body>
+<script>
+const target = document.getElementById('measureTime');
+
+target.addEventListener('mousewheel',function (e) {
+      e.preventDefault();
+      var num = Number(this.value);
+      if(e.wheelDelta > 0){
+        this.value = num + 0.5 ;
+      }else{
+        if(num < 0) return false;
+        this.value = num - 0.5 ;
+      }
+});
+</script>
 </html>

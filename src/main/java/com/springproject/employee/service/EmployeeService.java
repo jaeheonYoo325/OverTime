@@ -2,6 +2,7 @@ package com.springproject.employee.service;
 
 import java.util.List;
 
+import com.springproject.dtos.MeasurerDto;
 import com.springproject.dtos.OverTimeApprovalDto;
 import com.springproject.employee.dto.EmployeeDto;
 
@@ -17,7 +18,7 @@ public interface EmployeeService {
 	
 	public OverTimeApprovalDto selectMyOverTimeApprovalOfAcceptNoService(Long acceptNo);
 	
-	public boolean myOverTimeDoApprovalingService(OverTimeApprovalDto overTimeApprovalDto);
+	public boolean myOverTimeDoApprovalingService(OverTimeApprovalDto overTimeApprovalDto, String measureTimeForApproval);
 	
 	public List<OverTimeApprovalDto> selectMyOverTimeApprovedService(EmployeeDto employeeDto);
 	
@@ -29,5 +30,7 @@ public interface EmployeeService {
 
 	public boolean checkIsThisUserHaveRequestOfOverTimeAuthorityService(EmployeeDto employeeDto);
 
-	public boolean checkisThisUserHaveAuthorityOfEmployeeRegistService(EmployeeDto employeeDto);	
+	public boolean checkisThisUserHaveAuthorityOfEmployeeRegistService(EmployeeDto employeeDto);
+	
+	public List<MeasurerDto> selectMeasurerService(EmployeeDto employeeDto);
 }

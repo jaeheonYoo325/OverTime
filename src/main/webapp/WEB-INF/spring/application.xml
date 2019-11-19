@@ -23,6 +23,7 @@
 			<mvc:mapping path="/employee/**.do"/>
 			<mvc:mapping path="/employee/**.do/**"/>
 			<mvc:mapping path="/overTime/**.do"/>			
+			<mvc:mapping path="/overTime/**.do/**"/>			
 			<mvc:exclude-mapping path="/employee/employeeLogin.do"/>
 			<bean id="sessionInterceptor" class="com.springproject.common.interceptor.SessionInterceptor"></bean>
 		</mvc:interceptor>

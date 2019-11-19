@@ -115,6 +115,11 @@ public class EmployeeDaoImpl extends SqlSessionDaoSupport implements EmployeeDao
 	public int myOverTimeDoApprovaling(OverTimeApprovalDto overTimeApprovalDto) {
 		return this.getSqlSession().update("EmployeeDao.myOverTimeDoApprovaling", overTimeApprovalDto);
 	}
+
+	@Override
+	public List<MeasurerDto> selectMeasurerDao(EmployeeDto employeeDto) {
+		return this.getSqlSession().selectList("EmployeeDao.selectMeasurerDao", employeeDto);
+	}
 	
 	
 }

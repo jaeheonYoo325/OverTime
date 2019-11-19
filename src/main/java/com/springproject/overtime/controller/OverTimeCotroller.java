@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -75,7 +76,7 @@ public class OverTimeCotroller {
 			try {
 				out = response.getWriter();
 				out.println("<script>");
-				out.println("alert('요청권한이없습니다')");
+				out.println("alert('요청 권한이없습니다')");
 				out.println("history.back()");
 				out.println("</script>");
 			} catch (IOException e) {
@@ -128,7 +129,7 @@ public class OverTimeCotroller {
 			try {
 				out = response.getWriter();
 				out.println("<script>");
-				out.println("alert('요청완료')");
+				out.println("alert('요청 완료하였습니다.')");
 				out.println("window.close()");
 				out.println("</script>");
 			} catch (IOException e) {
@@ -141,7 +142,7 @@ public class OverTimeCotroller {
 			try {
 				out = response.getWriter();
 				out.println("<script>");
-				out.println("alert('요청실패')");
+				out.println("alert('요청 실패하였습니다.')");
 				out.println("history.back()");
 				out.println("</script>");
 			} catch (IOException e) {
@@ -272,26 +273,7 @@ public class OverTimeCotroller {
 			relatedChainOfAcceptNo=this.overTimeService.selectRelatedChainOfAcceptNoService(acceptNo);
 			relatedChainMap.put(acceptNo, relatedChainOfAcceptNo);
 		}
-		
-		for(int i=0; i<overTime.size(); i++) {
-			String BeforeAcceptDescriptionReplacedStringForMultiLine = overTime.get(i).getAcceptDescription();
-			String AfterAcceptDescriptionReplacedStringForMultiLine = BeforeAcceptDescriptionReplacedStringForMultiLine.replace("\n", "<br>");
-			overTime.get(i).setAcceptDescription(AfterAcceptDescriptionReplacedStringForMultiLine);
-		}
-		
-		for(int i=0; i<overTime.size(); i++) {
-			String BeforeCauseReplacedStringForMultiLine = overTime.get(i).getCause();
-			String AfterCauseReplacedStringForMultiLine=BeforeCauseReplacedStringForMultiLine.replace("\n", "<br>");
-			overTime.get(i).setCause(AfterCauseReplacedStringForMultiLine);
-		}
-		
-		for(int i=0; i<overTime.size(); i++) {
-			String BeforeMeasuresReplacedStringForMultiLine = overTime.get(i).getMeasures();
-			String AfterMeasuresReplacedStringForMultiLine=BeforeMeasuresReplacedStringForMultiLine.replace("\n", "<br>");
-			overTime.get(i).setMeasures(AfterMeasuresReplacedStringForMultiLine);
-		}
-		
-      
+
 		for(int i=0; i<overTime.size(); i++) {
 			String BeforeAcceptDescriptionReplacedStringForMultiLine = overTime.get(i).getAcceptDescription();
 			String AfterAcceptDescriptionReplacedStringForMultiLine=BeforeAcceptDescriptionReplacedStringForMultiLine.replace("\n", "<br>");
@@ -416,7 +398,7 @@ public class OverTimeCotroller {
 			try {
 				out = response.getWriter();
 				out.println("<script>");
-				out.println("alert('저장완료')");
+				out.println("alert('저장 완료하였습니다.')");
 				out.println("window.location.href = '/overTime/overTimeList.do';");
 				out.println("window.close()");
 				out.println("</script>");
@@ -428,7 +410,7 @@ public class OverTimeCotroller {
 			try {
 				out = response.getWriter();
 				out.println("<script>");
-				out.println("alert('요청실패')");
+				out.println("alert('저장 실패하였습니다.')");
 				out.println("history.back()");
 				out.println("</script>");
 			} catch (IOException e) {
@@ -436,6 +418,208 @@ public class OverTimeCotroller {
 			}
 			return mv;
 		}
+	}
+	
+	@GetMapping("/overTime/overTimeUpdate.do/{acceptNo}")
+	public ModelAndView viewOverTimeUpdatePage(@PathVariable Long acceptNo, HttpSession session, HttpServletResponse response) {
+		
+		response.setCharacterEncoding("UTF-8"); 
+		response.setContentType("text/html; charset=UTF-8"); 
+		
+		ModelAndView mv = null;
+		EmployeeDto loginEmployDto = (EmployeeDto)session.getAttribute(Session.USER);
+		OverTimeDto overTimeUpdateOfAcceptNo = this.overTimeService.selectOverTimeUpdateOfAcceptNoService(acceptNo);
+		
+		if(overTimeUpdateOfAcceptNo.getAccessEmployeeNo() != null) {
+			OverTimeDto overTimeUpdateOfAcceptNoForAccessEmployeeName = this.overTimeService.selectOverTimeUpdateOfAcceptNoForAccessEmployeeNameService(acceptNo);
+			
+			if ( !overTimeUpdateOfAcceptNoForAccessEmployeeName.getIsAccessLock().equals("Y")) {
+				PrintWriter out;
+				try {
+					out = response.getWriter();
+					out.println("<script>");
+					out.println("alert('연장근로실적 수정 페이지를 접근할 수 없습니다. " + overTimeUpdateOfAcceptNoForAccessEmployeeName.getAccessEmployeeName() + "님이 연장근로실적을 수정 중입니다. ')");
+					out.println("history.back()");
+					out.println("</script>");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return mv;
+			}
+		}
+		
+		mv = new ModelAndView(HttpRequestHelper.getJspPath());
+		overTimeUpdateOfAcceptNo.setIsAccessLock("N");
+		overTimeUpdateOfAcceptNo.setAccessEmployeeNo(loginEmployDto.getEmployeeNo());
+		boolean isOverTimeUpdateOfIsAccessLockSuccess = this.overTimeService.overTimeUpdateOfIsAccessLockService(overTimeUpdateOfAcceptNo);
+		
+		List<MeasurerDto> overTimeMeasurerOfAcceptNo = this.overTimeService.selectMeasurerOfAcceptNoService(acceptNo);
+		List<MeasureDescriptionDto> overTimeMeasureDescriptionOfAcceptNo = this.overTimeService.selectMeasureDescriptionOfAcceptNoService(acceptNo);
+		List<RelatedChainDto> overTimeRelatedChainOfAcceptNo=this.overTimeService.selectRelatedChainOfAcceptNoService(acceptNo);
+					
+		mv.addObject("overTimeUpdateOfAcceptNo", overTimeUpdateOfAcceptNo);
+		mv.addObject("overTimeMeasurerOfAcceptNo", overTimeMeasurerOfAcceptNo);		
+		mv.addObject("overTimeMeasureDescriptionOfAcceptNo", overTimeMeasureDescriptionOfAcceptNo);
+		mv.addObject("overTimeRelatedChainOfAcceptNo",overTimeRelatedChainOfAcceptNo);
+		
+		return mv;
+	}
+	
+	@PostMapping("/overTime/overTimeUpdate.do")
+	public ModelAndView doOverTimeUpdateAction(@Valid @ModelAttribute OverTimeDto overTimeDto, Errors errors, HttpServletResponse response, HttpServletRequest request) {
+		
+		response.setCharacterEncoding("UTF-8"); 
+		response.setContentType("text/html; charset=UTF-8");
+		   
+		ModelAndView mv = null;
+		ArrayList<String> measurer = new ArrayList<String>();
+		ArrayList<String> measureDescription = new ArrayList<String>();
+		ArrayList<String> relatedChain= new ArrayList<String>();
+			
+		Long acceptNo = overTimeDto.getAcceptNo();
+		   	   
+		List<MeasurerDto> overTimeMeasurerOfAcceptNo = this.overTimeService.selectMeasurerOfAcceptNoService(acceptNo);
+		List<MeasureDescriptionDto> overTimeMeasureDescriptionOfAcceptNo = this.overTimeService.selectMeasureDescriptionOfAcceptNoService(acceptNo);
+		List<RelatedChainDto> overTimeRelatedChainOfAcceptNo = this.overTimeService.selectRelatedChainOfAcceptNoService(acceptNo);
+		
+		if ( errors.hasErrors() ) {
+			mv = new ModelAndView(HttpRequestHelper.getJspPath());
+		   
+			mv.addObject("overTimeRequestOfAcceptNo", overTimeDto);
+			mv.addObject("overTimeMeasurerOfAcceptNo", overTimeMeasurerOfAcceptNo);		
+			mv.addObject("overTimeMeasureDescriptionOfAcceptNo", overTimeMeasureDescriptionOfAcceptNo);
+			mv.addObject("overTimeRelatedChainOfAcceptNo", overTimeRelatedChainOfAcceptNo);
+		   
+			return mv;
+		}
+		
+		for(int i=0;;i++) {
+			if(request.getParameter("measurer"+i)==null) {
+				break;
+			}
+			measurer.add(request.getParameter("measurer"+i));
+		}
+			
+		for(int i=0;;i++) {
+			if(request.getParameter("measureDescription"+i)==null) {
+				break;
+			}
+			measureDescription.add(request.getParameter("measureDescription"+i));
+		}
+		   
+		for(int i=0;;i++) {
+			if(request.getParameter("relatedChain"+i)==null) {
+				break;
+			}
+			relatedChain.add(request.getParameter("relatedChain"+i));
+		}
+
+		boolean isOverTimeUpdateSuccess = this.overTimeService.overTimeUpdateServive(overTimeDto, measurer, measureDescription, relatedChain);
+		   
+		PrintWriter out;
+		if (isOverTimeUpdateSuccess) {
+			try {
+				out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('수정 완료하였습니다.')");
+				out.println("window.location.href = '/overTime/overTimeList.do';");
+				out.println("</script>");
+					
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return mv;
+		} else {
+			try {
+				out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('수정 실패하였습니다.')");
+				out.println("history.back()");				
+				out.println("</script>");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return mv;
+		}		
+		
+	}
+	
+	@PostMapping("/overTime/overTimeFinalRequest.do")
+	public ModelAndView doOverTimeFinalRequestAction(@Valid @ModelAttribute OverTimeDto overTimeDto, Errors errors, HttpServletResponse response, HttpServletRequest request) {
+		
+		response.setCharacterEncoding("UTF-8"); 
+		response.setContentType("text/html; charset=UTF-8");
+		   
+		ModelAndView mv = null;
+		ArrayList<String> measurer = new ArrayList<String>();
+		ArrayList<String> measureDescription = new ArrayList<String>();
+		ArrayList<String> relatedChain= new ArrayList<String>();
+			
+		Long acceptNo = overTimeDto.getAcceptNo();
+		   	   
+		List<MeasurerDto> overTimeMeasurerOfAcceptNo = this.overTimeService.selectMeasurerOfAcceptNoService(acceptNo);
+		List<MeasureDescriptionDto> overTimeMeasureDescriptionOfAcceptNo = this.overTimeService.selectMeasureDescriptionOfAcceptNoService(acceptNo);
+		List<RelatedChainDto> overTimeRelatedChainOfAcceptNo = this.overTimeService.selectRelatedChainOfAcceptNoService(acceptNo);
+		
+		if ( errors.hasErrors() ) {
+			mv = new ModelAndView(HttpRequestHelper.getJspPath());
+		   
+			mv.addObject("overTimeRequestOfAcceptNo", overTimeDto);
+			mv.addObject("overTimeMeasurerOfAcceptNo", overTimeMeasurerOfAcceptNo);		
+			mv.addObject("overTimeMeasureDescriptionOfAcceptNo", overTimeMeasureDescriptionOfAcceptNo);
+			mv.addObject("overTimeRelatedChainOfAcceptNo", overTimeRelatedChainOfAcceptNo);
+		   
+			return mv;
+		}
+		
+		for(int i=0;;i++) {
+			if(request.getParameter("measurer"+i)==null) {
+				break;
+			}
+			measurer.add(request.getParameter("measurer"+i));
+		}
+			
+		for(int i=0;;i++) {
+			if(request.getParameter("measureDescription"+i)==null) {
+				break;
+			}
+			measureDescription.add(request.getParameter("measureDescription"+i));
+		}
+		   
+		for(int i=0;;i++) {
+			if(request.getParameter("relatedChain"+i)==null) {
+				break;
+			}
+			relatedChain.add(request.getParameter("relatedChain"+i));
+		}
+
+		boolean isOverTimeFinalRequestSuccess = this.overTimeService.overTimeFinalRequestService(overTimeDto, measurer, measureDescription, relatedChain);
+		   
+		PrintWriter out;
+		if (isOverTimeFinalRequestSuccess) {
+			try {
+				out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('최종 요청 완료하였습니다.')");
+				out.println("window.location.href = '/overTime/overTimeList.do';");
+				out.println("</script>");
+					
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return mv;
+		} else {
+			try {
+				out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('최종 요청 실패하였습니다.')");
+				out.println("history.back()");				
+				out.println("</script>");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return mv;
+		}			
 	}	
 
 }

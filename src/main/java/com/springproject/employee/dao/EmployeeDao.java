@@ -49,4 +49,6 @@ public interface EmployeeDao {
 
 	public int myOverTimeDoApprovaling(OverTimeApprovalDto overTimeApprovalDto);
 	
+	public List<MeasurerDto> selectMeasurerDao(EmployeeDto employeeDto);
+	
 }

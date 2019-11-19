@@ -153,5 +153,25 @@ public class OverTimeDaoImpl extends SqlSessionDaoSupport implements OverTimeDao
 	public int insertOverTimeSaveDao(OverTimeDto overtimeDto) {
 		return getSqlSession().insert("overTimeDao.insertOverTimeSaveDao", overtimeDto);
 	}
+	@Override
+	public OverTimeDto selectOverTimeSavedDao(Long acceptNo) {
+		return getSqlSession().selectOne("overTimeDao.selectOverTimeSavedDao", acceptNo);
+	}
+	@Override
+	public OverTimeDto selectOverTimeUpdateOfAcceptNoDao(Long acceptNo) {
+		return getSqlSession().selectOne("overTimeDao.selectOverTimeUpdateOfAcceptNoDao", acceptNo);
+	}
+	@Override
+	public OverTimeDto selectOverTimeUpdateOfAcceptNoForAccessEmployeeNameDao(Long acceptNo) {
+		return getSqlSession().selectOne("overTimeDao.selectOverTimeUpdateOfAcceptNoForAccessEmployeeNameDao", acceptNo);
+	}
+	@Override
+	public int overTimeUpdateOfIsAccessLockDao(OverTimeDto overTimeDto) {
+		return getSqlSession().update("overTimeDao.overTimeUpdateOfIsAccessLockDao", overTimeDto);
+	}
+	@Override
+	public int overTimeUpdateDao(OverTimeDto overTimeDto) {
+		return getSqlSession().update("overTimeDao.overTimeUpdateDao", overTimeDto);
+	}
 
 }

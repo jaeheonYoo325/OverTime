@@ -21,7 +21,7 @@
 <!-- 		<property name="password" value="root" /> -->
 <!-- 	</bean> -->
 	
-	<util:properties id="database" location="file:////C:/Users/umnt/Desktop/overtimedb/overtimedb.properties" />
+	<util:properties id="database" location="file:////E:/DKUNC/properties/overtimedb.properties" />
 	
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="#{database['jdbc.driver']}" />

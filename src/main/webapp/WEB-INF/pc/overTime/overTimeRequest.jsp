@@ -62,29 +62,35 @@ $(document).ready(function() {
     	var acceptTime = $("#acceptTime").val();
     	var employeeName = $("#employeeName").val();
     	var caller = $("#caller").val();
+    	var phoneNumber = $("#phoneNumber").val();
     	var acceptDescription = $("#acceptDescription").val();
     	var measureTime = $("#measureTime").val();
     	var cause = $("#cause").val();
     	var measures = $("#measures").val();
     	var relatedChain = $("#relatedChain").val();
     	
-    	if ( acceptDate == "") {
+    	if ( acceptDate == "" ) {
     		alert("접수 날짜를 입력해주세요.");
     		return;
     	}
-    	if ( acceptTime == "") {
+    	if ( acceptTime == "" ) {
     		alert("접수 시간을 입력해주세요.");
     		return;
     	}
-    	if ( employeeName == "") {
+    	if ( employeeName == "" ) {
     		alert("접수자를 조회해서 선택해주세요.");
     		return;
     	}
-    	if ( caller == "") {
+    	if ( caller == "" ) {
     		alert("발신자를 조회해서 선택해주세요.");
     		return;
     	}
-    	if ( acceptDescription == "") {
+    	
+    	if ( phoneNumber == "" ) {
+    		alert("전화번호를 입력해주세요.");
+    		return;
+    	}
+    	if ( acceptDescription == "" ) {
     		alert("접수내용을 입력해주세요.");
     		return;
     	}
@@ -478,7 +484,7 @@ $(document).ready(function() {
 			        </div>
 			        <div class="card-body">			        
 						<div class="table-responsive">
-		        			<form:form id="overTimeRequestFrm" modelAttribute="overTimeDto" name="overTimeRequestFrm">
+		        			<form:form id="overTimeRequestFrm" modelAttribute="overTimeDto" name="overTimeRequestFrm" autocomplete="off">
 		        				<div id = "errorsDiv">
 		        					<form:errors id="errorsAcceptDate" cssStyle="color: red;" path="acceptDate" />
 		        					<form:errors id="errorsAcceptTime" cssStyle="color: red;" path="acceptTime" />

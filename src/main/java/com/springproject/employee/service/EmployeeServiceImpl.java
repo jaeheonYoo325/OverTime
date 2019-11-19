@@ -73,7 +73,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public boolean myOverTimeDoApprovalingService(OverTimeApprovalDto overTimeApprovalDto) {
+	public boolean myOverTimeDoApprovalingService(OverTimeApprovalDto overTimeApprovalDto, String measureTimeForApproval) {
 		boolean isDoApprovalingSuccess = true;
 		boolean isDoApprovalingSuccessOfCompleteNowApproval = false;
 		boolean isMeasurerOfMeasureTimeAccumulationSuccess = true;
@@ -85,6 +85,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 		if ( overTimeDto.getStatusCode().equals("01") ) {
 			overTimeDto.setStatusCode("02");
 			}
+		
+		overTimeDto.setMeasureTime(measureTimeForApproval);
 		
 		boolean isChangeOverTimeRequestStatusCodeSuccess = this.employeeDao.changeStatusCodeForOverTimeDoApprovalingDao(overTimeDto) > 0;
 
@@ -160,4 +162,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 		else 
 			return false;
 	}
+
+	@Override
+	public List<MeasurerDto> selectMeasurerService(EmployeeDto employeeDto) {
+		return this.employeeDao.selectMeasurerDao(employeeDto);
+	}
+	
 }

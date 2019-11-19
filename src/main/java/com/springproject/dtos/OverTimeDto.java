@@ -3,7 +3,7 @@ package com.springproject.dtos;
 import javax.validation.constraints.NotEmpty;
 
 public class OverTimeDto {
-	
+
 	private Long acceptNo;
 	@NotEmpty(message = "접수 날짜는 필수 입력 값입니다.")
 	private String acceptDate;
@@ -27,6 +27,9 @@ public class OverTimeDto {
 	private String typeOfProcessing;
 	private String statusCode;
 	private String employeeName;
+	private String isAccessLock;
+	private String accessEmployeeNo;
+	private String accessEmployeeName;
 
 	public String getEmployeeName() {
 		return employeeName;
@@ -140,5 +143,28 @@ public class OverTimeDto {
 		this.statusCode = statusCode;
 	}
 
-	
+	public String getIsAccessLock() {
+		return isAccessLock;
+	}
+
+	public void setIsAccessLock(String isAccessLock) {
+		this.isAccessLock = isAccessLock;
+	}
+
+	public String getAccessEmployeeNo() {
+		return accessEmployeeNo;
+	}
+
+	public void setAccessEmployeeNo(String accessEmployeeNo) {
+		this.accessEmployeeNo = accessEmployeeNo;
+	}
+
+	public String getAccessEmployeeName() {
+		return accessEmployeeName;
+	}
+
+	public void setAccessEmployeeName(String accessEmployeeName) {
+		this.accessEmployeeName = accessEmployeeName;
+	}
+
 }

@@ -318,4 +318,134 @@ public class OverTimeServiceImpl implements OverTimeService {
 		return isSaveSuccess;
 	}
 
+	@Override
+	public OverTimeDto selectOverTimeSavedService(Long acceptNo) {
+		return this.overTimeDao.selectOverTimeSavedDao(acceptNo);
+	}
+
+	@Override
+	public OverTimeDto selectOverTimeUpdateOfAcceptNoService(Long acceptNo) {
+		return this.overTimeDao.selectOverTimeUpdateOfAcceptNoDao(acceptNo);
+	}
+
+	@Override
+	public OverTimeDto selectOverTimeUpdateOfAcceptNoForAccessEmployeeNameService(Long acceptNo) {
+		return this.overTimeDao.selectOverTimeUpdateOfAcceptNoForAccessEmployeeNameDao(acceptNo);
+	}
+
+	@Override
+	public boolean overTimeUpdateOfIsAccessLockService(OverTimeDto overTimeDto) {
+		return this.overTimeDao.overTimeUpdateOfIsAccessLockDao(overTimeDto) > 0;
+	}
+
+	@Override
+	public boolean overTimeUpdateServive(OverTimeDto overTimeDto, ArrayList<String> measurer, ArrayList<String> measureDescription, ArrayList<String> relatedChain) {
+		Long acceptNo = overTimeDto.getAcceptNo();
+		
+		boolean isOverTimeUpdateFinalSuccess = true;
+		boolean insertMeasurerSuccess = true;
+		boolean insertMeasureDescriptionSuccess = true;	
+		boolean insertRelatedChainSuccess = true;
+		
+		// XSS 방어로직 구현
+		XssFilter xssFilter = XssFilter.getInstance("xssfilter/lucy-xss-superset.xml", true);
+		overTimeDto.setAcceptDescription(xssFilter.doFilter(overTimeDto.getAcceptDescription()));		
+		overTimeDto.setCause(xssFilter.doFilter(overTimeDto.getCause()));
+		overTimeDto.setMeasures(xssFilter.doFilter(overTimeDto.getMeasures()));
+		overTimeDto.setRemarks(xssFilter.doFilter(overTimeDto.getRemarks()));
+		overTimeDto.setTypeOfProcessing(xssFilter.doFilter(overTimeDto.getTypeOfProcessing()));
+		
+		overTimeDto.setStatusCode("04");
+		overTimeDto.setIsAccessLock("Y");
+		boolean isOverTimeUpdateSuccess = this.overTimeDao.overTimeUpdateDao(overTimeDto) > 0;
+		boolean isDeleteMeasurerOfAcceptNoSuccess = this.overTimeDao.deleteMeasurerOfAcceptNoDao(acceptNo) > 0;
+		boolean isDeleteMeasureDescriptionOfAcceptNoSuccess = this.overTimeDao.deleteMeasureDescriptionOfAcceptNoDao(acceptNo) > 0;
+		boolean isDeleteRelatedChainOfAcceptNoSuccess = this.overTimeDao.deleteRelatedChainOfAcceptNoDao(acceptNo) > 0;
+		
+		for(int i = 0; i < measurer.size(); i++) {
+			MeasurerDto measurerDto = new MeasurerDto();
+			measurerDto.setAcceptNo(acceptNo);
+			measurerDto.setMeasurer(measurer.get(i).toString());
+			insertMeasurerSuccess = insertMeasurerSuccess && ( this.overTimeDao.insertMeasurerDao(measurerDto) > 0);
+		}
+		
+		for(int i = 0; i < measureDescription.size(); i++) {
+			MeasureDescriptionDto measureDescriptionDto = new MeasureDescriptionDto();
+			measureDescriptionDto.setAcceptNo(acceptNo);
+			measureDescriptionDto.setMeasureDescription(xssFilter.doFilter(measureDescription.get(i).toString()));
+			insertMeasureDescriptionSuccess = insertMeasureDescriptionSuccess && ( this.overTimeDao.insertMeasureDescriptionDao(measureDescriptionDto) > 0);
+		}
+		
+		for(int i=0; i<relatedChain.size(); i++) {
+			RelatedChainDto relatedChainDto=new RelatedChainDto();
+			relatedChainDto.setAcceptNo(acceptNo);
+			relatedChainDto.setRelatedChain(relatedChain.get(i).toString());
+			insertRelatedChainSuccess = insertRelatedChainSuccess && (this.overTimeDao.insertRelatedChainDao(relatedChainDto)>0);
+		}
+		
+		isOverTimeUpdateFinalSuccess = isOverTimeUpdateFinalSuccess && isOverTimeUpdateSuccess && isDeleteMeasurerOfAcceptNoSuccess 
+				&& isDeleteMeasureDescriptionOfAcceptNoSuccess && isDeleteRelatedChainOfAcceptNoSuccess &&  insertMeasurerSuccess 
+				&& insertMeasureDescriptionSuccess && insertRelatedChainSuccess;
+		
+		return isOverTimeUpdateFinalSuccess;		
+	}
+
+	@Override
+	public boolean overTimeFinalRequestService(OverTimeDto overTimeDto, ArrayList<String> measurer, ArrayList<String> measureDescription, ArrayList<String> relatedChain) {
+		Long acceptNo = overTimeDto.getAcceptNo();
+		
+		boolean isOverTimeFinalRequestSuccess = true;
+		boolean insertMeasurerSuccess = true;
+		boolean insertMeasureDescriptionSuccess = true;	
+		boolean insertRelatedChainSuccess = true;
+		
+		// XSS 방어로직 구현
+		XssFilter xssFilter = XssFilter.getInstance("xssfilter/lucy-xss-superset.xml", true);
+		overTimeDto.setAcceptDescription(xssFilter.doFilter(overTimeDto.getAcceptDescription()));		
+		overTimeDto.setCause(xssFilter.doFilter(overTimeDto.getCause()));
+		overTimeDto.setMeasures(xssFilter.doFilter(overTimeDto.getMeasures()));
+		overTimeDto.setRemarks(xssFilter.doFilter(overTimeDto.getRemarks()));
+		overTimeDto.setTypeOfProcessing(xssFilter.doFilter(overTimeDto.getTypeOfProcessing()));
+		
+		overTimeDto.setStatusCode("01");
+		boolean isOverTimeUpdateSuccess = this.overTimeDao.updateOneOverTimeRequestDao(overTimeDto) > 0;
+		boolean isDeleteMeasurerOfAcceptNoSuccess = this.overTimeDao.deleteMeasurerOfAcceptNoDao(acceptNo) > 0;
+		boolean isDeleteMeasureDescriptionOfAcceptNoSuccess = this.overTimeDao.deleteMeasureDescriptionOfAcceptNoDao(acceptNo) > 0;
+		boolean isDeleteRelatedChainOfAcceptNoSuccess = this.overTimeDao.deleteRelatedChainOfAcceptNoDao(acceptNo) > 0;
+		
+		for(int i = 0; i < measurer.size(); i++) {
+			MeasurerDto measurerDto = new MeasurerDto();
+			measurerDto.setAcceptNo(acceptNo);
+			measurerDto.setMeasurer(measurer.get(i).toString());
+			insertMeasurerSuccess = insertMeasurerSuccess && ( this.overTimeDao.insertMeasurerDao(measurerDto) > 0);
+		}
+		
+		for(int i = 0; i < measureDescription.size(); i++) {
+			MeasureDescriptionDto measureDescriptionDto = new MeasureDescriptionDto();
+			measureDescriptionDto.setAcceptNo(acceptNo);
+			measureDescriptionDto.setMeasureDescription(xssFilter.doFilter(measureDescription.get(i).toString()));
+			insertMeasureDescriptionSuccess = insertMeasureDescriptionSuccess && ( this.overTimeDao.insertMeasureDescriptionDao(measureDescriptionDto) > 0);
+		}
+		
+		for(int i=0; i<relatedChain.size(); i++) {
+			RelatedChainDto relatedChainDto=new RelatedChainDto();
+			relatedChainDto.setAcceptNo(acceptNo);
+			relatedChainDto.setRelatedChain(relatedChain.get(i).toString());
+			insertRelatedChainSuccess = insertRelatedChainSuccess && (this.overTimeDao.insertRelatedChainDao(relatedChainDto)>0);
+		}
+		
+		OverTimeApprovalDto overTimeApprovalDto=new OverTimeApprovalDto();
+		overTimeApprovalDto.setAcceptNo(acceptNo);
+		overTimeApprovalDto.setDrafter(overTimeDto.getAccepter());
+		overTimeApprovalDto.setApprovalLine("1");
+		overTimeApprovalDto.setApprovalDescription("overTimeApprovalD0");
+		boolean isInsertOverTimeApprovalForOverTimeRequestSuccess=this.overTimeDao.InsertOverTimeApprovalForOverTimeRequestDao(overTimeApprovalDto) > 0;
+		
+		isOverTimeFinalRequestSuccess = isOverTimeFinalRequestSuccess && isOverTimeUpdateSuccess && isDeleteMeasurerOfAcceptNoSuccess 
+				&& isDeleteMeasureDescriptionOfAcceptNoSuccess && isDeleteRelatedChainOfAcceptNoSuccess &&  insertMeasurerSuccess 
+				&& insertMeasureDescriptionSuccess && insertRelatedChainSuccess && isInsertOverTimeApprovalForOverTimeRequestSuccess;
+		
+		return isOverTimeFinalRequestSuccess;
+	}
+
 }

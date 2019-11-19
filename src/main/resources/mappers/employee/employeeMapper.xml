@@ -140,6 +140,7 @@
     <update id="changeStatusCodeForOverTimeDoApprovalingDao" parameterType="OverTimeDto">
 	    UPDATE OVERTIME
 	    SET statusCode = #{statusCode}
+	    ,   measureTime = #{measureTime}
 	    WHERE acceptNo = #{acceptNo}
     </update>
     
@@ -263,4 +264,10 @@
 		AND 	approvalDate is null
   	</update>
 
+	<select id="selectMeasurerDao" parameterType="EmployeeDto" resultType="MeasurerDto">
+		SELECT	acceptNo
+				, measurer
+		FROM	MEASURER
+		WHERE	measurer = #{employeeNo}
+	</select>
   </mapper>

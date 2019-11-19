@@ -85,7 +85,7 @@ public class EmployeeController {
 				out = response.getWriter();
 				out.println("<script>");
 				out.println("alert('로그인 성공하였습니다.')");
-				out.println("window.location.href = '/main/main.do';");
+				out.println("window.location.href = '/overTime/overTimeList.do';");
 				out.println("</script>");
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -126,7 +126,7 @@ public class EmployeeController {
             PrintWriter out;
             out = response.getWriter();
             out.println("<script>");
-            out.println("alert('사원등록권한이 없습니다')");
+            out.println("alert('사원 등록 권한이 없습니다')");
             out.println("history.back()");
             out.println("</script>");
          } catch (IOException e) {
@@ -212,6 +212,13 @@ public class EmployeeController {
 			overTimeMeasurerofAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeMeasurerOfAcceptNo);
 			
 			overTimeMeasureDescriptionOfAcceptNo = this.overTimeService.selectMeasureDescriptionOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
+			
+			for (int j = 0; j < overTimeMeasureDescriptionOfAcceptNo.size(); j++) {
+				String BeforeMeasureDescriptionReplacedStringForMultiLine = overTimeMeasureDescriptionOfAcceptNo.get(j).getMeasureDescription();
+				String AfterMeasureDescriptionReplacedStringForMultiLine= BeforeMeasureDescriptionReplacedStringForMultiLine.replace("\n", "<br>");
+				overTimeMeasureDescriptionOfAcceptNo.get(j).setMeasureDescription(AfterMeasureDescriptionReplacedStringForMultiLine);
+			}
+			
 			overTimeMeasureDescriptionOfAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeMeasureDescriptionOfAcceptNo);
 			
 			overTimeRelatedChainOfAcceptNo = this.overTimeService.selectRelatedChainOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
@@ -246,8 +253,8 @@ public class EmployeeController {
 		return mv;
 	}
 	
-	@GetMapping("/employee/myOverTimeDoApprovaling.do/{acceptNo}")
-	public void doMyOverTimeApprovalAction(@PathVariable Long acceptNo, HttpSession session, HttpServletResponse response) {
+	@GetMapping("/employee/myOverTimeDoApprovaling.do/{acceptNo}/{measureTimeForApproval}")
+	public void doMyOverTimeApprovalAction(@PathVariable Long acceptNo, @PathVariable String measureTimeForApproval, HttpSession session, HttpServletResponse response) {
 	
 		response.setCharacterEncoding("UTF-8"); 
 		response.setContentType("text/html; charset=UTF-8");
@@ -255,14 +262,14 @@ public class EmployeeController {
 		OverTimeApprovalDto overTimeApprovalDto = this.employeeService.selectMyOverTimeApprovalOfAcceptNoService(acceptNo);
 		
 		overTimeApprovalDto.setApprovalLineConfirm(((EmployeeDto)session.getAttribute(Session.USER)).getEmployeeNo());
-		boolean isDoApprovalingSuccess = this.employeeService.myOverTimeDoApprovalingService(overTimeApprovalDto);
+		boolean isDoApprovalingSuccess = this.employeeService.myOverTimeDoApprovalingService(overTimeApprovalDto, measureTimeForApproval);
 		PrintWriter out;
 		
 		if ( isDoApprovalingSuccess ) {
 			try {
 				out = response.getWriter();
 				out.println("<script>");
-				out.println("alert('결재완료')");
+				out.println("alert('결재 완료하였습니다.')");
 				out.println("window.location.href='/employee/myOverTimeWillApproval.do'");	
 				out.println("</script>");
 			} catch (IOException e) {
@@ -272,7 +279,7 @@ public class EmployeeController {
 			try {
 				out = response.getWriter();
 				out.println("<script>");
-				out.println("alert('오류')");
+				out.println("alert('결재 실패하였습니다.')");
 				out.println("history.back()");
 				out.println("</script>");
 			} catch (IOException e) {
@@ -314,6 +321,13 @@ public class EmployeeController {
 			overTimeMeasurerofAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeMeasurerOfAcceptNo);
 			
 			overTimeMeasureDescriptionOfAcceptNo = this.overTimeService.selectMeasureDescriptionOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
+			
+			for (int j = 0; j < overTimeMeasureDescriptionOfAcceptNo.size(); j++) {
+				String BeforeMeasureDescriptionReplacedStringForMultiLine = overTimeMeasureDescriptionOfAcceptNo.get(j).getMeasureDescription();
+				String AfterMeasureDescriptionReplacedStringForMultiLine= BeforeMeasureDescriptionReplacedStringForMultiLine.replace("\n", "<br>");
+				overTimeMeasureDescriptionOfAcceptNo.get(j).setMeasureDescription(AfterMeasureDescriptionReplacedStringForMultiLine);
+			}
+			
 			overTimeMeasureDescriptionOfAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeMeasureDescriptionOfAcceptNo);
 			
 			overTimeRelatedChainOfAcceptNo = this.overTimeService.selectRelatedChainOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
@@ -362,6 +376,12 @@ public class EmployeeController {
 			overTimeMeasurerofAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeMeasurerOfAcceptNo);
 			
 			overTimeMeasureDescriptionOfAcceptNo = this.overTimeService.selectMeasureDescriptionOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
+			
+			for (int j = 0; j < overTimeMeasureDescriptionOfAcceptNo.size(); j++) {
+				String BeforeMeasureDescriptionReplacedStringForMultiLine = overTimeMeasureDescriptionOfAcceptNo.get(j).getMeasureDescription();
+				String AfterMeasureDescriptionReplacedStringForMultiLine= BeforeMeasureDescriptionReplacedStringForMultiLine.replace("\n", "<br>");
+				overTimeMeasureDescriptionOfAcceptNo.get(j).setMeasureDescription(AfterMeasureDescriptionReplacedStringForMultiLine);
+			}
 			overTimeMeasureDescriptionOfAcceptNoMap.put(overTimeRequestOfAcceptNo.get(i).getAcceptNo(), overTimeMeasureDescriptionOfAcceptNo);
 			
 			overTimeRelatedChainOfAcceptNo = this.overTimeService.selectRelatedChainOfAcceptNoService(overTimeRequestOfAcceptNo.get(i).getAcceptNo());
@@ -391,7 +411,7 @@ public class EmployeeController {
 			try {
 				out = response.getWriter();
 				out.println("<script>");
-				out.println("alert('반려완료')");
+				out.println("alert('반려 완료하였십니다.')");
 				out.println("window.location.href='/employee/myOverTimeWillApproval.do'");
 				out.println("window.close()");
 				out.println("</script>");
@@ -402,7 +422,7 @@ public class EmployeeController {
 			try {
 				out = response.getWriter();
 				out.println("<script>");
-				out.println("alert('반려실패')");
+				out.println("alert('반려 실패하였습니다.')");
 				out.println("history.back()");
 				out.println("</script>");
 			} catch (IOException e) {
@@ -424,9 +444,41 @@ public class EmployeeController {
    }
    
    @GetMapping("/employee/showMyApprovalReturnedDetail.do/{acceptNo}")
-   public ModelAndView viewOverTimeUpdatePage(@PathVariable Long acceptNo) {
-	   ModelAndView mv = new ModelAndView(HttpRequestHelper.getJspPath());
+   public ModelAndView viewOverTimeUpdatePage(@PathVariable Long acceptNo, HttpSession session, HttpServletResponse response) {
+	   
+	   response.setCharacterEncoding("UTF-8"); 
+	   response.setContentType("text/html; charset=UTF-8");
+	   
+	   ModelAndView mv = null;
+	   EmployeeDto loginEmployDto = (EmployeeDto)session.getAttribute(Session.USER);
 	   OverTimeDto overTimeRequestOfAcceptNo = this.overTimeService.selectOverTimeRequestOfAcceptNoService(acceptNo);
+	   
+	   if ( overTimeRequestOfAcceptNo.getAccessEmployeeNo() != null ) {
+		   OverTimeDto overTimeUpdateOfAcceptNoForAccessEmployeeName = this.overTimeService.selectOverTimeUpdateOfAcceptNoForAccessEmployeeNameService(acceptNo);
+		   
+		   if ( !overTimeUpdateOfAcceptNoForAccessEmployeeName.getIsAccessLock().equals("Y")) {
+				PrintWriter out;
+				try {
+					out = response.getWriter();
+					out.println("<script>");
+					out.println("alert('연장근로실적 재요청 페이지를 접근할 수 없습니다. " + overTimeUpdateOfAcceptNoForAccessEmployeeName.getAccessEmployeeName() + "님이 재요청 작업 중입니다. ')");
+					out.println("parent.$('#popupLayer').bPopup().close();");
+					out.println("parent.$('#popupLayer').html('');");
+					out.println("window.location.href='/employee/myOverTimeReturned.do'");
+					out.println("</script>");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return mv;
+			}
+		   
+	   }
+	   
+	   mv = new ModelAndView(HttpRequestHelper.getJspPath());
+	   overTimeRequestOfAcceptNo.setIsAccessLock("N");
+	   overTimeRequestOfAcceptNo.setAccessEmployeeNo(loginEmployDto.getEmployeeNo());
+	   boolean isOverTimeReRequestOfIsAccessLockSuccess = this.overTimeService.overTimeUpdateOfIsAccessLockService(overTimeRequestOfAcceptNo);
+	   
 	   List<MeasurerDto> overTimeMeasurerOfAcceptNo = this.overTimeService.selectMeasurerOfAcceptNoService(acceptNo);
 	   List<MeasureDescriptionDto> overTimeMeasureDescriptionOfAcceptNo = this.overTimeService.selectMeasureDescriptionOfAcceptNoService(acceptNo);
 	   List<RelatedChainDto> overTimeRelatedChainOfAcceptNo=this.overTimeService.selectRelatedChainOfAcceptNoService(acceptNo);
@@ -496,7 +548,7 @@ public class EmployeeController {
 		   try {
 				out = response.getWriter();
 				out.println("<script>");
-				out.println("alert('수정완료')");
+				out.println("alert('재요청 완료하였습니다.')");
 				out.println("parent.location.reload();");
 				out.println("parent.$('#popupLayer').bPopup().close();");
 				out.println("parent.$('#popupLayer').html('');");
@@ -510,7 +562,7 @@ public class EmployeeController {
 		   try {
 				out = response.getWriter();
 				out.println("<script>");
-				out.println("alert('수정실패')");
+				out.println("alert('재요청 실패하였습니다.')");
 				out.println("history.back()");				
 				out.println("</script>");
 		   } catch (IOException e) {
@@ -524,6 +576,67 @@ public class EmployeeController {
    public ModelAndView viewMyDeploySavedPage(HttpSession session) {	   
       ModelAndView mv = new ModelAndView(HttpRequestHelper.getJspPath());
       
+      List<MeasurerDto> measurer = this.employeeService.selectMeasurerService((EmployeeDto)session.getAttribute(Session.USER));
+      
+      Map<Long, List<MeasurerDto>> overTimeMeasurerofAcceptNoMap = new HashMap<Long, List<MeasurerDto>>();		
+      List<MeasurerDto> overTimeMeasurerOfAcceptNo = new ArrayList<MeasurerDto>();
+		
+      Map<Long, List<MeasureDescriptionDto>> overTimeMeasureDescriptionOfAcceptNoMap = new HashMap<Long, List<MeasureDescriptionDto>>();
+      List<MeasureDescriptionDto> overTimeMeasureDescriptionOfAcceptNo =  new ArrayList<MeasureDescriptionDto>();
+		
+      Map<Long, List<RelatedChainDto>> overTimeRelatedChainOfAcceptNoMap = new HashMap<Long, List<RelatedChainDto>>();
+      List<RelatedChainDto> overTimeRelatedChainOfAcceptNo = new ArrayList<RelatedChainDto>();       
+      
+      List<OverTimeDto> overTimeSavedOfAcceptNo = new ArrayList<OverTimeDto>();
+      
+      Long acceptNo = 0L;
+      
+      for(int i = 0; i < measurer.size(); i++) {
+    	  acceptNo = measurer.get(i).getAcceptNo();
+    	  OverTimeDto overTimeSaveDto = new OverTimeDto();
+    	  overTimeSaveDto = this.overTimeService.selectOverTimeSavedService(measurer.get(i).getAcceptNo());
+    	  
+    	  if ( overTimeSaveDto != null ) {
+    		  overTimeSavedOfAcceptNo.add(overTimeSaveDto);
+    		  
+    		  overTimeMeasurerOfAcceptNo = this.overTimeService.selectMeasurerOfAcceptNoService(overTimeSaveDto.getAcceptNo());
+    		  
+    		  for (int j = 0; j < overTimeSavedOfAcceptNo.size(); j++) {
+    				String BeforeAcceptDescriptionReplacedStringForMultiLine = overTimeSavedOfAcceptNo.get(j).getAcceptDescription();
+    				String AfterAcceptDescriptionReplacedStringForMultiLine = BeforeAcceptDescriptionReplacedStringForMultiLine.replace("\n", "<br>");
+    				overTimeSavedOfAcceptNo.get(j).setAcceptDescription(AfterAcceptDescriptionReplacedStringForMultiLine);
+    				
+    				String BeforeCauseReplacedStringForMultiLine = overTimeSavedOfAcceptNo.get(j).getCause();
+    				String AfterCauseReplacedStringForMultiLine=BeforeCauseReplacedStringForMultiLine.replace("\n", "<br>");
+    				overTimeSavedOfAcceptNo.get(j).setCause(AfterCauseReplacedStringForMultiLine);
+    				
+    				String BeforeMeasuresReplacedStringForMultiLine = overTimeSavedOfAcceptNo.get(j).getMeasures();
+    				String AfterMeasuresReplacedStringForMultiLine = BeforeMeasuresReplacedStringForMultiLine.replace("\n", "<br>");
+    				overTimeSavedOfAcceptNo.get(j).setMeasures(AfterMeasuresReplacedStringForMultiLine);
+    		  }
+        	  overTimeMeasurerofAcceptNoMap.put(overTimeSaveDto.getAcceptNo(), overTimeMeasurerOfAcceptNo);
+    			
+        	  overTimeMeasureDescriptionOfAcceptNo = this.overTimeService.selectMeasureDescriptionOfAcceptNoService(overTimeSaveDto.getAcceptNo());
+        	  
+        	  for (int j = 0; j < overTimeMeasureDescriptionOfAcceptNo.size(); j++) {
+        		  String BeforeMeasureDescriptionReplacedStringForMultiLine = overTimeMeasureDescriptionOfAcceptNo.get(j).getMeasureDescription();
+        		  String AfterMeasureDescriptionReplacedStringForMultiLine= BeforeMeasureDescriptionReplacedStringForMultiLine.replace("\n", "<br>");
+        		  overTimeMeasureDescriptionOfAcceptNo.get(j).setMeasureDescription(AfterMeasureDescriptionReplacedStringForMultiLine);
+        	  }
+        	  
+        	  overTimeMeasureDescriptionOfAcceptNoMap.put(overTimeSaveDto.getAcceptNo(), overTimeMeasureDescriptionOfAcceptNo);
+    			
+        	  overTimeRelatedChainOfAcceptNo = this.overTimeService.selectRelatedChainOfAcceptNoService(overTimeSaveDto.getAcceptNo());
+        	  overTimeRelatedChainOfAcceptNoMap.put(overTimeSaveDto.getAcceptNo(), overTimeRelatedChainOfAcceptNo);
+    	  } 
+    	 
+      }
+      
+      mv.addObject("overTimeSavedOfAcceptNo", overTimeSavedOfAcceptNo);
+      mv.addObject("overTimeMeasurerofAcceptNoMap", overTimeMeasurerofAcceptNoMap);
+      mv.addObject("overTimeMeasureDescriptionOfAcceptNoMap", overTimeMeasureDescriptionOfAcceptNoMap);
+      mv.addObject("overTimeRelatedChainOfAcceptNoMap", overTimeRelatedChainOfAcceptNoMap);
+      
       return mv;
-   }
+   }   
 }

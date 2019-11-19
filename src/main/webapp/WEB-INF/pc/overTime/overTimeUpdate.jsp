@@ -11,7 +11,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="description" content="">
 	<meta name="author" content="">	
-	<title>근무외시간요청</title>
+	<title>연장근로실적 수정</title>
 	<!-- Custom fonts for this template-->
 	<link rel="stylesheet" href="<c:url value='/bootstrapUiTemplate/vendor/fontawesome-free/css/all.min.css' />">
   	<!-- Custom styles for this template-->
@@ -56,7 +56,90 @@ $(document).ready(function() {
 	
 	searchCallerAjax();
 	
-    $("#overTimeRequestUpdateBtn").click(function() {
+    $("#overTimeUpdateBtn").click(function() {
+    	
+    	var acceptDate = $("#acceptDate").val();
+    	var acceptTime = $("#acceptTime").val();
+    	var employeeName = $("#employeeName").val();
+    	var caller = $("#caller").val();
+    	var phoneNumber = $("#phoneNumber").val();
+    	var acceptDescription = $("#acceptDescription").val();
+    	var measureTime = $("#measureTime").val();
+    	var cause = $("#cause").val();
+    	var measures = $("#measures").val();
+    	var relatedChain = $("#relatedChain").val();
+    	
+    	if ( acceptDate == "") {
+    		alert("접수 날짜를 입력해주세요.");
+    		return;
+    	}
+    	if ( acceptTime == "") {
+    		alert("접수 시간을 입력해주세요.");
+    		return;
+    	}
+    	if ( employeeName == "") {
+    		alert("접수자를 조회해서 선택해주세요.");
+    		return;
+    	}
+    	if ( caller == "") {
+    		alert("발신자를 조회해서 선택해주세요.");
+    		return;
+    	}
+    	if ( phoneNumber == "") {
+    		alert("전화번호를 입력해주세요.");
+    		return;
+    	}
+    	if ( acceptDescription == "") {
+    		alert("접수내용을 입력해주세요.");
+    		return;
+    	}    	
+    	
+    	var k = 0;
+    	for (k = 0; k <= measurerAndMeasureDescriptionSize; k++) {
+    		if ( $("#measurer" + k).val() == "") {
+    			alert((k+1) + "번째 조치자를 검색해서 사용해주세요.");
+    			return;
+    		}
+    		if ( $("#measureDescription" + k).val() == "") {
+    			alert((k+1) + "번째 조치 내용을 입력해주세요.");
+    			return;
+    		}
+    	}    	
+    	
+    	
+    	if ( measureTime == "" || measureTime == 0) {
+    		alert("조치시간을 입력해주세요.");
+    		return;
+    	}
+    	if ( cause == "") {
+    		alert("원인 내용을 입력해주세요.");
+    		return;
+    	}
+    	if ( measures == "") {
+    		alert("대책 내용을 입력해주세요.");
+    		return;
+    	}
+
+    	if ( isRelatedChain == true ) {
+    		alert("관련체인은 필수 입력 값입니다. 추가 버튼 클릭해서 관련 체인을 조회해주세요.");
+    		return;
+    	}
+    	
+    	for (k = 0; k <= relatedChainSize; k++) {
+    		if ( $("#relatedChain" + k).val() == "") {
+    			alert((k+1) + "번째 관련체인를 검색해서 사용해주세요.");
+    			return;
+    		}
+    	}
+    	
+	     $("#overTimeUpdateFrm").attr({
+	          method:"post",                                         
+	            action:"/overTime/overTimeUpdate.do"
+	     }).submit();
+	     
+    });
+    
+    $("#overTimeFinalRequestBtn").click(function() {
     	
     	var acceptDate = $("#acceptDate").val();
     	var acceptTime = $("#acceptTime").val();
@@ -127,9 +210,9 @@ $(document).ready(function() {
     		}
     	}
     	
-	     $("#overTimeRequestDailFrm").attr({
+	     $("#overTimeUpdateFrm").attr({
 	          method:"post",                                         
-	            action:"/employee/showMyApprovalReturnedDetail.do"
+	            action:"/overTime/overTimeFinalRequest.do"
 	     }).submit();
 	     
     });  
@@ -389,17 +472,19 @@ $(document).ready(function() {
     }
 </script>
 <body id="page-top">
+	<jsp:include page="/WEB-INF/pc/common/header.jsp" />
 	<div id="wrapper">
+		<jsp:include page="/WEB-INF/pc/common/sidebar.jsp" />
 		<div id="content-wrapper">
 			<div class="container-fluid">				
 				<div class="card mb-3">
 					<div class="card-header">
 			            <i class="fas fa-table"></i>
-			            	근무외시간요청
+			            	연장근로실적 수정
 			        </div>
 			        <div class="card-body">
 						<div class="table-responsive">
-		        			<form:form id="overTimeRequestDailFrm" modelAttribute="overTimeDto" name="overTimeRequestDailFrm" autocomplete="off">
+		        			<form:form id="overTimeUpdateFrm" modelAttribute="overTimeDto" name="overTimeRequestDailFrm" autocomplete="off">
 		        				<div id = "errorsDiv">
 		        					<form:errors id="errorsAcceptDate" cssStyle="color: red;" path="acceptDate" />
 		        					<form:errors id="errorsAcceptTime" cssStyle="color: red;" path="acceptTime" />
@@ -417,18 +502,18 @@ $(document).ready(function() {
 			        				<thead>
 			        					<tr>
 			        						<td>No</td>
-			        						<td colspan="6">${overTimeRequestOfAcceptNo.acceptNo}<input type="hidden" name="acceptNo" id="acceptNo" value="${overTimeRequestOfAcceptNo.acceptNo}"></td>		        						
+			        						<td colspan="6">${overTimeUpdateOfAcceptNo.acceptNo}<input type="hidden" name="acceptNo" id="acceptNo" value="${overTimeUpdateOfAcceptNo.acceptNo}"></td>		        						
 			        					</tr>
 			        					<tr>
 			        						<td>일자</td>
-			        						<td><input type="text" id="acceptDate" name="acceptDate" value="${overTimeRequestOfAcceptNo.acceptDate}" readonly="readonly"></td>
+			        						<td><input type="text" id="acceptDate" name="acceptDate" value="${overTimeUpdateOfAcceptNo.acceptDate}" readonly="readonly"></td>
 			        						<td>접수시각</td>
-			        						<td><input type="text" id="acceptTime" name="acceptTime" value="${overTimeRequestOfAcceptNo.acceptTime}" readonly="readonly"></td>
+			        						<td><input type="text" id="acceptTime" name="acceptTime" value="${overTimeUpdateOfAcceptNo.acceptTime}" readonly="readonly"></td>
 			        					</tr>
 			        					<tr>
 			        						<td>접수자</td>
-			        						<td colspan="3"><input type="text" id="employeeName" name="employeeName" value="${overTimeRequestOfAcceptNo.employeeName}" readonly="readonly">
-			        							<input type="hidden" id="accepter" name="accepter" value="${overTimeRequestOfAcceptNo.accepter}">
+			        						<td colspan="3"><input type="text" id="employeeName" name="employeeName" value="${overTimeUpdateOfAcceptNo.employeeName}" readonly="readonly">
+			        							<input type="hidden" id="accepter" name="accepter" value="${overTimeUpdateOfAcceptNo.accepter}">
 <!-- 			        						    <input type="button" class="btn btn-primary" value="검색" onclick="openPopup('accepter')"> -->
 			        						</td>
 			        					</tr>
@@ -436,10 +521,9 @@ $(document).ready(function() {
 			        						<td>발신자</td>
 			        						<td colspan="3">
 			        							<div class="ui-widget">
-<%-- 			        							내선번호조회 : <input type="text" id="searchCaller" name="searchCaller" placeholder="내선번호조회" value="${overTimeRequestOfAcceptNo.caller}" ><br> --%>
-			        							내선번호조회 : <input type="text" id="searchCaller" name="searchCaller" placeholder="내선번호조회"><br>
-			        							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;발신자 : <input type="text" id="caller" name="caller" value="${overTimeRequestOfAcceptNo.caller}"><br>
-			        							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;전화번호 : <input type="text" id="phoneNumber" name="phoneNumber" value="${overTimeRequestOfAcceptNo.phoneNumber}">
+			        							내선번호조회 : <input type="text" id="searchCaller" name="searchCaller" placeholder="내선번호조회" value="${overTimeUpdateOfAcceptNo.caller}" ><br>
+			        							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;발신자 : <input type="text" id="caller" name="caller" value="${overTimeUpdateOfAcceptNo.caller}"><br>
+			        							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;전화번호 : <input type="text" id="phoneNumber" name="phoneNumber" value="${overTimeUpdateOfAcceptNo.phoneNumber}">
 <!-- 			        							<input type="button" class="btn btn-primary" value="검색" onclick="openPopup('caller')"> -->
 <!-- 			        							<input type="button" class="btn btn-primary" value="검색" onclick="searchCaller()"> -->
 												</div>
@@ -447,7 +531,7 @@ $(document).ready(function() {
 			        					</tr>
 			        					<tr>
 			        						<td>접수내용</td>			        						
-			        						<td colspan="3"><textarea id="acceptDescription" name="acceptDescription" cols="100" rows="5">${overTimeRequestOfAcceptNo.acceptDescription}</textarea></td>
+			        						<td colspan="3"><textarea id="acceptDescription" name="acceptDescription" cols="100" rows="5">${overTimeUpdateOfAcceptNo.acceptDescription}</textarea></td>
 			        					</tr>
 			        					<tr>
 			        						<td>조치자 및 조치내용</td>
@@ -466,15 +550,15 @@ $(document).ready(function() {
 			        					</tr>
 			        					<tr>
 			        						<td>조치시간</td>
-			        						<td colspan="3"><input type="number" min="0" step="0.1" id="measureTime" name="measureTime" value="${overTimeRequestOfAcceptNo.measureTime}">Hr</td>
+			        						<td colspan="3"><input type="number" min="0" step="0.1" id="measureTime" name="measureTime" value="${overTimeUpdateOfAcceptNo.measureTime}">Hr</td>
 			        					</tr>
 			        					<tr>
 			        						<td>원인</td>			        						
-			        						<td colspan="3"><textarea id="cause" name="cause" cols="100" rows="5">${overTimeRequestOfAcceptNo.cause}</textarea></td>
+			        						<td colspan="3"><textarea id="cause" name="cause" cols="100" rows="5">${overTimeUpdateOfAcceptNo.cause}</textarea></td>
 			        					</tr>
 			        					<tr>
 			        						<td>대책</td>			        						
-			        						<td colspan="3"><textarea id="measures" name="measures" cols="100" rows="5">${overTimeRequestOfAcceptNo.measures}</textarea></td>
+			        						<td colspan="3"><textarea id="measures" name="measures" cols="100" rows="5">${overTimeUpdateOfAcceptNo.measures}</textarea></td>
 			        					</tr>
 			        					<tr>
 			        						<td>관련체인</td>
@@ -491,15 +575,16 @@ $(document).ready(function() {
 			        					</tr>
 			        					<tr>
 			        						<td>비고</td>
-			        						<td colspan="3"><input type="text" id="remarks" name="remarks" value="${overTimeRequestOfAcceptNo.remarks}"></td>
+			        						<td colspan="3"><input type="text" id="remarks" name="remarks" value="${overTimeUpdateOfAcceptNo.remarks}"></td>
 			        					</tr>
 			        					<tr>
 			        						<td>처리형태</td>
-			        						<td colspan="3"><input type="text" id="typeOfProcessing" name="typeOfProcessing" value="${overTimeRequestOfAcceptNo.typeOfProcessing}"></td>
+			        						<td colspan="3"><input type="text" id="typeOfProcessing" name="typeOfProcessing" value="${overTimeUpdateOfAcceptNo.typeOfProcessing}"></td>
 			        					<tr>
 			        				</thead>
 			        			</table>
-								<input type="button" class="btn btn-primary" id="overTimeRequestUpdateBtn" value="재요청하기">
+								<input type="button" class="btn btn-primary" id="overTimeUpdateBtn" value="수정하기">
+								<input type="button" class="btn btn-primary" id="overTimeFinalRequestBtn" value="최종 요청하기">
 		        			</form:form>		        		
 		        		</div>
 			        </div>
@@ -507,5 +592,6 @@ $(document).ready(function() {
 			</div>
 		</div>
 	</div>
+<jsp:include page="/WEB-INF/pc/common/footer.jsp" />	
 </body>
 </html>
