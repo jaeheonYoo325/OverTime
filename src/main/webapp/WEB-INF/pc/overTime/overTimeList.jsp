@@ -151,12 +151,12 @@
 															<table border="0">
 																	<c:forEach items="${measurerMap[overTime.acceptNo]}" varStatus="status">
 																	<tr>
-																	<td>
-																		${measurerMap[overTime.acceptNo][status.index].employeeName}
-																	</td>
-																	<td>
-																		${measureDescriptionMap[overTime.acceptNo][status.index].measureDescription}
-																	</td>
+																		<td>
+																			${measurerMap[overTime.acceptNo][status.index].employeeName}
+																		</td>
+																		<td>
+																			${measureDescriptionMap[overTime.acceptNo][status.index].measureDescription}
+																		</td>
 																	</tr>
 																	</c:forEach>
 															</table>
